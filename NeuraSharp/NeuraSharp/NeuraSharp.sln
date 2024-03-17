@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp", "NeuraSharp.csproj", "{D8B1BD04-D0E2-437B-8A80-33B855F7EDDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.BuiltIn", "..\NeuraSharp.BuiltIn\NeuraSharp.BuiltIn.csproj", "{4D818AB9-F29E-44E2-B40B-C5399E49055C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "..\TestConsole\TestConsole.csproj", "{1EEF4D1E-B282-4C39-9F99-A9BEB4AA7714}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.Interfaces", "..\NeuraSharp.Interfaces\NeuraSharp.Interfaces.csproj", "{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8B1BD04-D0E2-437B-8A80-33B855F7EDDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8B1BD04-D0E2-437B-8A80-33B855F7EDDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8B1BD04-D0E2-437B-8A80-33B855F7EDDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8B1BD04-D0E2-437B-8A80-33B855F7EDDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D818AB9-F29E-44E2-B40B-C5399E49055C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D818AB9-F29E-44E2-B40B-C5399E49055C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D818AB9-F29E-44E2-B40B-C5399E49055C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D818AB9-F29E-44E2-B40B-C5399E49055C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EEF4D1E-B282-4C39-9F99-A9BEB4AA7714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EEF4D1E-B282-4C39-9F99-A9BEB4AA7714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EEF4D1E-B282-4C39-9F99-A9BEB4AA7714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EEF4D1E-B282-4C39-9F99-A9BEB4AA7714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D3D2AB9-1E90-4FC1-B5B3-6AAA8FEEB285}
+	EndGlobalSection
+EndGlobal
