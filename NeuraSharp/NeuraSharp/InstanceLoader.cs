@@ -1,4 +1,5 @@
 ﻿using NeuraSharp.BuiltIn;
+using NeuraSharp.Interfaces;
 using System.Numerics;
 using System.Reflection;
 
@@ -9,7 +10,7 @@ namespace NeuraSharp
         /// <summary>
         /// Just create a neura builder with built-in functionality
         /// </summary>
-        public static NeuraBuilder<float> BuilderFromBuiltIn()
+        public static INeuraBuilder<float> BuilderFromBuiltIn()
         {
             return BuilderFromAssemblies<float>( [GetBuiltInAssembly()] );
         }
@@ -35,7 +36,7 @@ namespace NeuraSharp
         /// allowing also for other number types eventually</typeparam>
         /// <param name="assembliesToLoad">Assemblies where to search for implemented interfaces</param>
         /// <returns></returns>
-        public static NeuraBuilder<T> BuilderFromAssemblies<T>(params Assembly[] assembliesToLoad) where T: INumber<T>, IFloatingPointIeee754<T>
+        public static INeuraBuilder<T> BuilderFromAssemblies<T>(params Assembly[] assembliesToLoad) where T: INumber<T>, IFloatingPointIeee754<T>
         {
             return new NeuraBuilder<T>();
         }

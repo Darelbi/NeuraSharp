@@ -8,7 +8,9 @@ namespace NeuraSharp.Interfaces
         public T[] Derivates { get; set; }
         public T[][] Weights { get; set; }
         public T[][] Biases { get; set; }
-        public bool[][] Disabled { get; set; } // allows in example to implement dropout
+        public bool[][] Inactive { get; set; } // allows in example to implement dropout
         public int[][] PreviousIndices { get; set; } // allows in example for sparse neural networks
+
+        public IActivationFunction<T> GetActivationFunction();
     }
 }
