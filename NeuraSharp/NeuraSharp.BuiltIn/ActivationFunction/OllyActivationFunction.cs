@@ -11,11 +11,20 @@ namespace NeuraSharp.BuiltIn.ActivationFunction
     /// <typeparam name="T"></typeparam>
     public class OllyActivationFunction<T> : IActivationFunction<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        public T GetOutput(T weightedSum)
+        public T Compute(T weightedSum)
         {
             if (weightedSum < T.Zero)
                 return (T.Exp(weightedSum) - T.One);
+
             return T.Log(weightedSum + T.One);
+        }
+
+        public T Derivative(T weightedSum)
+        {
+            if (weightedSum < T.Zero)
+                return T.Exp(weightedSum);
+
+            return T.One / (weightedSum + T.One);
         }
     }
 }

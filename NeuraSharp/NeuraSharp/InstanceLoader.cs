@@ -31,7 +31,7 @@ namespace NeuraSharp
         /// on it. Like I did :)
         /// </summary>
         /// <typeparam name="T">Allows to select between float or double. For some rare applications 
-        /// "double" is just better: https://arxiv.org/abs/2209.07219 And anyway we leverage INumber interface
+        /// "double" is just better: https://arxiv.org/abs/2209.07219 And anyway we leverage INumber interfaces
         /// allowing also for other number types eventually</typeparam>
         /// <param name="assembliesToLoad">Assemblies where to search for implemented interfaces</param>
         /// <returns></returns>

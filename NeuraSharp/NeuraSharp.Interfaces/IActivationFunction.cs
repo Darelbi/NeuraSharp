@@ -10,6 +10,8 @@ namespace NeuraSharp.Interfaces
     /// <typeparam name="T"></typeparam>
     public interface IActivationFunction<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        public T GetOutput(T weightedSum);
+        public T Compute(T weightedSum);
+
+        public T Derivative(T weightedSum);
     }
 }
