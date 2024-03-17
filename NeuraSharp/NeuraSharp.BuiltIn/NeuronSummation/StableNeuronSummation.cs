@@ -7,7 +7,7 @@ namespace NeuraSharp.BuiltIn.NeuronSummation
     {
         public T GetSum(T[] inputs)
         {
-            //sum number from smallest to biggest => reduce error!
+            //sum number from smallest to biggest ( absolute value) => reduce error!
             var sorted = inputs.OrderBy(x => T.Abs(x));
             T sum = T.Zero;
             foreach(var x in sorted)
