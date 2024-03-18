@@ -20,7 +20,7 @@ namespace NeuraSharp.BuiltIn.ForwardAlgorithm
             {
                 T sum = T.Zero;
                 for (int j = 0; j < secondLayer.Weights[i].Length; j++)
-                    sum += firstLayer.Outputs[j] * secondLayer.Weights[i][j];
+                    sum += firstLayer.Outputs[j] * secondLayer.Weights[i][j] + secondLayer.Biases[i][j];
 
                 secondLayer.Outputs[i] = activation.Compute(sum);
 
