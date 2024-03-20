@@ -7,30 +7,21 @@ namespace NeuraSharp.BuiltIn.BackwardAlgorithm
     public class DefaultBackwardAlgorithm<T> : IBackwardAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         private readonly ILossFunction<T> lossFunction;
-        public DefaultBackwardAlgorithm(
-            ILossFunction<T> lossFunction, 
-            IParams<T> backParams)
+        public DefaultBackwardAlgorithm(ILossFunction<T> lossFunction)
         {
             this.lossFunction = lossFunction;
         }
         public void Backward(INeuralLayer<T> iLayer, INeuralLayer<T> iPlusOneLayer, T[] target)
         {
-            /*iLayer.Gradients = iLayer.Weights * iPlusOneLayer.Gradients;
-
-            Parallel.For(0, secondLayer.Outputs.Length, i =>
+            Parallel.For(0, iLayer.Gradients.Length, i =>
             {
+                //Gradients[n] = (Weights[n]^T*Gradients[n+1]) * ActivationGradient
                 T sum = T.Zero;
-                for (int j = 0; j < secondLayer.Weights[i].Length; j++)
-                    sum += firstLayer.Outputs[j] * secondLayer.Weights[i][j] + secondLayer.Biases[i][j];
+                for (int j = 0; j < iPlusOneLayer.Gradients.Length; j++)
+                    sum += iPlusOneLayer.Gradients[j] * iPlusOneLayer.Weights[j][i];
 
-                secondLayer.Outputs[i] = activation.Compute(sum);
+                iLayer.Gradients[i] = sum * iLayer.Derivates[i];
             });
-
-            for (int i = 0; i < target.Length; i++)
-            {
-                // TODO initialize gradients in each batch
-                firstRO.Gradients[i] += firstRO.Weights[i] * firstRO.PartialGradients[i];
-            }*/
         }
 
         public void BackwardLast(INeuralLayer<T> Llayer, T[] target)

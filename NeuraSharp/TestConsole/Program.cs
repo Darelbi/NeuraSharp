@@ -29,12 +29,11 @@ int neurons1 = 8;
 int neurons2 = 7;
 int neurons3 = 2;
 
-layer0.Initialize(0, 3);
-layer1.Initialize(3, neurons1);
-layer2.Initialize(neurons1, neurons2);
-layer3.Initialize(neurons2, neurons3);
+layer0.Initialize(0, 0, 3);
+layer1.Initialize(1, 3, neurons1);
+layer2.Initialize(2, neurons1, neurons2);
+layer3.Initialize(3, neurons2, neurons3);
 
-var backParams = new NeuraSharp.Logic.Params<float>();
 var huberParams = new NeuraSharp.Logic.Params<float>();
 huberParams.AddParameter(Params.Delta, 0.79f);
 
@@ -42,6 +41,6 @@ var network =
 new NeuraNetwork<float>(
     [layer0, layer1, layer2, layer3],
     new DefaultForwardAlgorithm<float>(new StableNeuronSummation<float>()),
-    new DefaultBackwardAlgorithm<float>(new PseudoHuberLossFunction<float>(huberParams), null));
+    new DefaultBackwardAlgorithm<float>(new PseudoHuberLossFunction<float>(huberParams)));
 
 network.Fit(myEnum);

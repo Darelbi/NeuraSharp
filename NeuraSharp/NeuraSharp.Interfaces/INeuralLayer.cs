@@ -13,6 +13,6 @@ namespace NeuraSharp.Interfaces
 
         public IActivationFunction<T> GetActivationFunction();
 
-        public void Initialize(int inputs, int outputs);
+        public void Initialize(int index, int inputs, int outputs);
     }
 }

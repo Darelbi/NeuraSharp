@@ -15,6 +15,8 @@ namespace NeuraSharp.BuiltIn.Layers
         public T[] PartialGradients { get; set; }
         public T[] Gradients { get; set; }
 
+        public int Index { get; set; }
+
         public BaseNeuralLayer(IActivationFunction<T> activation)
         {
             this.activation = activation;
@@ -26,8 +28,9 @@ namespace NeuraSharp.BuiltIn.Layers
             return activation;
         }
 
-        public void Initialize(int inputs, int outputs)
+        public void Initialize(int index, int inputs, int outputs)
         {
+            Index = index;
             Outputs = new T[outputs];
             Derivates = new T[outputs];
             Errors = new T[outputs];
