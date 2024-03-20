@@ -7,13 +7,10 @@ namespace NeuraSharp.BuiltIn.ActivationFunction
     {
         public T Compute(T weightedSum)
         {
-            if(weightedSum < T.Zero)
-                return T.Zero;
-
-            return weightedSum;
+            return T.Max( T.Zero, weightedSum);
         }
 
-        public T Derivative(T weightedSum)
+        public T Derivate(T weightedSum)
         {
             if (weightedSum < T.Zero)
                 return T.Zero;

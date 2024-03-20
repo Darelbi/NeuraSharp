@@ -6,11 +6,13 @@ namespace NeuraSharp.Interfaces
     {
         public T[] Outputs { get; set; }
         public T[] Derivates { get; set; }
+        public T[] PartialGradients { get; set; }
+        public T[] Gradients { get; set; }
         public T[][] Weights { get; set; }
-        public T[][] Biases { get; set; }
-        public bool[][] Inactive { get; set; } // allows in example to implement dropout
-        public int[][] PreviousIndices { get; set; } // allows in example for sparse neural networks
+        public T[] Biases { get; set; }
 
         public IActivationFunction<T> GetActivationFunction();
+
+        public void Initialize(int inputs, int outputs);
     }
 }

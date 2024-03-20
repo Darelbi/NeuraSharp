@@ -19,6 +19,6 @@ namespace NeuraSharp.Interfaces
         /// There are no Epochs because you can implement that from your enumerable
         /// </summary>
         /// <param name="samples"></param>
-        public void Fit(IEnumerable<List<T[]>> samples);
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> samples);
     }
 }

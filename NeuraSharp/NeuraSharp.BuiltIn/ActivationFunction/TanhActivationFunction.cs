@@ -10,7 +10,7 @@ namespace NeuraSharp.BuiltIn.ActivationFunction
             return T.Tanh(weightedSum);
         }
 
-        public T Derivative(T weightedSum)
+        public T Derivate(T weightedSum)
         {
             var x = Compute(weightedSum);
             return (T.One - x * x);

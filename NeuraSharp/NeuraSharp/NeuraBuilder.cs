@@ -20,7 +20,8 @@ namespace NeuraSharp
             if (layers.Any(x => x == null))
                 throw new System.ArgumentException("Some layers were null");
 
-            return new NeuraNetwork<T>([.. layers], algorithm);
+            //return new NeuraNetwork<T>([.. layers], algorithm);
+            return null;
         }
     }
 }

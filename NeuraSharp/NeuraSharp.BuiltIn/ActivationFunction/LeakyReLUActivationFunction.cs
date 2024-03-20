@@ -13,7 +13,7 @@ namespace NeuraSharp.BuiltIn.ActivationFunction
             return weightedSum;
         }
 
-        public T Derivative(T weightedSum)
+        public T Derivate(T weightedSum)
         {
             if (weightedSum < T.Zero)
                 return T.CreateChecked(0.01);

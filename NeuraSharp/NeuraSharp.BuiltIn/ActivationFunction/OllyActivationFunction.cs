@@ -19,7 +19,7 @@ namespace NeuraSharp.BuiltIn.ActivationFunction
             return T.Log(weightedSum + T.One);
         }
 
-        public T Derivative(T weightedSum)
+        public T Derivate(T weightedSum)
         {
             if (weightedSum < T.Zero)
                 return T.Exp(weightedSum);

@@ -3,16 +3,16 @@ using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.ForwardAlgorithm
 {
-    public class StocasticDescentForwardAlgorithm<T> : IForwardAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class DefaultForwardAlgorithm<T> : IForwardAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         private readonly INeuronSummation<T> summation;
 
-        public StocasticDescentForwardAlgorithm(INeuronSummation<T> summation)
+        public DefaultForwardAlgorithm(INeuronSummation<T> summation)
         {
             this.summation = summation;
         }
 
-        private void ForwardStep(INeuralLayer<T> firstLayer, INeuralLayer<T> secondLayer, bool prepare)
+        private static void ForwardStep(INeuralLayer<T> firstLayer, INeuralLayer<T> secondLayer, bool prepare)
         {
             var activation = secondLayer.GetActivationFunction();
 
@@ -20,23 +20,23 @@ namespace NeuraSharp.BuiltIn.ForwardAlgorithm
             {
                 T sum = T.Zero;
                 for (int j = 0; j < secondLayer.Weights[i].Length; j++)
-                    sum += firstLayer.Outputs[j] * secondLayer.Weights[i][j] + secondLayer.Biases[i][j];
+                    sum += firstLayer.Outputs[j] * secondLayer.Weights[i][j] + secondLayer.Biases[i];
 
                 secondLayer.Outputs[i] = activation.Compute(sum);
 
                 if (prepare)
-                    secondLayer.Derivates[i] = activation.Derivative(sum);
+                    secondLayer.Derivates[i] = activation.Derivate(sum);
             });
         }
 
         public void Forward(INeuralLayer<T> firstLayer, INeuralLayer<T> secondLayer)
         {
-            ForwardStep(firstLayer, secondLayer, false);
+            DefaultForwardAlgorithm<T>.ForwardStep(firstLayer, secondLayer, false);
         }
 
         public void ForwardPrepare(INeuralLayer<T> firstLayer, INeuralLayer<T> secondLayer)
         {
-            ForwardStep(firstLayer, secondLayer, true);
+            DefaultForwardAlgorithm<T>.ForwardStep(firstLayer, secondLayer, true);
         }
     }
 }

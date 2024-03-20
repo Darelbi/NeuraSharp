@@ -12,6 +12,6 @@ namespace NeuraSharp.Interfaces
     {
         public T Compute(T weightedSum);
 
-        public T Derivative(T weightedSum);
+        public T Derivate(T weightedSum);
     }
 }

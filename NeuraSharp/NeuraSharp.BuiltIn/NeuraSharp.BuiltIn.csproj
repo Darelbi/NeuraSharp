@@ -10,4 +10,8 @@
     <ProjectReference Include="..\NeuraSharp.Interfaces\NeuraSharp.Interfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BackwardAlgorithm\Factory\" />
+  </ItemGroup>
+
 </Project>
