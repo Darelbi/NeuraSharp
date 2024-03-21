@@ -1,4 +1,5 @@
-﻿using NeuraSharp.Interfaces;
+﻿using NeuraSharp.BuiltIn.Sources;
+using NeuraSharp.Interfaces;
 using System.Numerics;
 
 namespace NeuraSharp.BuiltIn
@@ -8,44 +9,171 @@ namespace NeuraSharp.BuiltIn
         private readonly INeuralLayer<T>[] layers;
         private readonly IForwardAlgorithm<T> forwardAlgorithm;
         private readonly IBackwardAlgorithm<T> backwardAlgorithm;
+        private readonly IOptimizationAlgorithm<T> optimizationAlgorithm;
+        private readonly T learningRate;
 
         public NeuraNetwork(
             INeuralLayer<T>[] layers,
             IForwardAlgorithm<T> forwardAlgorithm,
-            IBackwardAlgorithm<T> backwardAlgorithm
+            IBackwardAlgorithm<T> backwardAlgorithm,
+            IOptimizationAlgorithm<T> optimizationAlgorithm,
+            IParams<T>  param
             )
         {
             this.layers = layers;
             this.forwardAlgorithm = forwardAlgorithm;
             this.backwardAlgorithm = backwardAlgorithm;
+            this.optimizationAlgorithm = optimizationAlgorithm;
+            learningRate = param.GetParameter(Interfaces.Enums.Params.LearningRate);
         }
 
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches)
+        /// <summary>
+        /// Faster function for predicting that does not allocate an array for that
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="output"></param>
+        public void PredictInline(T[] input, T[] output)
+        {
+            Forward(input, output);
+        }
+
+        /// <summary>
+        /// Easier to call function for predicting output
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public T[] Predict(T[] input)
+        {
+            T[] output = new T[layers[layers.Length - 1].Outputs.Length];
+            Forward(input, output);
+            return output;
+        }
+
+        /// <summary>
+        /// Allows streaming of resources and to set a custom epoch source, especially
+        /// usefull for certain scenario.
+        /// </summary>
+        /// <param name="enumOfBatches"></param>
+        /// <param name="source"></param>
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, INetworkTuningSource<T> source)
         {
             foreach (var batch in enumOfBatches)
             {
                 // this is a batch. 
+
+                ResetTotalGradients();
+
                 foreach (var sample in batch)
                 {
-                    // copy input in output of first layer
-                    for (int i = 0; i < layers[0].Outputs.Length; i++)
-                        layers[0].Outputs[i] = sample.inputs[i];
+                    ForwardFit(sample);
 
-                    // forward propagation
-                    for (int i = 0; i < layers.Length - 1; i++)
-                        forwardAlgorithm.ForwardPrepare(layers[i], layers[i + 1]);
+                    Backward(sample, source);
 
-                    backwardAlgorithm.BackwardLast(layers.Last(), sample.outputs);
-                    // optimizer step
-
-                    for (int i = layers.Length - 2; i >= 0; i--)
-                    {
-                        backwardAlgorithm.Backward(layers[i], layers[i + 1], layers[i + 1].Gradients);
-                        // optimizer step
-                    }
+                    AccumulateTotalGradients();
                 }
 
-                // optimizer : optimize
+                Propagation(source);
+            }
+        }
+
+            /// <summary>
+            /// Train from a reliable source for training. Enumerable allows you to stream
+            /// without loading everything in RAM memory. Whic is a not so common feature (even thought 
+            /// it's stupidly simple)
+            /// </summary>
+            /// <param name="enumOfBatches"></param>
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches)
+        {
+            var traininSet = new DefaultEpochSource<T>(enumOfBatches, learningRate);
+            Fit(traininSet.GetEnumOfBatches(), traininSet);
+        }
+
+        /// <summary>
+        /// Execute the final (back)propagation step, updating biases and weights
+        /// </summary>
+        /// <param name="batchSize"></param>
+        private void Propagation(INetworkTuningSource<T> tuning)
+        {
+            T scaleFactor = tuning.GetLearningRate() / T.CreateChecked(tuning.GetStep());
+
+            Parallel.For(0, layers.Length, l => // not the best way to parallelize, but easy to read.
+            {
+                for (int i = 0; i < layers[l].Outputs.Length; i++)
+                {
+                    layers[l].Biases[i] -= scaleFactor * layers[l].TotalGradients[i];
+
+                    for (int z = 0; z < layers[l].Weights[i].Length; z++)
+                    {
+                        // TODO: Accumulate weight changes, then transfer back at check points
+                        // this requires 3 times more memory though...
+                        layers[l].Weights[i][z] -= scaleFactor * layers[l].Weights[i][z]* layers[l].TotalGradients[i];
+                    }
+                }
+            });
+        }
+
+        private void AccumulateTotalGradients()
+        {
+            for (int l = 0; l < layers.Length; l++) // TODO parallelize only if dimension is above a certain treshold
+                for (int i = 0; i < layers[l].Outputs.Length; i++)
+                    layers[l].TotalGradients[i] += layers[l].Gradients[i];
+        }
+
+        private void ResetTotalGradients()
+        {
+            for (int l = 0; l < layers.Length; l++) // TODO parallelize only if dimension is above a certain treshold
+                for (int i = 0; i < layers[l].Outputs.Length; i++)
+                    layers[l].TotalGradients[i] = T.Zero;
+        }
+
+        /// <summary>
+        /// Executes the forward step, preparing data for the backpropagation
+        /// </summary>
+        /// <param name="sample"></param>
+        private void ForwardFit((T[] inputs, T[] outputs) sample)
+        {
+            // copy input in output of first layer
+            for (int i = 0; i < layers[0].Outputs.Length; i++)
+                layers[0].Outputs[i] = sample.inputs[i];
+
+            // forward propagation
+            for (int i = 0; i < layers.Length - 1; i++)
+                forwardAlgorithm.ForwardPrepare(layers[i], layers[i + 1]);
+        }
+
+        /// <summary>
+        /// This function do the forward step and copies the output (propedeutic to call "predict")
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="output"></param>
+        private void Forward(T[] input, T[] output)
+        {
+            // copy input in output of first layer
+            for (int i = 0; i < layers[0].Outputs.Length; i++)
+                layers[0].Outputs[i] = input[i];
+
+            // forward propagation
+            for (int i = 0; i < layers.Length - 1; i++)
+                forwardAlgorithm.Forward(layers[i], layers[i + 1]);
+
+            // copy output 
+            for (int i = 0; i < layers[layers.Length - 1].Outputs.Length; i++)
+                output[i] = input[i];
+        }
+
+        /// <summary>
+        /// Execute the steps of the back(propagation). and calls the optimizer
+        /// </summary>
+        /// <param name="sample"></param>
+        private void Backward((T[] inputs, T[] outputs) sample, IStepSource source)
+        {
+            backwardAlgorithm.BackwardLast(layers.Last(), sample.outputs);
+            // optimizer step
+
+            for (int i = layers.Length - 2; i >= 0; i--)
+            {
+                backwardAlgorithm.Backward(layers[i], layers[i + 1], layers[i + 1].Gradients);
+                // optimizer step
             }
         }
     }

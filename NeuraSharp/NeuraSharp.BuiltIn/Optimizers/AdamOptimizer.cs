@@ -1,5 +1,6 @@
 ﻿using NeuraSharp.Interfaces;
 using NeuraSharp.Interfaces.Enums;
+using NeuraSharp.Interfaces.Layers;
 using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.Optimizers
@@ -7,17 +8,51 @@ namespace NeuraSharp.BuiltIn.Optimizers
     /// <summary>
     /// https://github.com/aromanro/MachineLearning/blob/150635982d6067fbb3655fa1308c3bdff79ed384/MachineLearning/MachineLearning/GradientSolvers.h#L677
     /// </summary>
-    public class AdamOptimizer<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class AdamOptimizer<T> : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly ILossFunction<T> lossFunction;
         private readonly T B1;
         private readonly T B2;
+        private readonly T Epsilon;
 
-        public AdamOptimizer(ILossFunction<T> lossFunction, IParams<T> adamParams)
+        public AdamOptimizer(IParams<T> adamParams)
         {
-            this.lossFunction = lossFunction;
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);
+            Epsilon = adamParams.GetParameter(Params.Epsilon);
+        }
+
+        public void Initialize(ILayerAllocatedVariables<T> variables)
+        {
+            int size = variables.GetIntVariable(Params.LayerSize);
+
+            variables.AddArrayVariable(Params.Momentum, new T[size]);
+            variables.AddArrayVariable(Params.Velocity, new T[size]);
+            variables.AddArrayVariable(Params.DeBiasedMomentum, new T[size]);
+            variables.AddArrayVariable(Params.DeBiasedVelocity, new T[size]);
+        }
+
+        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables
+            , INetworkTuningSource<T> tuningSource)
+        {
+            int size = variables.GetIntVariable(Params.LayerSize);
+            int step = tuningSource.GetStep();
+
+            var m = variables.GetArrayVariable(Params.Momentum);
+            var v = variables.GetArrayVariable(Params.Velocity);
+            var mt = variables.GetArrayVariable(Params.DeBiasedMomentum);
+            var vt = variables.GetArrayVariable(Params.DeBiasedVelocity);
+
+            Parallel.For(0, size, i =>
+            {
+                var grad = layer.Gradients[i];
+                m[i] = B1 * m[i] + (T.One - B1) * grad;
+                v[i] = B2 * v[i] + (T.One - B2) * grad * grad;
+
+                mt[i] = m[i] / (T.One - T.Pow(B1, T.CreateChecked(step)));
+                vt[i] = v[i] / (T.One - T.Pow(B2, T.CreateChecked(step)));
+
+                layer.Gradients[i] = mt[i] / (T.Sqrt(vt[i]) + Epsilon);
+            });
         }
 
         /*
@@ -46,6 +81,12 @@ namespace NeuraSharp.BuiltIn.Optimizers
     }
          
          */
+
+        /// <summary>
+        /// https://cs231n.github.io/neural-networks-3/
+        /// </summary>
+        /// <param name="firstLayerReverseOrder"></param>
+        /// <param name="secondLayerReverseOrder"></param>
         public void Optimize(INeuralLayer<T> firstLayerReverseOrder, INeuralLayer<T> secondLayerReverseOrder)
         {
 
@@ -73,5 +114,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
 
             return lossLinkGrad;*/
         }
+
+
     }
 }

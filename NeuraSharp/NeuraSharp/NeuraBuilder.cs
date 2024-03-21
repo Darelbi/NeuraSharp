@@ -1,5 +1,4 @@
-﻿using NeuraSharp.BuiltIn;
-using NeuraSharp.Interfaces;
+﻿using NeuraSharp.Interfaces;
 using System.Numerics;
 
 namespace NeuraSharp

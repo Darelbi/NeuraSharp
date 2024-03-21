@@ -1,6 +1,9 @@
 ﻿namespace NeuraSharp.BuiltIn
 {
-    // Just do nothing but makes sure assembly is availabe at runtime
+    /// <summary>
+    /// this class does nothing. Its just used as a trick to reference the assemby
+    /// from reflection code.
+    /// </summary>
     public class ReferenceMe
     {
 
