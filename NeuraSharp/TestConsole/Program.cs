@@ -49,6 +49,7 @@ new NeuraNetwork<float>(
     new DefaultForwardAlgorithm<float>(new StableNeuronSummation<float>()),
     new DefaultBackwardAlgorithm<float>(new PseudoHuberLossFunction<float>(huberParams)),
     new AdamOptimizer<float>(adamParams),
+    null,
     networkParams);
 
 network.Fit(myEnum);
