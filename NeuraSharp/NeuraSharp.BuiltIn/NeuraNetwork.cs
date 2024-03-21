@@ -10,6 +10,7 @@ namespace NeuraSharp.BuiltIn
         private readonly IForwardAlgorithm<T> forwardAlgorithm;
         private readonly IBackwardAlgorithm<T> backwardAlgorithm;
         private readonly IOptimizationAlgorithm<T> optimizationAlgorithm;
+        private readonly ILayerAllocatedConfiguration<T> layerAllocConfiguration;
         private readonly T learningRate;
 
         public NeuraNetwork(
@@ -17,6 +18,7 @@ namespace NeuraSharp.BuiltIn
             IForwardAlgorithm<T> forwardAlgorithm,
             IBackwardAlgorithm<T> backwardAlgorithm,
             IOptimizationAlgorithm<T> optimizationAlgorithm,
+            ILayerAllocatedConfiguration<T> layerAllocConfiguration,
             IParams<T>  param
             )
         {
@@ -24,6 +26,7 @@ namespace NeuraSharp.BuiltIn
             this.forwardAlgorithm = forwardAlgorithm;
             this.backwardAlgorithm = backwardAlgorithm;
             this.optimizationAlgorithm = optimizationAlgorithm;
+            this.layerAllocConfiguration = layerAllocConfiguration;
             learningRate = param.GetParameter(Interfaces.Enums.Params.LearningRate);
         }
 
@@ -165,15 +168,18 @@ namespace NeuraSharp.BuiltIn
         /// Execute the steps of the back(propagation). and calls the optimizer
         /// </summary>
         /// <param name="sample"></param>
-        private void Backward((T[] inputs, T[] outputs) sample, IStepSource source)
+        private void Backward((T[] inputs, T[] outputs) sample, INetworkTuningSource<T> source)
         {
-            backwardAlgorithm.BackwardLast(layers.Last(), sample.outputs);
-            // optimizer step
-
-            for (int i = layers.Length - 2; i >= 0; i--)
+            for(int i= layers.Length - 1; i>= 0; i--)
             {
-                backwardAlgorithm.Backward(layers[i], layers[i + 1], layers[i + 1].Gradients);
-                // optimizer step
+                if(i == layers.Length - 1)
+                    backwardAlgorithm.BackwardLast(layers.Last(), sample.outputs);
+                else
+                    backwardAlgorithm.Backward(layers[i], layers[i + 1], layers[i + 1].Gradients);
+
+                layerAllocConfiguration.SetLayer(i); // allows the optimizer to retrieve
+                                                     // the data for the corrrect layer
+                optimizationAlgorithm.Optimize(layers[i], layerAllocConfiguration, source);
             }
         }
     }
