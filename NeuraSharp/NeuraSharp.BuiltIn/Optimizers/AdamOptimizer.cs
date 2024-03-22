@@ -13,12 +13,20 @@ namespace NeuraSharp.BuiltIn.Optimizers
         private readonly T B1;
         private readonly T B2;
         private readonly T Epsilon;
+        private readonly INetworkTuningSource<T> source;
+        private readonly bool bounding;
 
-        public AdamOptimizer(IParams<T> adamParams)
+        public AdamOptimizer(IParams<T> adamParams, INetworkTuningSource<T> source)
         {
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);
             Epsilon = adamParams.GetParameter(Params.Epsilon);
+            this.source = source;
+        }
+
+        public T GetUpdatedLearningRate(T learningRate)
+        {
+            return learningRate;
         }
 
         public void Initialize(ILayerAllocatedVariables<T> variables)
@@ -31,11 +39,10 @@ namespace NeuraSharp.BuiltIn.Optimizers
             variables.AddArrayVariable(Params.DeBiasedVelocity, new T[size]);
         }
 
-        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables
-            , INetworkTuningSource<T> tuningSource)
+        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables)
         {
             int size = variables.GetIntVariable(Params.LayerSize);
-            int step = tuningSource.GetStep();
+            int step = source.GetStep();
 
             var m = variables.GetArrayVariable(Params.Momentum);
             var v = variables.GetArrayVariable(Params.Velocity);
@@ -51,7 +58,11 @@ namespace NeuraSharp.BuiltIn.Optimizers
                 mt[i] = m[i] / (T.One - T.Pow(B1, T.CreateChecked(step)));
                 vt[i] = v[i] / (T.One - T.Pow(B2, T.CreateChecked(step)));
 
-                layer.Gradients[i] = mt[i] / (T.Sqrt(vt[i]) + Epsilon);
+                T partial = T.Sqrt(vt[i] + Epsilon);
+
+                layer.Gradients[i] = mt[i] / partial;   // epsilon is reported outside sqrt in some papers
+                                                        // and inside in others. I guess that makes little
+                                                        // difference since vt is always positive anyway
             });
         }
 

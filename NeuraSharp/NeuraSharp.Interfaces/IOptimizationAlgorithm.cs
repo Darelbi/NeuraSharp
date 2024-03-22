@@ -7,6 +7,8 @@ namespace NeuraSharp.Interfaces
     {
         public void Initialize(ILayerAllocatedVariables<T> variables);
 
-        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables, INetworkTuningSource<T> tuning);
+        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables);
+
+        public T GetUpdatedLearningRate(T learningRate);
     }
 }

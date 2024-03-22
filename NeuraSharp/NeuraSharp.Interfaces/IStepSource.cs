@@ -3,5 +3,7 @@
     public interface IStepSource
     {
         public int GetStep();
+
+        public void IncreaseSteps();
     }
 }

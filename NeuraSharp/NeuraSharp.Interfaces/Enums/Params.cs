@@ -11,6 +11,7 @@
         Momentum,
         Velocity,
         DeBiasedMomentum,
-        DeBiasedVelocity
+        DeBiasedVelocity,
+        PartialResult
     }
 }

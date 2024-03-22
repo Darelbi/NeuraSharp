@@ -4,31 +4,21 @@ using System.Numerics;
 
 namespace NeuraSharp.BuiltIn
 {
-    public class NeuraNetwork<T> : INeuraNetwork<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class NeuraNetwork<T>(
+        INeuralLayer<T>[] layers,
+        IForwardAlgorithm<T> forwardAlgorithm,
+        IBackwardAlgorithm<T> backwardAlgorithm,
+        IOptimizationAlgorithm<T> optimizationAlgorithm,
+        ILayerAllocatedConfiguration<T> layerAllocConfiguration,
+        IParams<T> param
+            ) : INeuraNetwork<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly INeuralLayer<T>[] layers;
-        private readonly IForwardAlgorithm<T> forwardAlgorithm;
-        private readonly IBackwardAlgorithm<T> backwardAlgorithm;
-        private readonly IOptimizationAlgorithm<T> optimizationAlgorithm;
-        private readonly ILayerAllocatedConfiguration<T> layerAllocConfiguration;
-        private readonly T learningRate;
-
-        public NeuraNetwork(
-            INeuralLayer<T>[] layers,
-            IForwardAlgorithm<T> forwardAlgorithm,
-            IBackwardAlgorithm<T> backwardAlgorithm,
-            IOptimizationAlgorithm<T> optimizationAlgorithm,
-            ILayerAllocatedConfiguration<T> layerAllocConfiguration,
-            IParams<T>  param
-            )
-        {
-            this.layers = layers;
-            this.forwardAlgorithm = forwardAlgorithm;
-            this.backwardAlgorithm = backwardAlgorithm;
-            this.optimizationAlgorithm = optimizationAlgorithm;
-            this.layerAllocConfiguration = layerAllocConfiguration;
-            learningRate = param.GetParameter(Interfaces.Enums.Params.LearningRate);
-        }
+        private readonly INeuralLayer<T>[] layers = layers;
+        private readonly IForwardAlgorithm<T> forwardAlgorithm = forwardAlgorithm;
+        private readonly IBackwardAlgorithm<T> backwardAlgorithm = backwardAlgorithm;
+        private readonly IOptimizationAlgorithm<T> optimizationAlgorithm = optimizationAlgorithm;
+        private readonly ILayerAllocatedConfiguration<T> layerAllocConfiguration = layerAllocConfiguration;
+        private readonly T learningRate = param.GetParameter(Interfaces.Enums.Params.LearningRate);
 
         /// <summary>
         /// Faster function for predicting that does not allocate an array for that
@@ -73,9 +63,11 @@ namespace NeuraSharp.BuiltIn
                     Backward(sample, source);
 
                     AccumulateTotalGradients();
+
+                    source.IncreaseSteps();
                 }
 
-                Propagation(source);
+                Propagation(source, batch.Count);
             }
         }
 
@@ -87,7 +79,7 @@ namespace NeuraSharp.BuiltIn
             /// <param name="enumOfBatches"></param>
         public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches)
         {
-            var traininSet = new DefaultEpochSource<T>(enumOfBatches, learningRate);
+            var traininSet = new FitLoopSource<T>(enumOfBatches, learningRate);
             Fit(traininSet.GetEnumOfBatches(), traininSet);
         }
 
@@ -95,9 +87,11 @@ namespace NeuraSharp.BuiltIn
         /// Execute the final (back)propagation step, updating biases and weights
         /// </summary>
         /// <param name="batchSize"></param>
-        private void Propagation(INetworkTuningSource<T> tuning)
+        private void Propagation(INetworkTuningSource<T> tuning, int batchSize)
         {
-            T scaleFactor = tuning.GetLearningRate() / T.CreateChecked(tuning.GetStep());
+            T scaleFactor = 
+                optimizationAlgorithm.GetUpdatedLearningRate( tuning.GetLearningRate())
+                / T.CreateChecked(batchSize);
 
             Parallel.For(0, layers.Length, l => // not the best way to parallelize, but easy to read.
             {
