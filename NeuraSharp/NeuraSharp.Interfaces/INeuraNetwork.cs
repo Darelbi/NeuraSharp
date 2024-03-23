@@ -17,21 +17,19 @@ namespace NeuraSharp.Interfaces
         public void Compile();
 
         /// <summary>
-        /// Some algorithms, not all, requires to know in advance number of samples
-        /// and number of epochs. An epoch is going through all the trainin data set
-        /// If you use this method some assumptions are made:
-        /// 1) IEnumerable is NOT INFINITE
-        /// 2) IEnumerable is your whole data set
-        /// 3) Each time you call Fit(samples) the epoch counter is increased by 1
-        /// 4) Data is divided into batches which size is equal to List size.
-        /// 5) Using IEnumerable allows you to stream the dataset
-        /// 6) You must provide the number of epochs: required by some algorithm
-        /// 7) You have to call Fit explicitly each time you want to make an epoch
-        /// 8) IEnumerable IS NOT streamed multiple by times, just once.
+        /// Classic method, YOU CALL it <paramref name="maxEpochs"/> times, providing your whole
+        /// dataset composed by <paramref name="samples"/> at the given <paramref name="learningRate"/>.
+        /// Note that the <paramref name="maxEpochs"/> is not a configuration. Is a promise you make
+        /// to the Neural network that is used to know how many times <see cref="Fit(IEnumerable{List{ValueTuple{T[], T[]}}}, T, int)"/>
+        ///  (this method) will be called.
         /// </summary>
-        /// <param name="samples">Enum of batches, each batch is a list which contains some input/output pairs. The whole dataset</param>
-        /// <param name="maxEpochs">You promise you call <see cref="Fit(IEnumerable{List{ValueTuple{T[], T[]}}}, int)"/> this number of times</param>
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> samples, int maxEpochs);
+        /// <param name="samples"> Enumerable of lists of samples. The lists represents the mini-batches of samples.
+        /// batches are the number of times gradients are updated before backpropagating the weights. Typical batch
+        /// sizes are 16 and 32.</param>
+        /// <param name="learningRate"> Speed of learning a typical value is 0.01, but try what works bests</param>
+        /// <param name="maxEpochs"> YOU PROMISE you will call <see cref="Fit(IEnumerable{List{ValueTuple{T[], T[]}}}, T, int)"/>
+        /// this number of times. </param>
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> samples, T learningRate, int maxEpochs);
 
         /// <summary>
         /// You provide through the <see cref="IRunningMetadata{T}"/> interface all the metadata 
@@ -40,22 +38,24 @@ namespace NeuraSharp.Interfaces
         /// elements AND arbitrarily decide that each 3200 eelements (100 batches) makes an epoch
         /// and you may decide to stop after 5000 epochs even if the dataset is not finished.
         /// All of this by calling <see cref="Fit(IEnumerable{List{ValueTuple{T[], T[]}}}, IRunningMetadata{T})"/>
-        /// just once potentially.
+        /// just once potentially. You basically can customize things like epochs, steps, and even learning rate
+        /// at runtime
         /// </summary>
         /// <param name="enumOfBatches"></param>
         /// <param name="source"></param>
         void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, IRunningMetadata<T> source);
 
         /// <summary>
-        /// Easier to call function for predicting output
+        /// If you have a neural network with 15 inputs values and 3 output values this function takes
+        /// an array of 15 values and returns an array of 3 values.
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         T[] Predict(T[] input);
 
         /// <summary>
-        /// Faster function for predicting that does not allocate an array for that, but you must provide 
-        /// an array where result will be placed in.
+        /// If you have a neural network with 15 inputs values and 3 output values this function takes
+        /// an array of 15 values write those values in the <paramref name="output"/> array.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="output"></param>

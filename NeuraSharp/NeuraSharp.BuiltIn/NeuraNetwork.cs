@@ -9,8 +9,7 @@ namespace NeuraSharp.BuiltIn
         IForwardAlgorithm<T> forwardAlgorithm,
         IBackwardAlgorithm<T> backwardAlgorithm,
         IOptimizationAlgorithm<T> optimizationAlgorithm,
-        ILayerAllocatedConfiguration<T> layerAllocConfiguration,
-        IParams<T> param
+        ILayerAllocatedConfiguration<T> layerAllocConfiguration
             ) : INeuraNetwork<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         private readonly INeuralLayer<T>[] layers = layers;
@@ -18,7 +17,6 @@ namespace NeuraSharp.BuiltIn
         private readonly IBackwardAlgorithm<T> backwardAlgorithm = backwardAlgorithm;
         private readonly IOptimizationAlgorithm<T> optimizationAlgorithm = optimizationAlgorithm;
         private readonly ILayerAllocatedConfiguration<T> layerAllocConfiguration = layerAllocConfiguration;
-        private readonly T learningRate = param.GetParameter(Interfaces.Enums.Params.LearningRate);
         private bool trained = false;
 
         public void Compile()
@@ -92,16 +90,18 @@ namespace NeuraSharp.BuiltIn
             }
         }
 
-        /// <summary>
-        /// Train from a reliable source for training. Enumerable allows you to stream
-        /// without loading everything in RAM memory. Which is a not so common feature (even thought 
-        /// it's stupidly simple)
-        /// </summary>
-        /// <param name="enumOfBatches"></param>
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, int maxEpochs)
+        private IRunningMetadata<T> runningMetadata = null;
+
+
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, T learningRate, int maxEpochs)
         {
-            var traininSet = new FitLoopSource<T>(enumOfBatches, learningRate);
-            Fit(traininSet.GetEnumOfBatches(), traininSet);
+            if (runningMetadata == null)
+            {
+                runningMetadata = new DefaultRunningMetadata<T>(learningRate, maxEpochs);
+            }
+
+            Fit(enumOfBatches, runningMetadata);
+            runningMetadata.IncreaseEpoch();
         }
 
         private void Regularize((T[] inputs, T[] outputs) sample)

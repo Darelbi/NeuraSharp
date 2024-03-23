@@ -4,5 +4,6 @@
     {
         int GetEpoch();
         int GetTotalEpochs();
+        void IncreaseEpoch();
     }
 }

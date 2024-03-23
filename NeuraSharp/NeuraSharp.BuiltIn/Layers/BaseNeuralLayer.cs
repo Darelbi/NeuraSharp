@@ -10,13 +10,10 @@ namespace NeuraSharp.BuiltIn.Layers
 
         public T[] Outputs { get; set; }
         public T[] Derivates { get; set; }
-        public T[] Errors { get; set; }
         public T[][] Weights { get; set; }
         public T[] Biases { get; set; }
         public T[] Gradients { get; set; }
         public T[] TotalGradients { get; set; }
-        public T[] IterationDeltaWeight { get; set; }
-        public T[] IterationDeltaBias { get; set; }
 
         public int Index { get; set; }
 
@@ -42,7 +39,6 @@ namespace NeuraSharp.BuiltIn.Layers
             Index = index;
             Outputs = new T[outputs];
             Derivates = new T[outputs];
-            Errors = new T[outputs];
             Gradients = new T[outputs];
             Biases = new T[outputs];
 

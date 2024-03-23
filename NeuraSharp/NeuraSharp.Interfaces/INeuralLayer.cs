@@ -9,8 +9,6 @@ namespace NeuraSharp.Interfaces
         where T : INumber<T>, IFloatingPointIeee754<T>
     {
         public T[] Biases { get; set; }
-        T[] IterationDeltaWeight { get; set; }
-        T[] IterationDeltaBias { get; set; }
 
         public IActivationFunction<T> GetActivationFunction();
 
