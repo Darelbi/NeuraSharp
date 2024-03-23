@@ -6,8 +6,6 @@
         Beta1,
         Beta2,
         Epsilon,
-        LearningRate,
-        LayerSize,
         Momentum,
         Velocity,
         DeBiasedMomentum,

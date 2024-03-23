@@ -11,4 +11,8 @@
     <ProjectReference Include="..\NeuraSharp.Interfaces\NeuraSharp.Interfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
+
 </Project>

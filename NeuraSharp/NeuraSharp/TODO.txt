@@ -2,3 +2,5 @@
 - Weight initializer
 
 At least Zero, Xavier and random uniform
+
+- Compile time exceptions or warnings for incompatible builds (i.E, exception if using Xavier with ReLU)
