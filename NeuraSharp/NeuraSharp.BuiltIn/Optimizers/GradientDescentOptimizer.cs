@@ -1,6 +1,5 @@
 ﻿using NeuraSharp.Interfaces;
 using NeuraSharp.Interfaces.Layers;
-using System.Drawing;
 using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.Optimizers
@@ -20,6 +19,28 @@ namespace NeuraSharp.BuiltIn.Optimizers
         public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
         {
             // do nothing that's ok, it's implemented in back and forward pass
+
+            /* HERE's the code:
+             * 
+             * 
+                 *  T sum = T.Zero;
+                    for (int j = 0; j < iPlusOneLayer.Gradients.Length; j++)
+                        sum += iPlusOneLayer.Gradients[j] * iPlusOneLayer.Weights[j][i];
+
+                    iLayer.Gradients[i] = sum * iLayer.Derivates[i];
+
+            AND
+
+                    layers[l].Biases[i] -= scaleFactor * layers[l].TotalGradients[i];
+
+                    for (int z = 0; z < layers[l].Weights[i].Length; z++)
+                    {
+                        // TODO: Accumulate weight changes, then transfer back at check points
+                        // this requires 3 times more memory though...
+                        layers[l].Weights[i][z] -= scaleFactor * layers[l].Weights[i][z] * layers[l].TotalGradients[i];
+                    }
+             
+             */
         }
     }
 }
