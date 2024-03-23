@@ -14,6 +14,8 @@ namespace NeuraSharp.Interfaces
 
         public IActivationFunction<T> GetActivationFunction();
 
+        public IRegularizationAlgorithm<T>[] GetRegularizers();
+
         public void Initialize(int index, int inputs, int outputs);
     }
 }

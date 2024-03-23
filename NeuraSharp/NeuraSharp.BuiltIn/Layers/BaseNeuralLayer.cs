@@ -6,6 +6,7 @@ namespace NeuraSharp.BuiltIn.Layers
     public class BaseNeuralLayer<T> : INeuralLayer<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         private readonly IActivationFunction<T> activation;
+        private readonly IRegularizationAlgorithm<T>[] regularizers;
 
         public T[] Outputs { get; set; }
         public T[] Derivates { get; set; }
@@ -19,15 +20,21 @@ namespace NeuraSharp.BuiltIn.Layers
 
         public int Index { get; set; }
 
-        public BaseNeuralLayer(IActivationFunction<T> activation)
+        public BaseNeuralLayer(IActivationFunction<T> activation, IRegularizationAlgorithm<T>[] regularizers)
         {
             this.activation = activation;
+            this.regularizers = regularizers;
         }
 
         public IActivationFunction<T> GetActivationFunction()
         {
             // the function is layer specific that's why we need it there
             return activation;
+        }
+
+        public IRegularizationAlgorithm<T>[] GetRegularizers()
+        {
+            return regularizers;
         }
 
         public void Initialize(int index, int inputs, int outputs)

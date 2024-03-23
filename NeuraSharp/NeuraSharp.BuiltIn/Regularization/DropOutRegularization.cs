@@ -16,6 +16,11 @@ namespace NeuraSharp.BuiltIn.Regularization
             chance = param.GetParameter(Params.Chance);
         }
 
+        public void FinalNormalizationStep(INeuralLayer<T> layer)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Regularize(INeuralLayer<T> layer)
         {
             int count = 0;

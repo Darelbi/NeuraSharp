@@ -52,7 +52,7 @@ new NeuraNetwork<float>(
     [layer0, layer1, layer2, layer3],
     new DefaultForwardAlgorithm<float>(new StableNeuronSummation<float>()),
     new DefaultBackwardAlgorithm<float>(new PseudoHuberLossFunction<float>(huberParams)),
-    new AdamOptimizer<float>(adamParams,null),
+    new AdamOptimizer<float>(adamParams,null), TODO NETWORK RUNINT SOURCE TO BE CONIFUGRED
     new LayerAllocatedVariables<float>(4),
     new PseudoDropOutRegularization<float>(regulParams),
     networkParams);

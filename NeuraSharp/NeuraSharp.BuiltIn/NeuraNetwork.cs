@@ -10,7 +10,6 @@ namespace NeuraSharp.BuiltIn
         IBackwardAlgorithm<T> backwardAlgorithm,
         IOptimizationAlgorithm<T> optimizationAlgorithm,
         ILayerAllocatedConfiguration<T> layerAllocConfiguration,
-        IRegularizationAlgorithm<T> regularizationAlgorithm,
         IParams<T> param
             ) : INeuraNetwork<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
@@ -19,8 +18,20 @@ namespace NeuraSharp.BuiltIn
         private readonly IBackwardAlgorithm<T> backwardAlgorithm = backwardAlgorithm;
         private readonly IOptimizationAlgorithm<T> optimizationAlgorithm = optimizationAlgorithm;
         private readonly ILayerAllocatedConfiguration<T> layerAllocConfiguration = layerAllocConfiguration;
-        private readonly IRegularizationAlgorithm<T> regularizationAlgorithm = regularizationAlgorithm;
         private readonly T learningRate = param.GetParameter(Interfaces.Enums.Params.LearningRate);
+        private bool trained = false;
+
+        public void Compile()
+        {
+            Parallel.For(0, layers.Length, l =>
+            {
+                var regs = layers[l].GetRegularizers();
+                foreach (var reg in regs)
+                    reg.FinalNormalizationStep(layers[l]);
+            });
+
+            trained = true;
+        }
 
         /// <summary>
         /// Faster function for predicting that does not allocate an array for that
@@ -29,6 +40,9 @@ namespace NeuraSharp.BuiltIn
         /// <param name="output"></param>
         public void PredictInline(T[] input, T[] output)
         {
+            if (!trained)
+                throw new System.InvalidOperationException("Before predicting call 'Compile' to perform the finalization required steps for training ");
+
             Forward(input, output);
         }
 
@@ -40,7 +54,7 @@ namespace NeuraSharp.BuiltIn
         public T[] Predict(T[] input)
         {
             T[] output = new T[layers[layers.Length - 1].Outputs.Length];
-            Forward(input, output);
+            PredictInline(input, output);
             return output;
         }
 
@@ -52,6 +66,9 @@ namespace NeuraSharp.BuiltIn
         /// <param name="source"></param>
         public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, INetworkTuningSource<T> source)
         {
+            if (trained)
+                throw new System.InvalidOperationException("Cannot Fit an already trained network. Some algorithms requires a final step after which it makes no sense further training");
+
             foreach (var batch in enumOfBatches)
             {
                 // this is a batch. 
@@ -77,9 +94,11 @@ namespace NeuraSharp.BuiltIn
 
         private void Regularize((T[] inputs, T[] outputs) sample)
         {
-            Parallel.For(1, layers.Length, l =>
+            Parallel.For(0, layers.Length, l =>
             {
-                regularizationAlgorithm.Regularize(layers[l]);
+                var regs = layers[l].GetRegularizers();
+                foreach (var reg in regs)
+                    reg.Regularize(layers[l]);
             });
         }
 
@@ -185,7 +204,7 @@ namespace NeuraSharp.BuiltIn
 
                 layerAllocConfiguration.SetLayer(i); // allows the optimizer to retrieve
                                                      // the data for the corrrect layer
-                optimizationAlgorithm.Optimize(layers[i], layerAllocConfiguration, source);
+                optimizationAlgorithm.Optimize(layers[i], layerAllocConfiguration);
             }
         }
     }

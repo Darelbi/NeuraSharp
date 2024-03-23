@@ -10,6 +10,13 @@ namespace NeuraSharp.Interfaces
     public interface INeuraNetwork<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         /// <summary>
+        /// After you are done with training you must compile the neural network to "lock" it
+        /// this is because some algorithms (like DropOutRegularization) requires a final step
+        /// to make the network meaningful.
+        /// </summary>
+        public void Compile();
+
+        /// <summary>
         /// Using a enumerable allows you to fine tune batch size and epochs.
         /// Number of elements in the list is the batch size. The fit method
         /// will run until the enumerable runs out of elements. 
