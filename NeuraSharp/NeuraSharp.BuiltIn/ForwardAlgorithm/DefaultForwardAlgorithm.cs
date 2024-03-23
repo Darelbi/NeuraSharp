@@ -5,11 +5,9 @@ namespace NeuraSharp.BuiltIn.ForwardAlgorithm
 {
     public class DefaultForwardAlgorithm<T> : IForwardAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly INeuronSummation<T> summation;
-
-        public DefaultForwardAlgorithm(INeuronSummation<T> summation)
+        public DefaultForwardAlgorithm()
         {
-            this.summation = summation;
+
         }
 
         private static void ForwardStep(INeuralLayer<T> firstLayer, INeuralLayer<T> secondLayer, bool prepare)

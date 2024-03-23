@@ -13,9 +13,9 @@ namespace NeuraSharp.BuiltIn.ForwardAlgorithm.Factory
     /// <typeparam name="T"></typeparam>
     public class DefaultForwardAlgorithmFactory<T> : IForwardAlgorithmFactory<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        public IForwardAlgorithm<T> Create(INeuronSummation<T> summation)
+        public IForwardAlgorithm<T> Create()
         {
-            return new DefaultForwardAlgorithm<T>(summation);
+            return new DefaultForwardAlgorithm<T>();
         }
 
         public string GetName()

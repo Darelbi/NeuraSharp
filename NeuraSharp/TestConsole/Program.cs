@@ -8,7 +8,6 @@ using NeuraSharp.BuiltIn.BackwardAlgorithm;
 using NeuraSharp.BuiltIn.ForwardAlgorithm;
 using NeuraSharp.BuiltIn.Layers;
 using NeuraSharp.BuiltIn.LossFunction;
-using NeuraSharp.BuiltIn.NeuronSummation;
 using NeuraSharp.BuiltIn.Optimizers;
 using NeuraSharp.BuiltIn.Regularization;
 using NeuraSharp.Interfaces.Enums;
@@ -55,7 +54,7 @@ boundedAdamParams.AddParameter(Params.MaxBound, 0.5f);
 var network =
 new NeuraNetwork<float>(
     [layer0, layer1, layer2, layer3],
-    new DefaultForwardAlgorithm<float>(new StableNeuronSummation<float>()),
+    new DefaultForwardAlgorithm<float>(),
     new DefaultBackwardAlgorithm<float>(new PseudoHuberLossFunction<float>(huberParams)),
     new ExpBoundedAdamOptimizer<float>(boundedAdamParams), //TODO NETWORK RUNINT SOURCE TO BE CONIFUGRED
     new LayerAllocatedVariables<float>(4));
