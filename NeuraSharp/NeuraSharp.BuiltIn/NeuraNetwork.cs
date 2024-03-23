@@ -41,7 +41,7 @@ namespace NeuraSharp.BuiltIn
         public void PredictInline(T[] input, T[] output)
         {
             if (!trained)
-                throw new System.InvalidOperationException("Before predicting call 'Compile' to perform the finalization required steps for training ");
+                throw new InvalidOperationException("Before predicting call 'Compile' to perform the finalization required steps for training ");
 
             Forward(input, output);
         }
@@ -64,10 +64,10 @@ namespace NeuraSharp.BuiltIn
         /// </summary>
         /// <param name="enumOfBatches"></param>
         /// <param name="source"></param>
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, INetworkTuningSource<T> source)
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, IRunningMetadata<T> source)
         {
             if (trained)
-                throw new System.InvalidOperationException("Cannot Fit an already trained network. Some algorithms requires a final step after which it makes no sense further training");
+                throw new InvalidOperationException("Cannot Fit an already trained network. Some algorithms requires a final step after which it makes no sense further training");
 
             foreach (var batch in enumOfBatches)
             {
@@ -92,6 +92,18 @@ namespace NeuraSharp.BuiltIn
             }
         }
 
+        /// <summary>
+        /// Train from a reliable source for training. Enumerable allows you to stream
+        /// without loading everything in RAM memory. Which is a not so common feature (even thought 
+        /// it's stupidly simple)
+        /// </summary>
+        /// <param name="enumOfBatches"></param>
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, int maxEpochs)
+        {
+            var traininSet = new FitLoopSource<T>(enumOfBatches, learningRate);
+            Fit(traininSet.GetEnumOfBatches(), traininSet);
+        }
+
         private void Regularize((T[] inputs, T[] outputs) sample)
         {
             Parallel.For(0, layers.Length, l =>
@@ -103,22 +115,10 @@ namespace NeuraSharp.BuiltIn
         }
 
         /// <summary>
-        /// Train from a reliable source for training. Enumerable allows you to stream
-        /// without loading everything in RAM memory. Whic is a not so common feature (even thought 
-        /// it's stupidly simple)
-        /// </summary>
-        /// <param name="enumOfBatches"></param>
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches)
-        {
-            var traininSet = new FitLoopSource<T>(enumOfBatches, learningRate);
-            Fit(traininSet.GetEnumOfBatches(), traininSet);
-        }
-
-        /// <summary>
         /// Execute the final (back)propagation step, updating biases and weights
         /// </summary>
         /// <param name="batchSize"></param>
-        private void Propagation(INetworkTuningSource<T> tuning, int batchSize)
+        private void Propagation(IRunningMetadata<T> tuning, int batchSize)
         {
             T scaleFactor =
                 optimizationAlgorithm.GetUpdatedLearningRate(tuning.GetLearningRate())
@@ -193,7 +193,7 @@ namespace NeuraSharp.BuiltIn
         /// Execute the steps of the back(propagation). and calls the optimizer
         /// </summary>
         /// <param name="sample"></param>
-        private void Backward((T[] inputs, T[] outputs) sample, INetworkTuningSource<T> source)
+        private void Backward((T[] inputs, T[] outputs) sample, IRunningMetadata<T> source)
         {
             for (int i = layers.Length - 1; i >= 0; i--)
             {

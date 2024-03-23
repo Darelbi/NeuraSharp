@@ -20,7 +20,7 @@ namespace NeuraSharp.BuiltIn.Layers
 
         public int Index { get; set; }
 
-        public BaseNeuralLayer(IActivationFunction<T> activation, IRegularizationAlgorithm<T>[] regularizers)
+        public BaseNeuralLayer(IActivationFunction<T> activation, params IRegularizationAlgorithm<T>[] regularizers)
         {
             this.activation = activation;
             this.regularizers = regularizers;

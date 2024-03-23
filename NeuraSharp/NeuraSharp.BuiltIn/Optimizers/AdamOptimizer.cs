@@ -13,10 +13,10 @@ namespace NeuraSharp.BuiltIn.Optimizers
         private readonly T B1;
         private readonly T B2;
         private readonly T Epsilon;
-        private readonly INetworkTuningSource<T> source;
+        private readonly IRunningMetadata<T> source;
         private readonly bool bounding;
 
-        public AdamOptimizer(IParams<T> adamParams, INetworkTuningSource<T> source)
+        public AdamOptimizer(IParams<T> adamParams, IRunningMetadata<T> source)
         {
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);

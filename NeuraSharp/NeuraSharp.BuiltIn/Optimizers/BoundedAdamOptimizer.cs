@@ -19,9 +19,9 @@ namespace NeuraSharp.BuiltIn.Optimizers
         private readonly T Minima;
         private readonly T Maxima;
         private readonly T Epsilon;
-        private readonly INetworkTuningSource<T> source;
+        private readonly IRunningMetadata<T> source;
 
-        public BoundedAdamOptimizer(IParams<T> adamParams, INetworkTuningSource<T> source)
+        public BoundedAdamOptimizer(IParams<T> adamParams, IRunningMetadata<T> source)
         {
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);

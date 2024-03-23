@@ -21,7 +21,7 @@ namespace NeuraSharp.Logic
         public void CheckUsedParameter(string name) 
         {
             if (UsedParameters.ContainsKey(name) && !allowsUpdate)
-                throw new System.ArgumentException("This parameter name was already used");
+                throw new ArgumentException("This parameter name was already used");
 
             UsedParameters[name] = name;
         }

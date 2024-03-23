@@ -2,7 +2,7 @@
 
 namespace NeuraSharp.Interfaces
 {
-    public interface INetworkTuningSource<T>: IStepSource, IEpochSource,
+    public interface IRunningMetadata<T>: IStepSource, IEpochSource,
             ILearningSource<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
     }

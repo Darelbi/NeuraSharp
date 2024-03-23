@@ -4,7 +4,7 @@ using System.Numerics;
 namespace NeuraSharp.BuiltIn.Sources
 {
     TODO RIPENSARE I PARAMETRI COME STEP ED EPOCH E RIPULIRE UN PO IL CODICE
-    public class FitLoopSource<T> : INetworkTuningSource<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class FitLoopSource<T> : IRunningMetadata<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         private readonly IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches;
         private readonly T learningRate;

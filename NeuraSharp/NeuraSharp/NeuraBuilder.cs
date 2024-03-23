@@ -11,13 +11,13 @@ namespace NeuraSharp
         public INeuraNetwork<T> Compile()
         {
             if (algorithm == null)
-                throw new System.ArgumentNullException("No optimization algorithm selected");
+                throw new ArgumentNullException("No optimization algorithm selected");
 
             if (layers.Count < 2)
-                throw new System.ArgumentException("At least two layers (input,output) required");
+                throw new ArgumentException("At least two layers (input,output) required");
 
             if (layers.Any(x => x == null))
-                throw new System.ArgumentException("Some layers were null");
+                throw new ArgumentException("Some layers were null");
 
             //return new NeuraNetwork<T>([.. layers], algorithm);
             return null;
