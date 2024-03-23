@@ -1,12 +1,7 @@
 ﻿using NeuraSharp.Interfaces;
 using NeuraSharp.Interfaces.Enums;
 using NeuraSharp.Interfaces.Layers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NeuraSharp.BuiltIn.Optimizers
 {

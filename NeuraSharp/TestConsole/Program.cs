@@ -10,7 +10,9 @@ using NeuraSharp.BuiltIn.Layers;
 using NeuraSharp.BuiltIn.LossFunction;
 using NeuraSharp.BuiltIn.NeuronSummation;
 using NeuraSharp.BuiltIn.Optimizers;
+using NeuraSharp.BuiltIn.Regularization;
 using NeuraSharp.Interfaces.Enums;
+using NeuraSharp.Logic;
 
 InstanceLoader.BuilderFromBuiltIn();
 
@@ -34,22 +36,25 @@ layer1.Initialize(1, 3, neurons1);
 layer2.Initialize(2, neurons1, neurons2);
 layer3.Initialize(3, neurons2, neurons3);
 
-var networkParams = new NeuraSharp.Logic.Params<float>();
-var huberParams = new NeuraSharp.Logic.Params<float>();
-var adamParams = new NeuraSharp.Logic.Params<float>();
+var networkParams = new NeuraSharp.Logic.Params<float>(false);
+var huberParams = new NeuraSharp.Logic.Params<float>(false);
+var adamParams = new NeuraSharp.Logic.Params<float>(false);
+var regulParams = new NeuraSharp.Logic.Params<float>(false);
 huberParams.AddParameter(Params.Delta, 0.79f);
 networkParams.AddParameter(Params.LearningRate, 0.001f);
 adamParams.AddParameter(Params.Beta1,0.9f);
 adamParams.AddParameter(Params.Beta2,0.999f);
 adamParams.AddParameter(Params.Epsilon, 1e-8f);
+regulParams.AddParameter(Params.Chance, 0.3f);
 
 var network =
 new NeuraNetwork<float>(
     [layer0, layer1, layer2, layer3],
     new DefaultForwardAlgorithm<float>(new StableNeuronSummation<float>()),
     new DefaultBackwardAlgorithm<float>(new PseudoHuberLossFunction<float>(huberParams)),
-    new AdamOptimizer<float>(adamParams),
-    null,
+    new AdamOptimizer<float>(adamParams,null),
+    new LayerAllocatedVariables<float>(4),
+    new PseudoDropOutRegularization<float>(regulParams),
     networkParams);
 
 network.Fit(myEnum);

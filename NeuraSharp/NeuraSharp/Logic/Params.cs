@@ -11,12 +11,16 @@ namespace NeuraSharp.Logic
         private readonly Dictionary<string, int> IntParameters = [];
         private readonly Dictionary<string, int[]> IntArrayParameters = [];
         private readonly Dictionary<string, string> UsedParameters = new Dictionary<string, string>();
+        private readonly bool allowsUpdate;
 
-        public Params() { }
+        public Params(bool allowsUpdate)
+        {
+            this.allowsUpdate = allowsUpdate;
+        }
 
         public void CheckUsedParameter(string name) 
         {
-            if (UsedParameters.ContainsKey(name))
+            if (UsedParameters.ContainsKey(name) && !allowsUpdate)
                 throw new System.ArgumentException("This parameter name was already used");
 
             UsedParameters[name] = name;

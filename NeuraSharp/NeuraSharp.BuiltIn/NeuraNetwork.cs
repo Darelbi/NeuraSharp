@@ -10,6 +10,7 @@ namespace NeuraSharp.BuiltIn
         IBackwardAlgorithm<T> backwardAlgorithm,
         IOptimizationAlgorithm<T> optimizationAlgorithm,
         ILayerAllocatedConfiguration<T> layerAllocConfiguration,
+        IRegularizationAlgorithm<T> regularizationAlgorithm,
         IParams<T> param
             ) : INeuraNetwork<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
@@ -18,6 +19,7 @@ namespace NeuraSharp.BuiltIn
         private readonly IBackwardAlgorithm<T> backwardAlgorithm = backwardAlgorithm;
         private readonly IOptimizationAlgorithm<T> optimizationAlgorithm = optimizationAlgorithm;
         private readonly ILayerAllocatedConfiguration<T> layerAllocConfiguration = layerAllocConfiguration;
+        private readonly IRegularizationAlgorithm<T> regularizationAlgorithm = regularizationAlgorithm;
         private readonly T learningRate = param.GetParameter(Interfaces.Enums.Params.LearningRate);
 
         /// <summary>
@@ -60,6 +62,8 @@ namespace NeuraSharp.BuiltIn
                 {
                     ForwardFit(sample);
 
+                    Regularize(sample);
+
                     Backward(sample, source);
 
                     AccumulateTotalGradients();
@@ -71,12 +75,20 @@ namespace NeuraSharp.BuiltIn
             }
         }
 
-            /// <summary>
-            /// Train from a reliable source for training. Enumerable allows you to stream
-            /// without loading everything in RAM memory. Whic is a not so common feature (even thought 
-            /// it's stupidly simple)
-            /// </summary>
-            /// <param name="enumOfBatches"></param>
+        private void Regularize((T[] inputs, T[] outputs) sample)
+        {
+            Parallel.For(1, layers.Length, l =>
+            {
+                regularizationAlgorithm.Regularize(layers[l]);
+            });
+        }
+
+        /// <summary>
+        /// Train from a reliable source for training. Enumerable allows you to stream
+        /// without loading everything in RAM memory. Whic is a not so common feature (even thought 
+        /// it's stupidly simple)
+        /// </summary>
+        /// <param name="enumOfBatches"></param>
         public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches)
         {
             var traininSet = new FitLoopSource<T>(enumOfBatches, learningRate);
@@ -89,8 +101,8 @@ namespace NeuraSharp.BuiltIn
         /// <param name="batchSize"></param>
         private void Propagation(INetworkTuningSource<T> tuning, int batchSize)
         {
-            T scaleFactor = 
-                optimizationAlgorithm.GetUpdatedLearningRate( tuning.GetLearningRate())
+            T scaleFactor =
+                optimizationAlgorithm.GetUpdatedLearningRate(tuning.GetLearningRate())
                 / T.CreateChecked(batchSize);
 
             Parallel.For(0, layers.Length, l => // not the best way to parallelize, but easy to read.
@@ -103,7 +115,7 @@ namespace NeuraSharp.BuiltIn
                     {
                         // TODO: Accumulate weight changes, then transfer back at check points
                         // this requires 3 times more memory though...
-                        layers[l].Weights[i][z] -= scaleFactor * layers[l].Weights[i][z]* layers[l].TotalGradients[i];
+                        layers[l].Weights[i][z] -= scaleFactor * layers[l].Weights[i][z] * layers[l].TotalGradients[i];
                     }
                 }
             });
@@ -164,9 +176,9 @@ namespace NeuraSharp.BuiltIn
         /// <param name="sample"></param>
         private void Backward((T[] inputs, T[] outputs) sample, INetworkTuningSource<T> source)
         {
-            for(int i= layers.Length - 1; i>= 0; i--)
+            for (int i = layers.Length - 1; i >= 0; i--)
             {
-                if(i == layers.Length - 1)
+                if (i == layers.Length - 1)
                     backwardAlgorithm.BackwardLast(layers.Last(), sample.outputs);
                 else
                     backwardAlgorithm.Backward(layers[i], layers[i + 1], layers[i + 1].Gradients);

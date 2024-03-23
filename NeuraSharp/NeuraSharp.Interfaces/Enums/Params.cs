@@ -12,6 +12,7 @@
         Velocity,
         DeBiasedMomentum,
         DeBiasedVelocity,
-        PartialResult
+        PartialResult,
+        Chance
     }
 }
