@@ -27,9 +27,9 @@ namespace NeuraSharp.BuiltIn.Optimizers
             return learningRate;
         }
 
-        public void Initialize(ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
+        public void Initialize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
         {
-            int size = variables.GetIntVariable(Params.LayerSize);
+            int size = layer.Gradients.Length;
 
             variables.AddArrayVariable(Params.Momentum, new T[size]);
             variables.AddArrayVariable(Params.Velocity, new T[size]);
@@ -39,7 +39,6 @@ namespace NeuraSharp.BuiltIn.Optimizers
 
         public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
         {
-            int size = variables.GetIntVariable(Params.LayerSize);
             int step = runningMetadata.GetStep();
 
             var m = variables.GetArrayVariable(Params.Momentum);
@@ -47,7 +46,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
             var mt = variables.GetArrayVariable(Params.DeBiasedMomentum);
             var vt = variables.GetArrayVariable(Params.DeBiasedVelocity);
 
-            Parallel.For(0, size, i =>
+            Parallel.For(0, layer.Gradients.Length, i =>
             {
                 var grad = layer.Gradients[i];
                 m[i] = B1 * m[i] + (T.One - B1) * grad;

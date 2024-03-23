@@ -34,9 +34,9 @@ namespace NeuraSharp.BuiltIn.Optimizers
             return T.One; // this algorithm takes control of learning rate
         }
 
-        public void Initialize(ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
+        public void Initialize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
         {
-            int size = variables.GetIntVariable(Params.LayerSize);
+            int size = layer.Gradients.Length;
 
             variables.AddArrayVariable(Params.Momentum, new T[size]);
             variables.AddArrayVariable(Params.Velocity, new T[size]);
