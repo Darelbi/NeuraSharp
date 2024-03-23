@@ -13,6 +13,6 @@
         DeBiasedMomentum,
         DeBiasedVelocity,
         PartialResult,
-        Chance
+        DropoutChance
     }
 }

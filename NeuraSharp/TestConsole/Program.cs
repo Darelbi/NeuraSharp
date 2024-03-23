@@ -45,7 +45,7 @@ networkParams.AddParameter(Params.LearningRate, 0.001f);
 adamParams.AddParameter(Params.Beta1,0.9f);
 adamParams.AddParameter(Params.Beta2,0.999f);
 adamParams.AddParameter(Params.Epsilon, 1e-8f);
-regulParams.AddParameter(Params.Chance, 0.3f);
+regulParams.AddParameter(Params.DropoutChance, 0.3f);
 
 var network =
 new NeuraNetwork<float>(

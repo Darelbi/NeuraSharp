@@ -14,7 +14,21 @@ namespace NeuraSharp.BuiltIn.Regularization
         private readonly T chance;
         public PseudoDropOutRegularization(IParams<T> param)
         {
-            chance = param.GetParameter(Params.Chance);
+            chance = param.GetParameter(Params.DropoutChance);
+        }
+
+        public void FinalNormalizationStep(INeuralLayer<T> layer)
+        {
+            int toBeZeroed = int.CreateChecked(chance * T.CreateChecked(layer.Outputs.Length));
+            T realChance = T.CreateChecked(toBeZeroed) / T.CreateChecked(layer.Outputs.Length);
+
+            for (int x = 0; x < layer.Weights.Length; x++)
+            {
+                for (int y = 0; y < layer.Weights[x].Length; y++)
+                {
+                    layer.Weights[x][y] = layer.Weights[x][y] * (T.One - realChance);
+                }
+            }
         }
 
         public void Regularize(INeuralLayer<T> layer)

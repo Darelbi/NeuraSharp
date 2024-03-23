@@ -13,12 +13,18 @@ namespace NeuraSharp.BuiltIn.Regularization
         private readonly T chance;
         public DropOutRegularization(IParams<T> param)
         {
-            chance = param.GetParameter(Params.Chance);
+            chance = param.GetParameter(Params.DropoutChance);
         }
 
         public void FinalNormalizationStep(INeuralLayer<T> layer)
         {
-            throw new NotImplementedException();
+            for(int x = 0; x< layer.Weights.Length; x++)
+            {
+                for(int y=0; y< layer.Weights[x].Length; y++)
+                {
+                    layer.Weights[x][y] = layer.Weights[x][y] * (T.One - chance);
+                }
+            }
         }
 
         public void Regularize(INeuralLayer<T> layer)
