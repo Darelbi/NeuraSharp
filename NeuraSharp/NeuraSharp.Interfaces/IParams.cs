@@ -2,6 +2,12 @@
 
 namespace NeuraSharp.Interfaces
 {
+    /// <summary>
+    /// Initialization static params. Those values are meant to be copied in the constructor
+    /// and a reference to IParams should not be retained. These params allow the builder to
+    /// setup values which are getted by implementers.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IParams<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         void AddArrayParameter(string name, T[] value);

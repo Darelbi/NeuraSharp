@@ -1,0 +1,4 @@
+- Bias initializer
+- Weight initializer
+
+At least Zero, Xavier and random uniform

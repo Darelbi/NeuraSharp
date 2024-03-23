@@ -10,9 +10,17 @@ namespace NeuraSharp
         /// <summary>
         /// Just create a neura builder with built-in functionality
         /// </summary>
-        public static INeuraBuilder<float> BuilderFromBuiltIn()
+        public static INeuraBuilder<float> DefaultBuilder()
         {
             return BuilderFromAssemblies<float>( [GetBuiltInAssembly()] );
+        }
+
+        /// <summary>
+        /// Just create a neura builder with built-in functionality
+        /// </summary>
+        public static INeuraBuilder<double> DefaultBuilder_Precise()
+        {
+            return BuilderFromAssemblies<double>([GetBuiltInAssembly()]);
         }
 
         /// <summary>
@@ -22,7 +30,7 @@ namespace NeuraSharp
         public static Assembly GetBuiltInAssembly()
         {
             // make sure the entry point is the same also for built-in library even though we could 
-            // initialize in other ways. keep it DRY (don't repeat yourself)
+            // initialize it in other ways. keep it DRY (don't repeat yourself)
             return Assembly.GetAssembly(typeof(ReferenceMe))!;
         }
 

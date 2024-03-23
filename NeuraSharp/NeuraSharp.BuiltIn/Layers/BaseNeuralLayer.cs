@@ -17,10 +17,25 @@ namespace NeuraSharp.BuiltIn.Layers
 
         public int Index { get; set; }
 
-        public BaseNeuralLayer(IActivationFunction<T> activation, params IRegularizationAlgorithm<T>[] regularizers)
+        public BaseNeuralLayer(int index, int inputs, int outputs, IActivationFunction<T> activation, params IRegularizationAlgorithm<T>[] regularizers)
         {
             this.activation = activation;
             this.regularizers = regularizers;
+            
+            // this is the most stupidest warning of c#
+            Index = index;
+            Outputs = new T[outputs];
+            Derivates = new T[outputs];
+            Gradients = new T[outputs];
+            TotalGradients = new T[outputs];
+            Biases = new T[outputs];
+
+            Weights = new T[outputs][];
+
+            for (int i = 0; i < outputs; i++)
+            {
+                Weights[i] = new T[inputs];
+            }
         }
 
         public IActivationFunction<T> GetActivationFunction()
@@ -32,22 +47,6 @@ namespace NeuraSharp.BuiltIn.Layers
         public IRegularizationAlgorithm<T>[] GetRegularizers()
         {
             return regularizers;
-        }
-
-        public void Initialize(int index, int inputs, int outputs)
-        {
-            Index = index;
-            Outputs = new T[outputs];
-            Derivates = new T[outputs];
-            Gradients = new T[outputs];
-            Biases = new T[outputs];
-
-            Weights = new T[outputs][];
-
-            for (int i = 0; i < outputs; i++)
-            {
-                Weights[i] = new T[inputs];
-            }
         }
     }
 }

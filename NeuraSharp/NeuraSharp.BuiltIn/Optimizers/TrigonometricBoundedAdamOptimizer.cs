@@ -7,7 +7,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
     {
         private T two;
 
-        public TrigonometricBoundedAdamOptimizer(IParams<T> adamParams, IRunningMetadata<T> source) : base(adamParams, source)
+        public TrigonometricBoundedAdamOptimizer(IParams<T> adamParams) : base(adamParams)
         {
             two = T.One + T.One;
         }

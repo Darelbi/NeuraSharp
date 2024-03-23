@@ -5,7 +5,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
 {
     public class ExpBoundedAdamOptimizer<T> : BoundedAdamOptimizer<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        public ExpBoundedAdamOptimizer(IParams<T> adamParams, IRunningMetadata<T> source) : base(adamParams, source)
+        public ExpBoundedAdamOptimizer(IParams<T> adamParams) : base(adamParams)
         {
 
         }

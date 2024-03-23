@@ -19,16 +19,14 @@ namespace NeuraSharp.BuiltIn.Optimizers
         private readonly T Minima;
         private readonly T Maxima;
         private readonly T Epsilon;
-        private readonly IRunningMetadata<T> source;
 
-        public BoundedAdamOptimizer(IParams<T> adamParams, IRunningMetadata<T> source)
+        public BoundedAdamOptimizer(IParams<T> adamParams)
         {
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);
             Minima = adamParams.GetParameter(Params.MinBound);
             Maxima = adamParams.GetParameter(Params.MaxBound);
             Epsilon = adamParams.GetParameter(Params.Epsilon);
-            this.source = source;
         }
 
         public T GetUpdatedLearningRate(T learningRate)
@@ -36,7 +34,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
             return T.One; // this algorithm takes control of learning rate
         }
 
-        public void Initialize(ILayerAllocatedVariables<T> variables)
+        public void Initialize(ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
         {
             int size = variables.GetIntVariable(Params.LayerSize);
 
@@ -50,20 +48,20 @@ namespace NeuraSharp.BuiltIn.Optimizers
 
         public abstract T GetDescendingBound(T minima, T maxima, T progresss);
 
-        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables)
+        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables,IRunningMetadata<T> runningMetadata)
         {
             int size = layer.Gradients.Length;
-            int step = source.GetStep();
+            int step = runningMetadata.GetStep();
 
             // TODO: count also steps in each epoch
-            T progress = T.CreateChecked(source.GetEpoch() / (double)source.GetTotalEpochs());
+            T progress = T.CreateChecked(runningMetadata.GetEpoch() / (double)runningMetadata.GetTotalEpochs());
 
             var m = variables.GetArrayVariable(Params.Momentum);
             var v = variables.GetArrayVariable(Params.Velocity);
             var mt = variables.GetArrayVariable(Params.DeBiasedMomentum);
             var vt = variables.GetArrayVariable(Params.DeBiasedVelocity);
 
-            T learningRate = source.GetLearningRate();
+            T learningRate = runningMetadata.GetLearningRate();
             T num = T.Sqrt(T.One - T.Pow(B2, T.CreateChecked(step)));
             T den = (T.One - T.Pow(B1, T.CreateChecked(step)));
             T ascending = GetAscendingBound(Minima, Maxima, progress);

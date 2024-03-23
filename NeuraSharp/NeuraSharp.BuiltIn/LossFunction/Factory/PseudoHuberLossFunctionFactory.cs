@@ -10,5 +10,10 @@ namespace NeuraSharp.BuiltIn.LossFunction.Factory
         {
             return new PseudoHuberLossFunction<T>(huberParams);
         }
+
+        public string GetName()
+        {
+            return "PseudoHuber";
+        }
     }
 }

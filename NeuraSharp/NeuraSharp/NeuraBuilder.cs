@@ -6,7 +6,7 @@ namespace NeuraSharp
     public class NeuraBuilder<T> : INeuraBuilder<T> where T:INumber<T>, IFloatingPointIeee754<T>
     {
         private List<INeuralLayer<T>> layers = [];
-        private IForwardAlgorithm<T> algorithm = null;
+        private IForwardAlgorithm<T> algorithm = null!;
 
         public INeuraNetwork<T> Compile()
         {
@@ -20,7 +20,7 @@ namespace NeuraSharp
                 throw new ArgumentException("Some layers were null");
 
             //return new NeuraNetwork<T>([.. layers], algorithm);
-            return null;
+            return null!;
         }
     }
 }

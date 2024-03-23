@@ -17,5 +17,10 @@ namespace NeuraSharp.BuiltIn.ForwardAlgorithm.Factory
         {
             return new DefaultForwardAlgorithm<T>(summation);
         }
+
+        public string GetName()
+        {
+            return "Default";
+        }
     }
 }

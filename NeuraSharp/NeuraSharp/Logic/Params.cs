@@ -10,7 +10,7 @@ namespace NeuraSharp.Logic
         private readonly Dictionary<string, T[]> ArrayParameters = [];
         private readonly Dictionary<string, int> IntParameters = [];
         private readonly Dictionary<string, int[]> IntArrayParameters = [];
-        private readonly Dictionary<string, string> UsedParameters = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> UsedParameters = [];
         private readonly bool allowsUpdate;
 
         public Params(bool allowsUpdate)

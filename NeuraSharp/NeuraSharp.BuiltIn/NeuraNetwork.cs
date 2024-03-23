@@ -90,8 +90,7 @@ namespace NeuraSharp.BuiltIn
             }
         }
 
-        private IRunningMetadata<T> runningMetadata = null;
-
+        private IRunningMetadata<T> runningMetadata = null!;
 
         public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, T learningRate, int maxEpochs)
         {
@@ -204,7 +203,7 @@ namespace NeuraSharp.BuiltIn
 
                 layerAllocConfiguration.SetLayer(i); // allows the optimizer to retrieve
                                                      // the data for the corrrect layer
-                optimizationAlgorithm.Optimize(layers[i], layerAllocConfiguration);
+                optimizationAlgorithm.Optimize(layers[i], layerAllocConfiguration, source);
             }
         }
     }

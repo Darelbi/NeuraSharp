@@ -13,15 +13,13 @@ namespace NeuraSharp.BuiltIn.Optimizers
         private readonly T B1;
         private readonly T B2;
         private readonly T Epsilon;
-        private readonly IRunningMetadata<T> source;
         private readonly bool bounding;
 
-        public AdamOptimizer(IParams<T> adamParams, IRunningMetadata<T> source)
+        public AdamOptimizer(IParams<T> adamParams)
         {
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);
             Epsilon = adamParams.GetParameter(Params.Epsilon);
-            this.source = source;
         }
 
         public T GetUpdatedLearningRate(T learningRate)
@@ -29,7 +27,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
             return learningRate;
         }
 
-        public void Initialize(ILayerAllocatedVariables<T> variables)
+        public void Initialize(ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
         {
             int size = variables.GetIntVariable(Params.LayerSize);
 
@@ -39,10 +37,10 @@ namespace NeuraSharp.BuiltIn.Optimizers
             variables.AddArrayVariable(Params.DeBiasedVelocity, new T[size]);
         }
 
-        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables)
+        public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables, IRunningMetadata<T> runningMetadata)
         {
             int size = variables.GetIntVariable(Params.LayerSize);
-            int step = source.GetStep();
+            int step = runningMetadata.GetStep();
 
             var m = variables.GetArrayVariable(Params.Momentum);
             var v = variables.GetArrayVariable(Params.Velocity);
