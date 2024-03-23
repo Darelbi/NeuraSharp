@@ -12,10 +12,12 @@ namespace NeuraSharp.BuiltIn.Optimizers
     /// Adaptive Gradient Methods. Appl. Sci. 2019, 9, 3569. https://doi.org/10.3390/app9173569
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BoundedAdamOptimizer<T> : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public abstract class BoundedAdamOptimizer<T> : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         private readonly T B1;
         private readonly T B2;
+        private readonly T Minima;
+        private readonly T Maxima;
         private readonly T Epsilon;
         private readonly INetworkTuningSource<T> source;
 
@@ -23,6 +25,8 @@ namespace NeuraSharp.BuiltIn.Optimizers
         {
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);
+            Minima = adamParams.GetParameter(Params.MinBound);
+            Maxima = adamParams.GetParameter(Params.MaxBound);
             Epsilon = adamParams.GetParameter(Params.Epsilon);
             this.source = source;
         }
@@ -42,10 +46,17 @@ namespace NeuraSharp.BuiltIn.Optimizers
             variables.AddArrayVariable(Params.DeBiasedVelocity, new T[size]);
         }
 
+        public abstract T GetAscendingBound(T minima, T maxima, T progresss);
+
+        public abstract T GetDescendingBound(T minima, T maxima, T progresss);
+
         public void Optimize(IGradientsLayer<T> layer, ILayerAllocatedVariables<T> variables)
         {
-            int size = variables.GetIntVariable(Params.LayerSize);
+            int size = layer.Gradients.Length;
             int step = source.GetStep();
+
+            // TODO: count also steps in each epoch
+            T progress = T.CreateChecked(source.GetEpoch() / (double)source.GetTotalEpochs());
 
             var m = variables.GetArrayVariable(Params.Momentum);
             var v = variables.GetArrayVariable(Params.Velocity);
@@ -55,22 +66,49 @@ namespace NeuraSharp.BuiltIn.Optimizers
             T learningRate = source.GetLearningRate();
             T num = T.Sqrt(T.One - T.Pow(B2, T.CreateChecked(step)));
             T den = (T.One - T.Pow(B1, T.CreateChecked(step)));
-            T maxima = T.CreateChecked(0.5);
-            T minima = T.CreateChecked(0.001);
+            T ascending = GetAscendingBound(Minima, Maxima, progress);
+            T descending = GetDescendingBound(Minima, Maxima, progress);
+
+            T firstStop = T.CreateChecked(2.0 / 5.0);
+            T secondStop = T.CreateChecked(4.0 / 5.0);
+
+            T min;
+            T max;
+
+            if(progress<= firstStop)
+            {
+                min = ascending;
+                max = Maxima;
+            }
+            else
+            {
+                min = Minima;
+                max = descending;
+            }
 
             Parallel.For(0, size, i =>
             {
                 var grad = layer.Gradients[i];
-                m[i] = B1 * m[i] + (T.One - B1) * grad;
-                v[i] = B2 * v[i] + (T.One - B2) * grad * grad;
 
-                mt[i] = m[i] / (T.One - T.Pow(B1, T.CreateChecked(step)));
-                vt[i] = v[i] / (T.One - T.Pow(B2, T.CreateChecked(step)));
+                if (progress <= secondStop)
+                {
+                    m[i] = B1 * m[i] + (T.One - B1) * grad;
+                    v[i] = B2 * v[i] + (T.One - B2) * grad * grad;
 
-                T partial = T.Sqrt(vt[i] + Epsilon);
-                T newLearning = (num / den) * learningRate / partial;
+                    mt[i] = m[i] / (T.One - T.Pow(B1, T.CreateChecked(step)));
+                    vt[i] = v[i] / (T.One - T.Pow(B2, T.CreateChecked(step)));
 
-                layer.Gradients[i] = newLearning * mt[i] / partial;
+                    T partial = T.Sqrt(vt[i] + Epsilon);
+                    T newLearning = (num / den) * learningRate / partial;
+                    newLearning = T.Clamp(newLearning, min, max);
+
+                    layer.Gradients[i] = newLearning * mt[i] / partial;
+                }
+                else
+                {
+                    // standard gradient descent
+                    layer.Gradients[i] = Minima * grad;
+                }
             });
         }
     }

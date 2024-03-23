@@ -38,13 +38,16 @@ layer3.Initialize(3, neurons2, neurons3);
 
 var networkParams = new NeuraSharp.Logic.Params<float>(false);
 var huberParams = new NeuraSharp.Logic.Params<float>(false);
-var adamParams = new NeuraSharp.Logic.Params<float>(false);
+var boundedAdamParams = new NeuraSharp.Logic.Params<float>(false);
 var regulParams = new NeuraSharp.Logic.Params<float>(false);
 huberParams.AddParameter(Params.Delta, 0.79f);
 networkParams.AddParameter(Params.LearningRate, 0.001f);
-adamParams.AddParameter(Params.Beta1,0.9f);
-adamParams.AddParameter(Params.Beta2,0.999f);
-adamParams.AddParameter(Params.Epsilon, 1e-8f);
+boundedAdamParams.AddParameter(Params.Beta1,0.9f);
+boundedAdamParams.AddParameter(Params.Beta2,0.999f);
+boundedAdamParams.AddParameter(Params.Epsilon, 1e-8f);
+boundedAdamParams.AddParameter(Params.MinBound, 0.001f);
+boundedAdamParams.AddParameter(Params.MaxBound, 0.5f);
+
 regulParams.AddParameter(Params.DropoutChance, 0.3f);
 
 var network =
@@ -52,7 +55,7 @@ new NeuraNetwork<float>(
     [layer0, layer1, layer2, layer3],
     new DefaultForwardAlgorithm<float>(new StableNeuronSummation<float>()),
     new DefaultBackwardAlgorithm<float>(new PseudoHuberLossFunction<float>(huberParams)),
-    new AdamOptimizer<float>(adamParams,null), TODO NETWORK RUNINT SOURCE TO BE CONIFUGRED
+    new BoundedAdamOptimizer<float>(boundedAdamParams,null), //TODO NETWORK RUNINT SOURCE TO BE CONIFUGRED
     new LayerAllocatedVariables<float>(4),
     new PseudoDropOutRegularization<float>(regulParams),
     networkParams);

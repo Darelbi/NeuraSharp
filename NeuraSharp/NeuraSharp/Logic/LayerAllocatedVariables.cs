@@ -1,7 +1,6 @@
 ﻿using NeuraSharp.Interfaces;
 using NeuraSharp.Interfaces.Enums;
 using System.Numerics;
-using System.Xml.Linq;
 
 namespace NeuraSharp.Logic
 {

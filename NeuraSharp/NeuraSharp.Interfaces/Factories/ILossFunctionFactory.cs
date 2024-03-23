@@ -4,6 +4,6 @@ namespace NeuraSharp.Interfaces.Factories
 {
     public interface ILossFunctionFactory<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        public ILossFunction<T> Create(IParams<T> huberParams);
+        public ILossFunction<T> Create(IParams<T> lossParams);
     }
 }
