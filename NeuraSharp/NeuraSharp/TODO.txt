@@ -13,3 +13,5 @@ At least Zero, Xavier and random uniform
 
 -batch normalization
 -residual layers
+
+-orthogonal initalization for weights

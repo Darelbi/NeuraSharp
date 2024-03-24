@@ -5,6 +5,7 @@ using NeuraSharp;
 using NeuraSharp.BuiltIn;
 using NeuraSharp.BuiltIn.ActivationFunction;
 using NeuraSharp.BuiltIn.BackwardAlgorithm;
+using NeuraSharp.BuiltIn.BiasInitialization;
 using NeuraSharp.BuiltIn.ForwardAlgorithm;
 using NeuraSharp.BuiltIn.Layers;
 using NeuraSharp.BuiltIn.LossFunction;
@@ -33,14 +34,15 @@ int neurons2 = 7;
 int neurons3 = 2;
 
 var wInit = new HeUniformInitialization<float>();
+var bInit = new ZeroBiasInitializer<float>();
 
-var layer0 = new BaseNeuralLayer<float>(0, 0, 3, wInit,
+var layer0 = new BaseNeuralLayer<float>(0, 0, 3, wInit, bInit,
     new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
-var layer1 = new BaseNeuralLayer<float>(1, 3, neurons1, wInit,
+var layer1 = new BaseNeuralLayer<float>(1, 3, neurons1, wInit, bInit,
     new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
-var layer2 = new BaseNeuralLayer<float>(2, neurons1, neurons2, wInit,
+var layer2 = new BaseNeuralLayer<float>(2, neurons1, neurons2, wInit, bInit,
     new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
-var layer3 = new BaseNeuralLayer<float>(3, neurons2, neurons3, wInit,
+var layer3 = new BaseNeuralLayer<float>(3, neurons2, neurons3, wInit, bInit,
     new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
 
 

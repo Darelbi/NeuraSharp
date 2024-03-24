@@ -19,6 +19,7 @@ namespace NeuraSharp.BuiltIn.Layers
 
         public BaseNeuralLayer(int index, int inputs, int outputs, 
             IWeightInitialization<T> winit, 
+            IBiasInitialization<T> biasesInit,
             IActivationFunction<T> activation, 
             params IRegularizationAlgorithm<T>[] regularizers)
         {
@@ -41,6 +42,7 @@ namespace NeuraSharp.BuiltIn.Layers
             }
 
             winit.Initialize(this);
+            biasesInit.Initialize(this);
         }
 
         public IActivationFunction<T> GetActivationFunction()

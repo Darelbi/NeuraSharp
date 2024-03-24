@@ -14,7 +14,7 @@ namespace NeuraSharp.BuiltIn.WeightInitialization
         {
         }
 
-        public void Initialize(IWeightsLayers<T> weights)
+        public void Initialize(IWeightsLayer<T> weights)
         {
             for(int l = 0; weights.Weights.Length > l; l++)
             {
