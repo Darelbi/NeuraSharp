@@ -4,16 +4,10 @@ using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.LossFunction
 {
-    public class HuberLossFunction<T> : ILossFunction<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class HuberLossFunction<T>(IParams<T> huberParams) : ILossFunction<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly T delta;
-        private readonly  T two;
-
-        public HuberLossFunction(IParams<T> huberParams)
-        {
-            delta = huberParams.GetParameter(Params.Delta);
-            two = T.One + T.One;
-        }
+        private readonly T delta = huberParams.GetParameter(Params.Delta);
+        private readonly  T two = T.One + T.One;
 
         public T Compute(T[] output, T[] predictions)
         {

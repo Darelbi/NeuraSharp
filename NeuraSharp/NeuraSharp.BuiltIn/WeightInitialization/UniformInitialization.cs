@@ -9,16 +9,10 @@ namespace NeuraSharp.BuiltIn.WeightInitialization
     /// This initialization works best for sigmoid or tanh functions
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class UniformInitialization<T> : IWeightInitialization<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class UniformInitialization<T>(IParams<T> uniformParams) : IWeightInitialization<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly T min;
-        private readonly T max;
-
-        public UniformInitialization(IParams<T> uniformParams)
-        {
-            min = uniformParams.GetParameter(Params.Min);
-            max = uniformParams.GetParameter(Params.Max);
-        }
+        private readonly T min = uniformParams.GetParameter(Params.Min);
+        private readonly T max = uniformParams.GetParameter(Params.Max);
 
         public void Initialize(IWeightsLayer<T> weights)
         {

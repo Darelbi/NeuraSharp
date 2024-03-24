@@ -8,18 +8,11 @@ namespace NeuraSharp.BuiltIn.Optimizers
     /// <summary>
     /// https://github.com/aromanro/MachineLearning/blob/150635982d6067fbb3655fa1308c3bdff79ed384/MachineLearning/MachineLearning/GradientSolvers.h#L677
     /// </summary>
-    public class AdamOptimizer<T> : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class AdamOptimizer<T>(IParams<T> adamParams) : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly T B1;
-        private readonly T B2;
-        private readonly T Epsilon;
-
-        public AdamOptimizer(IParams<T> adamParams)
-        {
-            B1 = adamParams.GetParameter(Params.Beta1);
-            B2 = adamParams.GetParameter(Params.Beta2);
-            Epsilon = adamParams.GetParameter(Params.Epsilon);
-        }
+        private readonly T B1 = adamParams.GetParameter(Params.Beta1);
+        private readonly T B2 = adamParams.GetParameter(Params.Beta2);
+        private readonly T Epsilon = adamParams.GetParameter(Params.Epsilon);
 
         public T GetUpdatedLearningRate(T learningRate)
         {

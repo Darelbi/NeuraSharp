@@ -9,13 +9,9 @@ namespace NeuraSharp.BuiltIn.Regularization
     /// This avoid dead layers on smaller networks, for bigger networks use DropOut
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class PseudoDropOutRegularization<T> : IRegularizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class PseudoDropOutRegularization<T>(IParams<T> param) : IRegularizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly T chance;
-        public PseudoDropOutRegularization(IParams<T> param)
-        {
-            chance = param.GetParameter(Params.DropoutChance);
-        }
+        private readonly T chance = param.GetParameter(Params.DropoutChance);
 
         public void FinalNormalizationStep(INeuralLayer<T> layer)
         {

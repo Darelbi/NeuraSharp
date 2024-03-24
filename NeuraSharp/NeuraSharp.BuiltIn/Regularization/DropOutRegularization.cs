@@ -8,13 +8,9 @@ namespace NeuraSharp.BuiltIn.Regularization
     /// Realdrop out, for networks of 30+ neurons it should not matter even if 1 time we get a dead layer
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class DropOutRegularization<T> : IRegularizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class DropOutRegularization<T>(IParams<T> param) : IRegularizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly T chance;
-        public DropOutRegularization(IParams<T> param)
-        {
-            chance = param.GetParameter(Params.DropoutChance);
-        }
+        private readonly T chance = param.GetParameter(Params.DropoutChance);
 
         public void FinalNormalizationStep(INeuralLayer<T> layer)
         {

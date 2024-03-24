@@ -4,13 +4,10 @@ using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.BackwardAlgorithm
 {
-    public class DefaultBackwardAlgorithm<T> : IBackwardAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class DefaultBackwardAlgorithm<T>(ILossFunction<T> lossFunction) : IBackwardAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly ILossFunction<T> lossFunction;
-        public DefaultBackwardAlgorithm(ILossFunction<T> lossFunction)
-        {
-            this.lossFunction = lossFunction;
-        }
+        private readonly ILossFunction<T> lossFunction = lossFunction;
+
         public void Backward(IBackwardOutputLayer<T> iLayer, IBackwardInputLayer<T> iPlusOneLayer, T[] target)
         {
             Parallel.For(0, iLayer.Gradients.Length, i =>

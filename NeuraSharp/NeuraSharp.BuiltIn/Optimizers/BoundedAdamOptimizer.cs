@@ -12,22 +12,13 @@ namespace NeuraSharp.BuiltIn.Optimizers
     /// Adaptive Gradient Methods. Appl. Sci. 2019, 9, 3569. https://doi.org/10.3390/app9173569
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class BoundedAdamOptimizer<T> : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public abstract class BoundedAdamOptimizer<T>(IParams<T> adamParams) : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private readonly T B1;
-        private readonly T B2;
-        private readonly T Minima;
-        private readonly T Maxima;
-        private readonly T Epsilon;
-
-        public BoundedAdamOptimizer(IParams<T> adamParams)
-        {
-            B1 = adamParams.GetParameter(Params.Beta1);
-            B2 = adamParams.GetParameter(Params.Beta2);
-            Minima = adamParams.GetParameter(Params.Min);
-            Maxima = adamParams.GetParameter(Params.Max);
-            Epsilon = adamParams.GetParameter(Params.Epsilon);
-        }
+        private readonly T B1 = adamParams.GetParameter(Params.Beta1);
+        private readonly T B2 = adamParams.GetParameter(Params.Beta2);
+        private readonly T Minima = adamParams.GetParameter(Params.Min);
+        private readonly T Maxima = adamParams.GetParameter(Params.Max);
+        private readonly T Epsilon = adamParams.GetParameter(Params.Epsilon);
 
         public T GetUpdatedLearningRate(T learningRate)
         {

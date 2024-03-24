@@ -4,19 +4,14 @@ using NeuraSharp.Interfaces.Enums;
 
 namespace NeuraSharp.Logic
 {
-    public class Params<T>: IParams<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class Params<T>(bool allowsUpdate) : IParams<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         private readonly Dictionary<string, T> Parameters = [];
         private readonly Dictionary<string, T[]> ArrayParameters = [];
         private readonly Dictionary<string, int> IntParameters = [];
         private readonly Dictionary<string, int[]> IntArrayParameters = [];
         private readonly Dictionary<string, string> UsedParameters = [];
-        private readonly bool allowsUpdate;
-
-        public Params(bool allowsUpdate)
-        {
-            this.allowsUpdate = allowsUpdate;
-        }
+        private readonly bool allowsUpdate = allowsUpdate;
 
         private static string FromParam(Params param) { return param.ToString(); }
 
