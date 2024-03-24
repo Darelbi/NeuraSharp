@@ -2,6 +2,8 @@
 {
     public enum WeightInitialization
     {
-        Xavier
+        Uniform,
+        GlorotUniform,
+        HeUniform
     }
 }

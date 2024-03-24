@@ -12,7 +12,7 @@
         DeBiasedVelocity,
         PartialResult,
         DropoutChance,
-        MinBound,
-        MaxBound
+        Min,
+        Max
     }
 }

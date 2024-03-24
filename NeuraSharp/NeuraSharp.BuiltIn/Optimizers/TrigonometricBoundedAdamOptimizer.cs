@@ -5,7 +5,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
 {
     public class TrigonometricBoundedAdamOptimizer<T> : BoundedAdamOptimizer<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private T two;
+        private readonly T two;
 
         public TrigonometricBoundedAdamOptimizer(IParams<T> adamParams) : base(adamParams)
         {

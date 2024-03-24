@@ -13,7 +13,6 @@ namespace NeuraSharp.BuiltIn.Optimizers
         private readonly T B1;
         private readonly T B2;
         private readonly T Epsilon;
-        private readonly bool bounding;
 
         public AdamOptimizer(IParams<T> adamParams)
         {
@@ -95,33 +94,33 @@ namespace NeuraSharp.BuiltIn.Optimizers
         /// </summary>
         /// <param name="firstLayerReverseOrder"></param>
         /// <param name="secondLayerReverseOrder"></param>
-        public void Optimize(INeuralLayer<T> firstLayerReverseOrder, INeuralLayer<T> secondLayerReverseOrder)
-        {
+        //public void Optimize(INeuralLayer<T> firstLayerReverseOrder, INeuralLayer<T> secondLayerReverseOrder)
+        //{
 
-            /*var Loss = lossFunction.Derivate( new T[] { }, new T[] { });    
+        //    /*var Loss = lossFunction.Derivate( new T[] { }, new T[] { });    
 
-            // Introduce Dynamic Parameters for Step
-            T div1 = T.One / (T.One - T.Pow(B1, step));
-            T div2 = T.One / (T.One. - T.Pow(B2, step));
+        //    // Introduce Dynamic Parameters for Step
+        //    T div1 = T.One / (T.One - T.Pow(B1, step));
+        //    T div2 = T.One / (T.One. - T.Pow(B2, step));
 
-            mb = beta1 * mb - (1. - beta1) * lossLinkGrad.sum();
-            mb *= div1;
-            sb = beta2 * sb + (1. - beta2) * lossLinkGrad.cwiseProduct(lossLinkGrad).sum();
-            sb *= div2;
+        //    mb = beta1 * mb - (1. - beta1) * lossLinkGrad.sum();
+        //    mb *= div1;
+        //    sb = beta2 * sb + (1. - beta2) * lossLinkGrad.cwiseProduct(lossLinkGrad).sum();
+        //    sb *= div2;
 
-            b += BaseType::alpha * mb / sqrt(sb + eps);
+        //    b += BaseType::alpha * mb / sqrt(sb + eps);
 
-            const double wAdj = (lossLinkGrad * BaseType::getInput().transpose())(0);
+        //    const double wAdj = (lossLinkGrad * BaseType::getInput().transpose())(0);
 
-            mW = beta1 * mW - (1. - beta1) * wAdj;
-            mW *= div1;
-            sW = beta2 * sW + (1. - beta2) * wAdj * wAdj;
-            sW *= div2;
+        //    mW = beta1 * mW - (1. - beta1) * wAdj;
+        //    mW *= div1;
+        //    sW = beta2 * sW + (1. - beta2) * wAdj * wAdj;
+        //    sW *= div2;
 
-            w += BaseType::alpha * mW / sqrt(sW + eps);
+        //    w += BaseType::alpha * mW / sqrt(sW + eps);
 
-            return lossLinkGrad;*/
-        }
+        //    return lossLinkGrad;*/
+        //}
 
 
     }

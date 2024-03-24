@@ -6,8 +6,8 @@ namespace NeuraSharp.BuiltIn.LossFunction
 {
     public class HuberLossFunction<T> : ILossFunction<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private T delta;
-        private T two;
+        private readonly T delta;
+        private readonly  T two;
 
         public HuberLossFunction(IParams<T> huberParams)
         {

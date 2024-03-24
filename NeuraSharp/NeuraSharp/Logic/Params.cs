@@ -18,6 +18,8 @@ namespace NeuraSharp.Logic
             this.allowsUpdate = allowsUpdate;
         }
 
+        private static string FromParam(Params param) { return param.ToString(); }
+
         public void CheckUsedParameter(string name) 
         {
             if (UsedParameters.ContainsKey(name) && !allowsUpdate)
@@ -71,7 +73,6 @@ namespace NeuraSharp.Logic
             IntArrayParameters[name] = value;
         }
 
-        string FromParam(Params param) { return param.ToString(); }
         public void AddArrayParameter(Params param, T[] value)
         {
             AddArrayParameter(FromParam(param), value);

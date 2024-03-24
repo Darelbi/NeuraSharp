@@ -24,8 +24,8 @@ namespace NeuraSharp.BuiltIn.Optimizers
         {
             B1 = adamParams.GetParameter(Params.Beta1);
             B2 = adamParams.GetParameter(Params.Beta2);
-            Minima = adamParams.GetParameter(Params.MinBound);
-            Maxima = adamParams.GetParameter(Params.MaxBound);
+            Minima = adamParams.GetParameter(Params.Min);
+            Maxima = adamParams.GetParameter(Params.Max);
             Epsilon = adamParams.GetParameter(Params.Epsilon);
         }
 

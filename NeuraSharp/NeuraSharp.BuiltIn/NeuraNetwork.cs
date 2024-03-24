@@ -51,7 +51,7 @@ namespace NeuraSharp.BuiltIn
         /// <returns></returns>
         public T[] Predict(T[] input)
         {
-            T[] output = new T[layers[layers.Length - 1].Outputs.Length];
+            T[] output = new T[layers[^1].Outputs.Length];
             PredictInline(input, output);
             return output;
         }
@@ -77,7 +77,7 @@ namespace NeuraSharp.BuiltIn
                 {
                     ForwardFit(sample);
 
-                    Regularize(sample);
+                    Regularize();
 
                     Backward(sample, source);
 
@@ -90,20 +90,17 @@ namespace NeuraSharp.BuiltIn
             }
         }
 
-        private IRunningMetadata<T> runningMetadata = null!;
+        private DefaultRunningMetadata<T> runningMetadata = null!;
 
         public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, T learningRate, int maxEpochs)
         {
-            if (runningMetadata == null)
-            {
-                runningMetadata = new DefaultRunningMetadata<T>(learningRate, maxEpochs);
-            }
+            runningMetadata ??= new DefaultRunningMetadata<T>(learningRate, maxEpochs);
 
             Fit(enumOfBatches, runningMetadata);
             runningMetadata.IncreaseEpoch();
         }
 
-        private void Regularize((T[] inputs, T[] outputs) sample)
+        private void Regularize()
         {
             Parallel.For(0, layers.Length, l =>
             {
@@ -184,7 +181,7 @@ namespace NeuraSharp.BuiltIn
                 forwardAlgorithm.Forward(layers[i], layers[i + 1]);
 
             // copy output 
-            for (int i = 0; i < layers[layers.Length - 1].Outputs.Length; i++)
+            for (int i = 0; i < layers[^1].Outputs.Length; i++)
                 output[i] = input[i];
         }
 

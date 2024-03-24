@@ -4,3 +4,12 @@
 At least Zero, Xavier and random uniform
 
 - Compile time exceptions or warnings for incompatible builds (i.E, exception if using Xavier with ReLU)
+- Fix dropout
+- Sparse layer
+
+- handling dimensional input/output => propedeutic to convolutional and pooling layers
+- convolutional and pooling => 2D input => requires flattening, does exist the opposite of flattening?
+
+
+-batch normalization
+-residual layers
