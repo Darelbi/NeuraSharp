@@ -2,6 +2,7 @@
 {
     public enum RegularizationAlgorithm
     {
+        None,
         DropOut,
         PseudoDropOut
     }

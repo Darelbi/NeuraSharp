@@ -15,3 +15,5 @@ At least Zero, Xavier and random uniform
 -residual layers
 
 -orthogonal initalization for weights
+
+- Initial features present => SMALL TEST BEFORE IMPLEMENTING SPARSE LAYERS AND CORRECT DROPOUT

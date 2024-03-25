@@ -1,4 +1,5 @@
-﻿using NeuraSharp.Interfaces;
+﻿using NeuraSharp.BuiltIn.ActivationFunction;
+using NeuraSharp.Interfaces;
 using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.ForwardAlgorithm

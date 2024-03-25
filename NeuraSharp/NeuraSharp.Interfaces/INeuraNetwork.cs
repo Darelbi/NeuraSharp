@@ -29,7 +29,7 @@ namespace NeuraSharp.Interfaces
         /// <param name="learningRate"> Speed of learning a typical value is 0.01, but try what works bests</param>
         /// <param name="maxEpochs"> YOU PROMISE you will call <see cref="Fit(IEnumerable{List{ValueTuple{T[], T[]}}}, T, int)"/>
         /// this number of times. </param>
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> samples, T learningRate, int maxEpochs);
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> samples, T learningRate, int maxEpochs, Action<T> errorCallback = null);
 
         /// <summary>
         /// You provide through the <see cref="IRunningMetadata{T}"/> interface all the metadata 
@@ -43,7 +43,7 @@ namespace NeuraSharp.Interfaces
         /// </summary>
         /// <param name="enumOfBatches"></param>
         /// <param name="source"></param>
-        void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, IRunningMetadata<T> source);
+        void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, IRunningMetadata<T> source, Action<T> errorCallback = null);
 
         /// <summary>
         /// If you have a neural network with 15 inputs values and 3 output values this function takes

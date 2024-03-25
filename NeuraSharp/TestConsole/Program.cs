@@ -1,7 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 
-using NeuraSharp;
 using NeuraSharp.BuiltIn;
 using NeuraSharp.BuiltIn.ActivationFunction;
 using NeuraSharp.BuiltIn.BackwardAlgorithm;
@@ -15,36 +14,24 @@ using NeuraSharp.BuiltIn.WeightInitialization;
 using NeuraSharp.Interfaces.Enums;
 using NeuraSharp.Logic;
 
-/// THIS FILE IS FOR TESTING DURING DEVELOPMENT. IT LOOKS VERBOSE BECAUSE THERE IS YET NOT BUILDER
-/// THE BUILDER WILL ALLOW A MUCH MORE CLEAN INITIALIZATION
-InstanceLoader.DefaultBuilder();
+// before wasting time on building the network builder I do a MNIST task with Gradient Descent and a MNIST task
+// with adam to se if the network works.
 
-List<List<(float[] inputs, float[] outputs)>> myEnum =
-[
-    [(new float[] { 1, 2, 3 }, new float[] { 2, 3 })],
-    [(new float[] { 2, 3, 4 }, new float[] { 0, -1 })],
-    [(new float[] { 5, 6, 7 }, new float[] { -2, 3 })],
-];
-
-var regulParams = new Params<float>(false);
-regulParams.AddParameter(Params.DropoutChance, 0.3f);
-
-int neurons1 = 8;
-int neurons2 = 7;
-int neurons3 = 2;
+int neurons1 = 784;
+int neurons2 = 32;
+int neurons3 = 10;
 
 var wInit = new HeUniformInitialization<float>();
 var bInit = new ZeroBiasInitializer<float>();
 
 var layer0 = new BaseNeuralLayer<float>(0, 0, 3, wInit, bInit,
-    new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
+    new ReLUActivationFunction<float>(), new NoneRegularization<float>());
 var layer1 = new BaseNeuralLayer<float>(1, 3, neurons1, wInit, bInit,
-    new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
+    new ReLUActivationFunction<float>(), new NoneRegularization<float>());
 var layer2 = new BaseNeuralLayer<float>(2, neurons1, neurons2, wInit, bInit,
-    new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
+    new ReLUActivationFunction<float>(), new NoneRegularization<float>());
 var layer3 = new BaseNeuralLayer<float>(3, neurons2, neurons3, wInit, bInit,
-    new ReLUActivationFunction<float>(), new PseudoDropOutRegularization<float>(regulParams));
-
+    new ReLUActivationFunction<float>(), new NoneRegularization<float>());
 
 var huberParams = new Params<float>(false);
 var boundedAdamParams = new Params<float>(false);
@@ -65,5 +52,5 @@ new NeuraNetwork<float>(
     new ExpBoundedAdamOptimizer<float>(boundedAdamParams), //TODO NETWORK RUNINT SOURCE TO BE CONIFUGRED
     new LayerAllocatedVariables<float>(4));
 
-for (int i = 0; i < 100; i++)
-    network.Fit(myEnum, 0.01f, 100);
+//for (int i = 0; i < 100; i++)
+//    network.Fit(myEnum, 0.01f, 100);

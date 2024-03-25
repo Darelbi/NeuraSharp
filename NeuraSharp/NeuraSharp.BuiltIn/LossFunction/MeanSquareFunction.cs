@@ -1,25 +1,22 @@
 ﻿using NeuraSharp.Interfaces;
-using NeuraSharp.Interfaces.Enums;
 using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.LossFunction
 {
-    public class PseudoHuberLossFunction<T>(IParams<T> huberParams) : ILossFunction<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class MeanSquareFunction<T>() : ILossFunction<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
-        private T delta = huberParams.GetParameter(Params.Delta);
-
         public T Compute(T[] output, T[] predictions)
         {
             T total = T.Zero;
+            T two = T.One + T.One;
 
             for (int i = 0; i < output.Length; i++)
             {
                 T x = output[i];
                 T y = predictions[i];
+                T sq = (x - y)*(x-y);
 
-                var square = (x - y) / delta;
-                var sqrt = T.Sqrt(T.One + square * square);
-                total += delta * delta * (sqrt - T.One);
+                total += sq / two;
             }
 
             return total / T.CreateChecked(output.Length);
@@ -32,9 +29,7 @@ namespace NeuraSharp.BuiltIn.LossFunction
                 T x = prediction[i];
                 T y = target[i];
 
-                var square = (x - y) / delta;
-                var sqrt = T.Sqrt(T.One + square * square);
-                targetStore[i] = (x - y) / sqrt;
+                targetStore[i] = x-y;
             }
         }
     }

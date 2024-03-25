@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace NeuraSharp.BuiltIn.Optimizers
 {
-    internal class GradientDescentOptimizer<T> : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
+    public class GradientDescentOptimizer<T> : IOptimizationAlgorithm<T> where T : INumber<T>, IFloatingPointIeee754<T>
     {
         public T GetUpdatedLearningRate(T learningRate)
         {

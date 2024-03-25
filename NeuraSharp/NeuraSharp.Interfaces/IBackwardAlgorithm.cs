@@ -8,5 +8,7 @@ namespace NeuraSharp.Interfaces
         public void Backward(IBackwardOutputLayer<T> iLayer, IBackwardInputLayer<T> iPlusOneLayer, T[] target);
 
         public void BackwardLast(IBackwardLastLayer<T> Llayer, T[] target);
+
+        public ILossFunction<T> GetLossFunction();
     }
 }

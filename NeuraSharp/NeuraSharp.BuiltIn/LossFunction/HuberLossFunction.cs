@@ -32,12 +32,12 @@ namespace NeuraSharp.BuiltIn.LossFunction
             return total / T.CreateChecked(output.Length);
         }
 
-        public void Derivate(T[] output, T[] predictions, T[] targetStore)
+        public void Derivate(T[] prediction, T[] target, T[] targetStore)
         {
-            for (int i = 0; i < output.Length; i++)
+            for (int i = 0; i < prediction.Length; i++)
             {
-                T x = output[i];
-                T y = predictions[i];
+                T x = prediction[i];
+                T y = target[i];
 
                 if (T.Abs(x - y) <= delta)
                 {

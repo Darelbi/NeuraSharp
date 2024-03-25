@@ -31,13 +31,18 @@ namespace NeuraSharp.BuiltIn.BackwardAlgorithm
             // https://www.sciencedirect.com/science/article/pii/S0893608021000800
 
             // delta J. Loss function derivative is calculated at the end of the network
-            lossFunction.Derivate(target, Llayer.Outputs, Llayer.Gradients);
+            lossFunction.Derivate(Llayer.Outputs, target, Llayer.Gradients);
 
             for(int i=0; i<target.Length; i++)
             {
                 // TODO initialize gradients in each batch
                 Llayer.Gradients[i] = Llayer.Derivates[i]* Llayer.Gradients[i]; 
             }
+        }
+
+        public ILossFunction<T> GetLossFunction()
+        {
+            return lossFunction;
         }
     }
 }

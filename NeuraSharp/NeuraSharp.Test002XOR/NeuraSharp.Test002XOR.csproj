@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NeuraSharp.BuiltIn\NeuraSharp.BuiltIn.csproj" />
+    <ProjectReference Include="..\NeuraSharp.Interfaces\NeuraSharp.Interfaces.csproj" />
+    <ProjectReference Include="..\NeuraSharp\NeuraSharp.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp", "NeuraSharp.csproj", "{D8B1BD04-D0E2-437B-8A80-33B855F7EDDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp", "NeuraSharp.csproj", "{D8B1BD04-D0E2-437B-8A80-33B855F7EDDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.BuiltIn", "..\NeuraSharp.BuiltIn\NeuraSharp.BuiltIn.csproj", "{4D818AB9-F29E-44E2-B40B-C5399E49055C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.BuiltIn", "..\NeuraSharp.BuiltIn\NeuraSharp.BuiltIn.csproj", "{4D818AB9-F29E-44E2-B40B-C5399E49055C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "..\TestConsole\TestConsole.csproj", "{1EEF4D1E-B282-4C39-9F99-A9BEB4AA7714}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "..\TestConsole\TestConsole.csproj", "{1EEF4D1E-B282-4C39-9F99-A9BEB4AA7714}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.Interfaces", "..\NeuraSharp.Interfaces\NeuraSharp.Interfaces.csproj", "{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.Interfaces", "..\NeuraSharp.Interfaces\NeuraSharp.Interfaces.csproj", "{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.Test001MNIST", "..\NeuraSharp.Test001MNIST\NeuraSharp.Test001MNIST.csproj", "{4897F61D-FB63-4891-A1E0-BB25542CE6F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.Test002XOR", "..\NeuraSharp.Test002XOR\NeuraSharp.Test002XOR.csproj", "{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4897F61D-FB63-4891-A1E0-BB25542CE6F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4897F61D-FB63-4891-A1E0-BB25542CE6F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4897F61D-FB63-4891-A1E0-BB25542CE6F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4897F61D-FB63-4891-A1E0-BB25542CE6F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

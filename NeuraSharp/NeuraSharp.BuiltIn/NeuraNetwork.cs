@@ -62,7 +62,9 @@ namespace NeuraSharp.BuiltIn
         /// </summary>
         /// <param name="enumOfBatches"></param>
         /// <param name="source"></param>
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, IRunningMetadata<T> source)
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, 
+                        IRunningMetadata<T> source,
+                        Action<T> errorCallback)
         {
             if (trained)
                 throw new InvalidOperationException("Cannot Fit an already trained network. Some algorithms requires a final step after which it makes no sense further training");
@@ -75,7 +77,7 @@ namespace NeuraSharp.BuiltIn
 
                 foreach (var sample in batch)
                 {
-                    ForwardFit(sample);
+                    ForwardFit(sample, errorCallback);
 
                     Regularize();
 
@@ -92,11 +94,14 @@ namespace NeuraSharp.BuiltIn
 
         private DefaultRunningMetadata<T> runningMetadata = null!;
 
-        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, T learningRate, int maxEpochs)
+        public void Fit(IEnumerable<List<(T[] inputs, T[] outputs)>> enumOfBatches, 
+                        T learningRate, 
+                        int maxEpochs,
+                        Action<T> errorCallback)
         {
             runningMetadata ??= new DefaultRunningMetadata<T>(learningRate, maxEpochs);
 
-            Fit(enumOfBatches, runningMetadata);
+            Fit(enumOfBatches, runningMetadata, errorCallback);
             runningMetadata.IncreaseEpoch();
         }
 
@@ -119,8 +124,8 @@ namespace NeuraSharp.BuiltIn
             T scaleFactor =
                 optimizationAlgorithm.GetUpdatedLearningRate(tuning.GetLearningRate())
                 / T.CreateChecked(batchSize);
-
-            Parallel.For(0, layers.Length, l => // not the best way to parallelize, but easy to read.
+           
+            for(int l=layers.Length-1; l>0;  l--) // not the best way to parallelize, but easy to read.
             {
                 for (int i = 0; i < layers[l].Outputs.Length; i++)
                 {
@@ -130,10 +135,13 @@ namespace NeuraSharp.BuiltIn
                     {
                         // TODO: Accumulate weight changes, then transfer back at check points
                         // this requires 3 times more memory though...
-                        layers[l].Weights[i][z] -= scaleFactor * layers[l].Weights[i][z] * layers[l].TotalGradients[i];
+                        layers[l].Weights[i][z] -= scaleFactor
+                        //* layers[l].Weights[i][z] 
+                        * layers[l - 1].Outputs[z]
+                        * layers[l].TotalGradients[i];
                     }
                 }
-            });
+            }
         }
 
         private void AccumulateTotalGradients()
@@ -154,7 +162,7 @@ namespace NeuraSharp.BuiltIn
         /// Executes the forward step, preparing data for the backpropagation
         /// </summary>
         /// <param name="sample"></param>
-        private void ForwardFit((T[] inputs, T[] outputs) sample)
+        private void ForwardFit((T[] inputs, T[] outputs) sample, Action<T> errorCallback)
         {
             // copy input in output of first layer
             for (int i = 0; i < layers[0].Outputs.Length; i++)
@@ -163,6 +171,9 @@ namespace NeuraSharp.BuiltIn
             // forward propagation
             for (int i = 0; i < layers.Length - 1; i++)
                 forwardAlgorithm.ForwardPrepare(layers[i], layers[i + 1]);
+
+            if (errorCallback != null)
+                errorCallback(backwardAlgorithm.GetLossFunction().Compute(sample.outputs, layers[^1].Outputs));
         }
 
         /// <summary>
@@ -182,7 +193,7 @@ namespace NeuraSharp.BuiltIn
 
             // copy output 
             for (int i = 0; i < layers[^1].Outputs.Length; i++)
-                output[i] = input[i];
+                output[i] = layers[^1].Outputs[i];
         }
 
         /// <summary>
