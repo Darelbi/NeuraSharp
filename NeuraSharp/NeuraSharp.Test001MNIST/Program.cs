@@ -15,32 +15,36 @@ using NeuraSharp.Logic;
 // with adam to see if the network works.
 
 int neurons1 = 784;
-int neurons2 = 128;
-int neurons3 = 10;
+int neurons2 = 64;
+int neurons3 = 64;
+int neurons4 = 10;
 
 var wInit = new GlorotUniformInitialization<float>();
+var heInit = new HeUniformInitialization<float>();
 var bInit = new ZeroBiasInitializer<float>();
 
 var layer0 = new BaseNeuralLayer<float>(0, 0, neurons1, wInit, bInit,
-    new SigmoidActivationFunction<float>(), new NoneRegularization<float>());
+    new TanhActivationFunction<float>(), new NoneRegularization<float>());
 var layer1 = new BaseNeuralLayer<float>(1, neurons1, neurons2, wInit, bInit,
-    new SigmoidActivationFunction<float>(), new NoneRegularization<float>());
+    new TanhActivationFunction<float>(), new NoneRegularization<float>());
 var layer2 = new BaseNeuralLayer<float>(2, neurons2, neurons3, wInit, bInit,
-    new SigmoidActivationFunction<float>(), new NoneRegularization<float>());
+    new TanhActivationFunction<float>(), new NoneRegularization<float>());
+var layer3 = new BaseNeuralLayer<float>(2, neurons3, neurons4, wInit, bInit,
+    new TanhActivationFunction<float>(), new NoneRegularization<float>());
 
 var huberParams = new Params<float>(false);
 huberParams.AddParameter(Params.Delta, 0.05f);
 
 var network =
 new NeuraNetwork<float>(
-    [layer0, layer1, layer2],
+    [layer0, layer1, layer2, layer3],
     new DefaultForwardAlgorithm<float>(),
     new DefaultBackwardAlgorithm<float>(new MeanSquareFunction<float>()),
-    new GradientDescentOptimizer< float>(),
+    new GradientDescentOptimizer<float>(),
     new LayerAllocatedVariables<float>(3));
 
-int epochs = 2;
-
+int epochs = 4;
+int bbb = 70;
 using (StreamWriter writer = new StreamWriter("Error.csv"))
 {
     for (int i = 0; i < epochs; i++)
@@ -62,13 +66,21 @@ using (StreamWriter writer = new StreamWriter("Error.csv"))
                 output[k] = -1;
             output[outdigit] = 1.0f;
 
-            var image = csvline.Skip(1).Take(784).Select(x => (int.Parse(x)-128) / 255.0f).ToArray();
+            var image = csvline.Skip(1).Take(784).Select(x => (int.Parse(x) - 128) / 255.0f).ToArray();
 
             batch.Add((image, output));
 
             if (batch.Count > 1)
             {
-                network.Fit([batch], 0.01f, epochs, x => writer.WriteLine(x));
+                network.Fit([batch], 0.00008f, epochs, x =>
+                {
+                    bbb++;
+                    if (bbb > 70)
+                    {
+                        writer.WriteLine(x);
+                        bbb = 0;
+                    }
+                });
                 batch.Clear();
             }
 
@@ -99,7 +111,7 @@ foreach (var line in lines2)
 
     int maxIndex = -1;
     float maxValue = float.MinValue;
-    for(int i=0;i<10;i++)
+    for (int i = 0; i < 10; i++)
     {
         if (digits[i] > maxValue)
         {
@@ -108,14 +120,14 @@ foreach (var line in lines2)
         }
     }
 
-    if(outdigit!=maxIndex)
+    if (outdigit != maxIndex)
     {
         //Console.WriteLine("Wrong value found");
         wrong++;
     }
 }
 
-Console.WriteLine("Accuracy =" + ((total-wrong)/(float)total));
+Console.WriteLine("Accuracy =" + ((total - wrong) / (float)total));
 
 //for (int i = 0; i < 100; i++)
 //    network.Fit(myEnum, 0.01f, 100);

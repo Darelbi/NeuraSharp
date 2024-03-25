@@ -30,7 +30,7 @@ var layer1 = new BaseNeuralLayer<float>(1, neurons1, neurons2, heInit, bInit,
 var layer2 = new BaseNeuralLayer<float>(2, neurons2, neurons3, heInit, bInit,
     new ReLUActivationFunction<float>(), new NoneRegularization<float>());
 var layer3 = new BaseNeuralLayer<float>(3, neurons3, neurons4, glInit, bInit,
-    new SigmoidActivationFunction<float>(), new NoneRegularization<float>());
+    new TanhActivationFunction<float>(), new NoneRegularization<float>());
 
 var huberParams = new Params<float>(false);
 huberParams.AddParameter(Params.Delta, 0.1f);
