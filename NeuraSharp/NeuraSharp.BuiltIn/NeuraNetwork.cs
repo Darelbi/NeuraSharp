@@ -38,8 +38,8 @@ namespace NeuraSharp.BuiltIn
         /// <param name="output"></param>
         public void PredictInline(T[] input, T[] output)
         {
-            if (!trained)
-                throw new InvalidOperationException("Before predicting call 'Compile' to perform the finalization required steps for training ");
+            //if (!trained)
+            //    throw new InvalidOperationException("Before predicting call 'Compile' to perform the finalization required steps for training ");
 
             Forward(input, output);
         }

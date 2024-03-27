@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "..\TestConso
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.Interfaces", "..\NeuraSharp.Interfaces\NeuraSharp.Interfaces.csproj", "{37BE3C6C-0E04-4DBB-9F38-4CC2BD068993}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.Test001MNIST", "..\NeuraSharp.Test001MNIST\NeuraSharp.Test001MNIST.csproj", "{4897F61D-FB63-4891-A1E0-BB25542CE6F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.Test001MNIST", "..\NeuraSharp.Test001MNIST\NeuraSharp.Test001MNIST.csproj", "{4897F61D-FB63-4891-A1E0-BB25542CE6F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.Test002XOR", "..\NeuraSharp.Test002XOR\NeuraSharp.Test002XOR.csproj", "{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.Test002XOR", "..\NeuraSharp.Test002XOR\NeuraSharp.Test002XOR.csproj", "{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.Test003MNIST_Optimizer", "..\NeuraSharp.Test003MNIST_Optimizer\NeuraSharp.Test003MNIST_Optimizer.csproj", "{D5AA051D-2B10-4C1A-BE9A-EEF22A189EDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D722F84A-CD3F-4CDF-B482-2B15BBDE9C1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5AA051D-2B10-4C1A-BE9A-EEF22A189EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5AA051D-2B10-4C1A-BE9A-EEF22A189EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5AA051D-2B10-4C1A-BE9A-EEF22A189EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5AA051D-2B10-4C1A-BE9A-EEF22A189EDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
