@@ -14,7 +14,7 @@ using NeuraSharp.Logic;
 
 using (StreamWriter writer = new StreamWriter("Compare random nets.csv"))
 {
-    for (int mmm = 0; mmm < 30; mmm++)
+    for (int mmm = 0; mmm < 50; mmm++)
     {
         string layerDescription = "";
         var numLayers = Random.Shared.Next(1, 4);
