@@ -1,7 +1,3 @@
-- Bias initializer
-- Weight initializer
-
-At least Zero, Xavier and random uniform
 
 - Compile time exceptions or warnings for incompatible builds (i.E, exception if using Xavier with ReLU)
 - Fix dropout
@@ -17,3 +13,8 @@ At least Zero, Xavier and random uniform
 -orthogonal initalization for weights
 
 - Initial features present => SMALL TEST BEFORE IMPLEMENTING SPARSE LAYERS AND CORRECT DROPOUT
+
+WHAT SHOULD BE PRIORITIZED?
+
+- Embed batch size?
+- 
