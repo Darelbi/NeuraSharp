@@ -11,5 +11,7 @@ namespace NeuraSharp.Interfaces
         public IActivationFunction<T> GetActivationFunction();
 
         public IRegularizationAlgorithm<T>[] GetRegularizers();
+
+        public void ForwardFrom(T[] previousLayerOutput, bool computeDerivates);
     }
 }

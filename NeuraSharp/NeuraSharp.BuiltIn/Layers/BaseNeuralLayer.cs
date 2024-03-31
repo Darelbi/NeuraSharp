@@ -55,5 +55,10 @@ namespace NeuraSharp.BuiltIn.Layers
         {
             return regularizers;
         }
+
+        public void ForwardFrom(T[] previousLayerOutput, bool computeDerivates)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

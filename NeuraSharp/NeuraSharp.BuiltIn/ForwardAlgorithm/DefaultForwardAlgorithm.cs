@@ -12,18 +12,18 @@ namespace NeuraSharp.BuiltIn.ForwardAlgorithm
 
         private static void ForwardStep(INeuralLayer<T> firstLayer, INeuralLayer<T> secondLayer, bool prepare)
         {
-            var activation = secondLayer.GetActivationFunction();
+            var activation = GetActivationFunction();
 
-            Parallel.For(0, secondLayer.Outputs.Length, i =>
+            Parallel.For(0, Outputs.Length, i =>
             {
                 T sum = T.Zero;
-                for (int j = 0; j < secondLayer.Weights[i].Length; j++)
-                    sum += firstLayer.Outputs[j] * secondLayer.Weights[i][j] + secondLayer.Biases[i];
+                for (int j = 0; j < Weights[i].Length; j++)
+                    sum += firstLayer.Outputs[j] * Weights[i][j] + Biases[i];
 
-                secondLayer.Outputs[i] = activation.Compute(sum);
+                Outputs[i] = activation.Compute(sum);
 
                 if (prepare)
-                    secondLayer.Derivates[i] = activation.Derivate(sum);
+                    Derivates[i] = activation.Derivate(sum);
             });
         }
 
