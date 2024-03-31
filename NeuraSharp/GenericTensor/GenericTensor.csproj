@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <LangVersion>9.0</LangVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.5</Version>
+    <Authors>WhiteBlackGoose</Authors>
+    <Company>Angouri</Company>
+    <Description>The only .NET tensor &amp; matrix library for generic types. It is also faster than other generic-typed matrix libraries.</Description>
+    <Copyright>WhiteBlackGoose</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/WhiteBlackGoose/GenericTensor</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/asc-community/GenericTensor</RepositoryUrl>
+    <RepositoryType>public</RepositoryType>
+    <PackageReleaseNotes>Added 0D tensor support, Aggregate, ForEach.</PackageReleaseNotes>
+    <PackageIcon>ico1.png</PackageIcon>
+    <PackageTags>tensor, generic, matrix, vector, performance</PackageTags>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>keypair.snk</AssemblyOriginatorKeyFile>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;ALLOW_EXCEPTIONS</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>D:\main\vs_prj\GenericTensor\GenericTensor\GenericTensor\GenericTensor.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;ALLOW_EXCEPTIONS</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\ico1.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <PackageReference Include="HonkPerf.NET.Core" Version="1.0.2" />
+  </ItemGroup>
+</Project>
