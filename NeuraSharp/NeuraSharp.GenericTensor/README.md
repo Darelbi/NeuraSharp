@@ -27,8 +27,15 @@ Especially I plan to remove that TWrapper stuff in favor of new C# interfaces fo
 generic number algorithms. SIMD support will come shortly after I understand
 how the crap Tensor Product works ^^.
 
-I appreciate the set of algorithms that comes with GenericTensor (even though
-some is incomplete) and the fact that it is not binded to a specific number type.
+I appreciate the set of algorithms that comes with GenericTensor and the fact 
+that it is not binded to a specific number type. I will try to adhere as much
+as possible to the original vision.
+
+### Changelist
+
+ - Started migrating to use INumber interface all over the place
+ - Improved division wrapper equality
+ - Realized I need INumber of the division wrapper too.
 
 ### about GenericTensor
 
@@ -131,11 +138,11 @@ Works for O(1)
 <details><summary><strong>SetSubtensor</strong></summary><p>
 
 ```cs
-public void SetSubtensor(GenTensor<T, TWrapper> sub, params int[] indecies);
+public void SetSubtensor(GenTensor<T> sub, params int[] indecies);
 ```
 
 Allows to set a subtensor by forwarding all elements from sub to this. Override
-ConstantsAndFunctions<T, TWrapper>.Forward to enable it.
+ConstantsAndFunctions<T>.Forward to enable it.
 
 Works for O(V)
 </p></details>
@@ -156,7 +163,7 @@ Works for O(1)
 <details><summary><strong>Concatenation</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> Concat(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b);
+public static GenTensor<T> Concat(GenTensor<T> a, GenTensor<T> b);
 ```
 
 Conatenates two tensors by their first axis. For example, concatenation of
@@ -169,7 +176,7 @@ Works for O(N)
 <details><summary><strong>Stacking</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> Stack(params GenTensor<T, TWrapper>[] elements);
+public static GenTensor<T> Stack(params GenTensor<T>[] elements);
 ```
 
 Unites all same-shape elements into one tensor with 1 dimension more.
@@ -182,7 +189,7 @@ Works for O(V)
 <details><summary><strong>Slicing</strong></summary><p>
 
 ```cs
-public GenTensor<T, TWrapper> Slice(int leftIncluding, int rightExcluding);
+public GenTensor<T> Slice(int leftIncluding, int rightExcluding);
 ```
 
 Slices this into another tensor with data-sharing. Syntax and use is similar to
@@ -205,7 +212,7 @@ Works for O(N)
 
 ```cs
 public byte[] Serialize();
-public static GenTensor<T, TWrapper> Deserialize(byte[] data);
+public static GenTensor<T> Deserialize(byte[] data);
 ```
 
 Non-static Serialize() serializes given tensor into a byte array. It will call `TWrapper.Serialize(T a)`. 
@@ -230,8 +237,8 @@ does the same thing on all matrices of a tensor.
 <details><summary><strong>Vector dot product</strong></summary><p>
 
 ```cs
-public static T VectorDotProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b);
-public static GenTensor<T, TWrapper> TensorVectorDotProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b);
+public static T VectorDotProduct(GenTensor<T> a, GenTensor<T> b);
+public static GenTensor<T> TensorVectorDotProduct(GenTensor<T> a, GenTensor<T> b);
 ```
 
 Counts dot product of two same-shaped vectors. For example, you have v1 = {2, 3, 4},
@@ -243,8 +250,8 @@ Works for O(V)
 <details><summary><strong>Vector cross product</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> VectorCrossProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b);
-public static GenTensor<T, TWrapper> TensorVectorCrossProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b);
+public static GenTensor<T> VectorCrossProduct(GenTensor<T> a, GenTensor<T> b);
+public static GenTensor<T> TensorVectorCrossProduct(GenTensor<T> a, GenTensor<T> b);
 ```
 
 Counts cross product of two same-shaped vectors. The resulting vector is such one
@@ -272,12 +279,12 @@ Works for O(N)
 <details><summary><strong>Echelon forms</strong></summary><p>
 
 ```cs
-public GenTensor<T, TWrapper> RowEchelonFormSimple();
-public GenTensor<T, TWrapper> RowEchelonFormSafeDivision();
-public GenTensor<T, TWrapper> RowEchelonFormLeadingOnesSimple();
-public GenTensor<T, TWrapper> RowEchelonFormLeadingOnesSafeDivision();
-public GenTensor<T, TWrapper> ReducedRowEchelonFormSimple();
-public GenTensor<T, TWrapper> ReducedRowEchelonFormSafeDivision();
+public GenTensor<T> RowEchelonFormSimple();
+public GenTensor<T> RowEchelonFormSafeDivision();
+public GenTensor<T> RowEchelonFormLeadingOnesSimple();
+public GenTensor<T> RowEchelonFormLeadingOnesSafeDivision();
+public GenTensor<T> ReducedRowEchelonFormSimple();
+public GenTensor<T> ReducedRowEchelonFormSafeDivision();
 ```
 
 Finds the requested form of a matrix. Due to different definitions of row echelon forms, we provide both forms: the one with leading ones and the one
@@ -293,8 +300,8 @@ Works for O(N^3)
 <details><summary><strong>Matrix multiplication</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> MatrixMultiply(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> TensorMatrixMultiply(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
+public static GenTensor<T> MatrixMultiply(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single);
+public static GenTensor<T> TensorMatrixMultiply(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single);
 ```
 
 Performs matrix multiplication operation of two matrices. One's height should be the same
@@ -338,7 +345,7 @@ Works for O(N^4)
 <details><summary><strong>Adjugate</strong></summary><p>
 
 ```cs
-public GenTensor<T, TWrapper> Adjoint();
+public GenTensor<T> Adjoint();
 ```
 
 Returns an adjugate matrix.
@@ -349,8 +356,8 @@ Works for O(N^4)
 <details><summary><strong>Division</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> MatrixDivide(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b);
-public static GenTensor<T, TWrapper> TensorMatrixDivide(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
+public static GenTensor<T> MatrixDivide(GenTensor<T> a, GenTensor<T> b);
+public static GenTensor<T> TensorMatrixDivide(GenTensor<T> a, GenTensor<T> b)
 ```
 
 Of A, B returns such C that A == C * B.
@@ -361,8 +368,8 @@ Works for O(N^4)
 <details><summary><strong>Matrix Power</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> MatrixPower(GenTensor<T, TWrapper> m, int power);
-public static GenTensor<T, TWrapper> TensorMatrixPower(GenTensor<T, TWrapper> m, int power);
+public static GenTensor<T> MatrixPower(GenTensor<T> m, int power);
+public static GenTensor<T> TensorMatrixPower(GenTensor<T> m, int power);
 ```
 
 Finds the power of a matrix.
@@ -375,7 +382,7 @@ Works for O(log(N) * N^3)
 <details><summary><strong>PLU decomposision</strong></summary><p>
 
 ```cs     
-public (GenTensor<T, TWrapper> p, GenTensor<T, TWrapper> l, GenTensor<T, TWrapper> u) PluDecomposition()
+public (GenTensor<T> p, GenTensor<T> l, GenTensor<T> u) PluDecomposition()
 ```
 
 Find PLU decomposition: matrices P, L, U such that for original matrix A: PA = LU.
@@ -387,7 +394,7 @@ Works for O(n^3)
 <details><summary><strong>LU decomposision</strong></summary><p>
 
 ```cs
-public (GenTensor<T, TWrapper>, GenTensor<T, TWrapper>) LuDecomposition()   
+public (GenTensor<T>, GenTensor<T>) LuDecomposition()   
 ```
 
 Find LU decomposition: matrices L, U such that for original matrix A: A = LU.
@@ -401,10 +408,10 @@ Works for O(n^3)
 <details><summary><strong>Tensor and Tensor</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> PiecewiseAdd(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseSubtract(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseMultiply(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseDivide(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseDivide(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single);
 ```
 
 Returns a tensor of an operation being applied to every matching pair so that Add is.
@@ -420,12 +427,12 @@ Works for O(V)
 <details><summary><strong>Tensor and Scalar</strong></summary><p>
 
 ```cs
-public static GenTensor<T, TWrapper> PiecewiseAdd(GenTensor<T, TWrapper> a, T b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseSubtract(GenTensor<T, TWrapper> a, T b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseSubtract(T a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseMultiply(GenTensor<T, TWrapper> a, T b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseDivide(GenTensor<T, TWrapper> a, T b, Threading threading = Threading.Single);
-public static GenTensor<T, TWrapper> PiecewiseDivide(T a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, T b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, T b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseSubtract(T a, GenTensor<T> b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, T b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseDivide(GenTensor<T> a, T b, Threading threading = Threading.Single);
+public static GenTensor<T> PiecewiseDivide(T a, GenTensor<T> b, Threading threading = Threading.Single);
 ```
 
 Performs an operation on each of tensor's element and forwards them to the result

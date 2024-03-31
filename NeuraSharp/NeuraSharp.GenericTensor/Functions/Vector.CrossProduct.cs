@@ -29,9 +29,9 @@ using GenericTensor.Core;
 
 namespace GenericTensor.Functions
 {
-    internal static partial class VectorProduct<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static partial class VectorProduct<T> where TWrapper : struct, IOperations<T>
     {
-        public static GenTensor<T, TWrapper> VectorCrossProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
+        public static GenTensor<T> VectorCrossProduct(GenTensor<T> a, GenTensor<T> b)
         {
             #if ALLOW_EXCEPTIONS
             if (!a.IsVector || !b.IsVector)
@@ -41,7 +41,7 @@ namespace GenericTensor.Functions
             if (a.Shape[0] != 3)
                 throw new NotImplementedException("Other than vectors of the length of 3 aren't supported for VectorCrossProduct yet");
             #endif
-            return GenTensor<T, TWrapper>.CreateVector(
+            return GenTensor<T>.CreateVector(
                 default(TWrapper).Subtract(
                     default(TWrapper).Multiply(a[1], b[2]),
                     default(TWrapper).Multiply(a[2], b[1])),
@@ -56,14 +56,14 @@ namespace GenericTensor.Functions
             );
         }
 
-        public static GenTensor<T, TWrapper> TensorVectorCrossProduct(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b)
+        public static GenTensor<T> TensorVectorCrossProduct(GenTensor<T> a,
+            GenTensor<T> b)
         {
             #if ALLOW_EXCEPTIONS
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException($"Pre-shapes of {nameof(a)} and {nameof(b)} should be equal");
             #endif
-            var res = new GenTensor<T, TWrapper>(a.Shape);
+            var res = new GenTensor<T>(a.Shape);
             foreach (var index in a.IterateOverVectors())
                 res.SetSubtensor(
                     VectorCrossProduct(a.GetSubtensor(index), b.GetSubtensor(index)),

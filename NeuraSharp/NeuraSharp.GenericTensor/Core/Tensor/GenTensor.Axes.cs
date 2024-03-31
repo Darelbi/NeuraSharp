@@ -25,11 +25,12 @@
 #endregion
 
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace GenericTensor.Core
 {
-    public partial class GenTensor<T, TWrapper>
+    public partial class GenTensor<T> where T : INumber<T>
     {
         /// <summary>
         /// Shape represents axes' lengths of the tensor

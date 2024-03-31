@@ -26,28 +26,23 @@
 
 
 using GenericTensor.Core;
+using System.Numerics;
 
 namespace GenericTensor.Functions
 {
-    internal static class CopyAndForward<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class CopyAndForward<T> where T:INumber<T>
     {
-        public static GenTensor<T, TWrapper> Copy(GenTensor<T, TWrapper> t, bool copyElements)
+        public static GenTensor<T> Copy(GenTensor<T> t)
         {
-            var res = new GenTensor<T, TWrapper>(t.Shape.Copy());
-            if (!copyElements)
-            {
-                foreach (var index in res.IterateOverElements())
-                    res.SetValueNoCheck(t.GetValueNoCheck(index), index);
-            }
-            else
-                foreach (var index in res.IterateOverElements())
-                    res.SetValueNoCheck(default(TWrapper).Copy(t.GetValueNoCheck(index)), index);
+            var res = new GenTensor<T>(t.Shape.Copy());
+            foreach (var index in res.IterateOverElements())
+                res.SetValueNoCheck(t.GetValueNoCheck(index), index);
             return res;
         }
 
-        public static GenTensor<T, TWrapper> Forward(GenTensor<T, TWrapper> t)
+        public static GenTensor<T> Forward(GenTensor<T> t)
         {
-            var res = new GenTensor<T, TWrapper>(t.Shape);
+            var res = new GenTensor<T>(t.Shape);
             foreach (var index in res.IterateOverElements())
                 res.SetValueNoCheck(t.GetValueNoCheck(index), index);
             return res;

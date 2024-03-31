@@ -25,28 +25,23 @@
 #endregion
 
 
+using System.Numerics;
+
 namespace GenericTensor.Core
 {
-    internal static class SquareMatrixFactory<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class SquareMatrixFactory<T> where T:INumber<T>
     {
         // [0] is 1x1 matrix, [1] is 2x2 matrix, etc.
-        static readonly List<GenTensor<T, TWrapper>> tensorTempFactorySquareMatrices = new List<GenTensor<T, TWrapper>>();
+        static readonly List<GenTensor<T>> tensorTempFactorySquareMatrices = new List<GenTensor<T>>();
 
-        internal static GenTensor<T, TWrapper> GetMatrix(int diagLength)
+        internal static GenTensor<T> GetMatrix(int diagLength)
         {
             if (diagLength >= tensorTempFactorySquareMatrices.Count + 1)
                 lock (tensorTempFactorySquareMatrices)
                     if (diagLength >= tensorTempFactorySquareMatrices.Count + 1)
                         for (int i = tensorTempFactorySquareMatrices.Count + 1; i <= diagLength; i++)
-                            tensorTempFactorySquareMatrices.Add(new GenTensor<T, TWrapper>(i, i));
+                            tensorTempFactorySquareMatrices.Add(new GenTensor<T>(i, i));
             return tensorTempFactorySquareMatrices[diagLength - 1];
         }
-    }
-
-    // It is here just for a test to avoid InternalsToVisible
-    internal static class TestSquareMatrixFactoryExposed
-    {
-        internal static GenTensor<int, IntWrapper> TestGetMatrixExposed(int diagLength)
-            => SquareMatrixFactory<int, IntWrapper>.GetMatrix(diagLength);
     }
 }

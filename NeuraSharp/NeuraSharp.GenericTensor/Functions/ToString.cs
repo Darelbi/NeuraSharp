@@ -30,9 +30,9 @@ using GenericTensor.Core;
 
 namespace GenericTensor.Functions
 {
-    internal static class DefaultOverridings<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class DefaultOverridings<T> where TWrapper : struct, IOperations<T>
     {
-        public static string InToString(GenTensor<T, TWrapper> t)
+        public static string InToString(GenTensor<T> t)
         {
             if (t.IsMatrix)
             {
@@ -81,7 +81,7 @@ namespace GenericTensor.Functions
         }
 
         // TODO: make it faster
-        public static int GetHashCode(GenTensor<T, TWrapper> t)
+        public static int GetHashCode(GenTensor<T> t)
         {
             var res = 0;
             unchecked

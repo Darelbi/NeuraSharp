@@ -25,9 +25,11 @@
 #endregion
 
 
+using System.Numerics;
+
 namespace GenericTensor.Core
 {
-    public partial class GenTensor<T, TWrapper>
+    public partial class GenTensor<T> where T : INumber<T>
     {
         /// <summary>
         /// Linear offset (as in offset in the initial array)
@@ -43,7 +45,7 @@ namespace GenericTensor.Core
         /// O(N)
         /// </summary>
         // TODO: Make it O(1)
-        public GenTensor<T, TWrapper> Slice(int leftIncluding, int rightExcluding)
+        public GenTensor<T> Slice(int leftIncluding, int rightExcluding)
         {
             #if ALLOW_EXCEPTIONS
             ReactIfBadBound(leftIncluding, 0);
@@ -52,7 +54,7 @@ namespace GenericTensor.Core
                 throw new InvalidShapeException("Slicing cannot be performed");
             #endif
             var newLength = rightExcluding - leftIncluding;
-            var toStack = new GenTensor<T, TWrapper>[newLength];
+            var toStack = new GenTensor<T>[newLength];
             for (int i = 0; i < newLength; i++)
                 toStack[i] = GetSubtensor(i + leftIncluding);
             return Stack(toStack);
@@ -63,10 +65,10 @@ namespace GenericTensor.Core
         ///
         /// O(1)
         /// </summary>
-        public GenTensor<T, TWrapper> GetSubtensor(int[] indices)
+        public GenTensor<T> GetSubtensor(int[] indices)
             => GetSubtensor(indices, 0);
 
-        internal GenTensor<T, TWrapper> GetSubtensor(int[] indices, int id)
+        internal GenTensor<T> GetSubtensor(int[] indices, int id)
             => id == indices.Length ? this : this.GetSubtensor(indices[id]).GetSubtensor(indices, id + 1);
 
         /// <summary>
@@ -76,7 +78,7 @@ namespace GenericTensor.Core
         ///
         /// O(1)
         /// </summary>
-        public GenTensor<T, TWrapper> GetSubtensor(int index)
+        public GenTensor<T> GetSubtensor(int index)
         {
             #if ALLOW_EXCEPTIONS
             ReactIfBadBound(index, 0);
@@ -86,7 +88,7 @@ namespace GenericTensor.Core
             var rootAxis = 0;
             newBlocks.RemoveAt(rootAxis);
             var newShape = Shape.CutOffset1();
-            var result = new GenTensor<T, TWrapper>(newShape, newBlocks.ToArray(), data)
+            var result = new GenTensor<T>(newShape, newBlocks.ToArray(), data)
             {
                 LinOffset = newLinIndexDelta
             };
@@ -101,7 +103,7 @@ namespace GenericTensor.Core
         ///
         /// O(V)
         /// </summary>
-        public void SetSubtensor(GenTensor<T, TWrapper> sub, params int[] indices)
+        public void SetSubtensor(GenTensor<T> sub, params int[] indices)
         {
             #if ALLOW_EXCEPTIONS
             if (indices.Length >= Shape.Count)
@@ -120,7 +122,7 @@ namespace GenericTensor.Core
             thisSub.Assign(sub);
         }
 
-        internal void Assign(GenTensor<T, TWrapper> genTensor)
+        internal void Assign(GenTensor<T> genTensor)
         {
             foreach (var (index, value) in genTensor.Iterate())
                 this.SetValueNoCheck(value, index);

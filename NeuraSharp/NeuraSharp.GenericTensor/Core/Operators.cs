@@ -25,9 +25,11 @@
 #endregion
 
 
+using System.Numerics;
+
 namespace GenericTensor.Core
 {
-    public partial class GenTensor<T, TWrapper> : System.IEquatable<GenTensor<T, TWrapper>>
+    public partial class GenTensor<T> : System.IEquatable<GenTensor<T>> where T : INumber<T>
     {
         /// <summary>
         /// A tensor is a matrix if has two dimensions, e. g. [3 x 4]
@@ -50,7 +52,7 @@ namespace GenericTensor.Core
         /// </summary>
         public override bool Equals(object obj)
         {
-            if (obj is null || obj is not GenTensor<T, TWrapper> ten)
+            if (obj is null || obj is not GenTensor<T> ten)
                 return false;
             return Equals(ten);
         }
@@ -59,24 +61,16 @@ namespace GenericTensor.Core
         /// Calls your default(TWrapper).Equals
         /// Be sure to override it when using this function or ==, != operators
         /// </summary>
-        public bool Equals(GenTensor<T, TWrapper> obj)
+        public bool Equals(GenTensor<T> obj)
         {
             if (obj is null)
                 return false;
             if (obj.Shape != Shape)
                 return false;
             foreach (var (index, _) in obj.Iterate())
-                if (!default(TWrapper).AreEqual(this.GetValueNoCheck(index), obj.GetValueNoCheck(index)))
+                if (this.GetValueNoCheck(index) != obj.GetValueNoCheck(index))
                     return false;
             return true;
         }
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-        public static bool operator ==(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => object.ReferenceEquals(a, b) || (a is {} && a.Equals(b));
-
-        public static bool operator !=(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => !(a == b);
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     }
 }

@@ -26,12 +26,14 @@
 
 
 using GenericTensor.Core;
+using HonkPerf.NET.Core;
+using System.Numerics;
 
 namespace GenericTensor.Functions
 {
-    internal static class Composition<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class Composition<T> where T :INumber<T>
     {
-        public static GenTensor<T, TWrapper> Stack(params GenTensor<T, TWrapper>[] elements)
+        public static GenTensor<T> Stack(params GenTensor<T>[] elements)
         {
             #if ALLOW_EXCEPTIONS
             if (elements.Length < 1)
@@ -47,13 +49,13 @@ namespace GenericTensor.Functions
             newShape[0] = elements.Length;
             for (int i = 1; i < newShape.Length; i++)
                 newShape[i] = desiredShape[i - 1];
-            var res = new GenTensor<T, TWrapper>(newShape);
+            var res = new GenTensor<T>(newShape);
             for (int i = 0; i < elements.Length; i++)
                 res.SetSubtensor(elements[i], i);
             return res;
         }
 
-        public static GenTensor<T, TWrapper> Concat(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
+        public static GenTensor<T> Concat(GenTensor<T> a, GenTensor<T> b)
         {
             #if ALLOW_EXCEPTIONS
             if (a.Shape.SubShape(1, 0) != b.Shape.SubShape(1, 0))
@@ -62,7 +64,7 @@ namespace GenericTensor.Functions
 
             if (a.IsVector)
             {
-                var resultingVector = GenTensor<T, TWrapper>.CreateVector(a.Shape.shape[0] + b.Shape.shape[0]);
+                var resultingVector = GenTensor<T>.CreateVector(a.Shape.shape[0] + b.Shape.shape[0]);
                 for (int i = 0; i < a.Shape.shape[0]; i++)
                     resultingVector.SetValueNoCheck(a.GetValueNoCheck(i), i);
 
@@ -76,7 +78,7 @@ namespace GenericTensor.Functions
                 var newShape = a.Shape.Copy();
                 newShape.shape[0] = a.Shape.shape[0] + b.Shape.shape[0];
 
-                var res = new GenTensor<T, TWrapper>(newShape);
+                var res = new GenTensor<T>(newShape);
                 for (int i = 0; i < a.Shape.shape[0]; i++)
                     res.SetSubtensor(a.GetSubtensor(i), i);
 
@@ -87,13 +89,12 @@ namespace GenericTensor.Functions
             }
         }
 
-        private struct AggregateFunctor<U, UWrapper, TAggregatorFunc> : IValueAction<int[], T>
-            where TAggregatorFunc : struct, HonkPerf.NET.Core.IValueDelegate<U, T, U>
-            where UWrapper : struct, IOperations<U>
+        private struct AggregateFunctor<U, T, TAggregatorFunc> : IValueAction<int[], T>
+            where TAggregatorFunc : struct, IValueDelegate<U, T, U> where U:INumber<U> where T:INumber<T>
         {
             private TAggregatorFunc collapse;
-            private GenTensor<U, UWrapper> acc;
-            public AggregateFunctor(TAggregatorFunc collapse, GenTensor<U, UWrapper> acc)
+            private GenTensor<U> acc;
+            public AggregateFunctor(TAggregatorFunc collapse, GenTensor<U> acc)
             {
                 this.collapse = collapse;
                 this.acc = acc;
@@ -104,9 +105,8 @@ namespace GenericTensor.Functions
             }
         }
         
-        public static void Aggregate<TAggregatorFunc, U, UWrapper>(GenTensor<T, TWrapper> t, GenTensor<U, UWrapper> acc, TAggregatorFunc collapse, int axis)
-            where TAggregatorFunc : struct, HonkPerf.NET.Core.IValueDelegate<U, T, U>
-            where UWrapper : struct, IOperations<U>
+        public static void Aggregate<TAggregatorFunc, T, U>(GenTensor<T> t, GenTensor<U> acc, TAggregatorFunc collapse, int axis)
+            where TAggregatorFunc : struct, IValueDelegate<U, T, U> where U :INumber<U> where T:INumber<T>
         {
             for (int i = axis; i > 0; i--)
                 t.Transpose(i, i - 1); // Move the axis we want to reduce to the front for GetSubtensor. Order is important since it is directly reflected in the output shape.
@@ -118,7 +118,7 @@ namespace GenericTensor.Functions
                     acc[id] = collapse.Invoke(acc[id], value);
             */
             for (int i = 0; i < t.Shape[0]; i++)
-                t.GetSubtensor(i).ForEach(new AggregateFunctor<U, UWrapper, TAggregatorFunc>(collapse, acc));
+                t.GetSubtensor(i).ForEach(new AggregateFunctor<U, T, TAggregatorFunc>(collapse, acc));
             for (int i = 0; i < axis; i++)
                 t.Transpose(i, i + 1);
         }

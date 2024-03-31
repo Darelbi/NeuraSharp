@@ -25,11 +25,13 @@
 #endregion
 
 
+using HonkPerf.NET.Core;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace GenericTensor.Core
 {
-    public partial class GenTensor<T, TWrapper>
+    public partial class GenTensor<T> where T : INumber<T>
     {
         private void NextIndex(int[] indices, int id)
         {
@@ -55,7 +57,7 @@ namespace GenericTensor.Core
         /// </remarks>
         public void ForEach<TIterator>(TIterator iterator) where TIterator : struct, IValueAction<int[], T>
         {
-            static void ForEach1D(GenTensor<T, TWrapper> t, TIterator iterator)
+            static void ForEach1D(GenTensor<T> t, TIterator iterator)
             {
                 var index = new int[1];
                 for (int i = 0; i < t.Shape[0]; i++)
@@ -64,7 +66,7 @@ namespace GenericTensor.Core
                     iterator.Invoke(index, t.GetValueNoCheck(i));
                 }
             }
-            static void ForEach2D(GenTensor<T, TWrapper> t, TIterator iterator)
+            static void ForEach2D(GenTensor<T> t, TIterator iterator)
             {
                 var index = new int[2];
                 for (int x = 0; x < t.Shape[0]; x++)
@@ -77,7 +79,7 @@ namespace GenericTensor.Core
                     }
                 }
             }
-            static void ForEach3D(GenTensor<T, TWrapper> t, TIterator iterator)
+            static void ForEach3D(GenTensor<T> t, TIterator iterator)
             {
                 var index = new int[3];
                 for (int x = 0; x < t.Shape[0]; x++)
@@ -94,7 +96,7 @@ namespace GenericTensor.Core
                     }
                 }
             }
-            static void ForEach4D(GenTensor<T, TWrapper> t, TIterator iterator)
+            static void ForEach4D(GenTensor<T> t, TIterator iterator)
             {
                 var index = new int[4];
                 for (int x = 0; x < t.Shape[0]; x++)
@@ -293,7 +295,7 @@ namespace GenericTensor.Core
             => data[GetFlattenedIndexSilent(x, y, z, other)] = value;
 
         /// <summary>
-        /// Gets the value without checking and without throwing an exception
+        /// Sets the value without checking and without throwing an exception
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetValueNoCheck(T value, int[] indices)

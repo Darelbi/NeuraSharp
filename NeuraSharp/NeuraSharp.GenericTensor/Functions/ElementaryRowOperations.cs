@@ -29,9 +29,9 @@ using GenericTensor.Core;
 
 namespace GenericTensor.Functions
 {
-    internal static class ElementaryRowOperations<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class ElementaryRowOperations<T> where TWrapper : struct, IOperations<T>
     {
-        public static void RowMultiply(GenTensor<T, TWrapper> t, int rowId, T coef)
+        public static void RowMultiply(GenTensor<T> t, int rowId, T coef)
         {
             #if ALLOW_EXCEPTIONS
             if (!t.IsMatrix)
@@ -41,7 +41,7 @@ namespace GenericTensor.Functions
                 t.SetValueNoCheck(default(TWrapper).Multiply(coef, t.GetValueNoCheck(rowId, i)), rowId, i);
         }
 
-        public static void RowAdd(GenTensor<T, TWrapper> t, int dstRowId, int srcRowId, T coef)
+        public static void RowAdd(GenTensor<T> t, int dstRowId, int srcRowId, T coef)
         {
             #if ALLOW_EXCEPTIONS
             if (!t.IsMatrix)
@@ -56,7 +56,7 @@ namespace GenericTensor.Functions
                     dstRowId, i);
         }
 
-        public static void RowSwap(GenTensor<T, TWrapper> t, int row1Id, int row2Id)
+        public static void RowSwap(GenTensor<T> t, int row1Id, int row2Id)
         {
             #if ALLOW_EXCEPTIONS
             if (!t.IsMatrix)
@@ -70,10 +70,10 @@ namespace GenericTensor.Functions
             }
         }
         
-        public static void RowSubtract(GenTensor<T, TWrapper> t, int dstRowId, int srcRowId, T coef)
+        public static void RowSubtract(GenTensor<T> t, int dstRowId, int srcRowId, T coef)
             => RowAdd(t, dstRowId, srcRowId, default(TWrapper).Negate(coef));
 
-        public static (int id, T value)? LeadingElement(GenTensor<T, TWrapper> t, int row)
+        public static (int id, T value)? LeadingElement(GenTensor<T> t, int row)
         {
             for (int i = 0; i < t.Shape[1]; i++)
             {

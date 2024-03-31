@@ -29,10 +29,10 @@ using GenericTensor.Core;
 
 namespace GenericTensor.Functions
 {
-    internal static class MatrixMultiplication<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class MatrixMultiplication<T> where TWrapper : struct, IOperations<T>
     {
-        internal static GenTensor<T, TWrapper> Multiply(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b, Threading threading = Threading.Single)
+        internal static GenTensor<T> Multiply(GenTensor<T> a,
+            GenTensor<T> b, Threading threading = Threading.Single)
         {
             #if ALLOW_EXCEPTIONS
             if (!a.IsMatrix || !b.IsMatrix)
@@ -44,7 +44,7 @@ namespace GenericTensor.Functions
             var width = a.Shape[0];
             var height = b.Shape[1];
             var row = a.Shape[1];
-            var res = Constructors<T, TWrapper>.CreateMatrix(width, height);
+            var res = Constructors<T>.CreateMatrix(width, height);
 
             var parallel = threading == Threading.Multi || (threading == Threading.Auto && a.Volume > 125);
 
@@ -94,8 +94,8 @@ namespace GenericTensor.Functions
             return res;
         }
 
-        public static GenTensor<T, TWrapper> TensorMultiply(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b, Threading threading = Threading.Single)
+        public static GenTensor<T> TensorMultiply(GenTensor<T> a,
+            GenTensor<T> b, Threading threading = Threading.Single)
         {
             #if ALLOW_EXCEPTIONS
             if (a.Shape.Count < 2 || b.Shape.Count < 2)
@@ -109,7 +109,7 @@ namespace GenericTensor.Functions
                 newShape[i] = oldShape[i];
             newShape[newShape.Length - 2] = a.Shape[a.Shape.Length - 2];
             newShape[newShape.Length - 1] = b.Shape[b.Shape.Length - 1];
-            var resTensor = new GenTensor<T, TWrapper>(newShape);
+            var resTensor = new GenTensor<T>(newShape);
 
             var parallel = threading == Threading.Multi || (threading == Threading.Auto && a.Volume > 300 && a.Shape[0] > 2);
 

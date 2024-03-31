@@ -27,6 +27,7 @@
 #endregion
 
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using GenericTensor.Functions;
 
@@ -37,8 +38,8 @@ namespace GenericTensor.Core
     /// </summary>
     /// <typeparam name="T">The primitive to be an element in the tensor</typeparam>
     /// <typeparam name="TWrapper">The set of rules for working with primitives</typeparam>
-    public sealed partial class GenTensor<T, TWrapper>
-        : ICloneable where TWrapper : struct, IOperations<T>
+    public sealed partial class GenTensor<T> 
+        : ICloneable where T : INumber<T>
     {
         #region Composition
 
@@ -53,8 +54,8 @@ namespace GenericTensor.Core
         /// O(V)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> Stack(params GenTensor<T, TWrapper>[] elements)
-            => Composition<T, TWrapper>.Stack(elements);
+        public static GenTensor<T> Stack(params GenTensor<T>[] elements)
+            => Composition<T>.Stack(elements);
 
         /// <summary>
         /// Concatenates two tensors over the first axis,
@@ -63,8 +64,8 @@ namespace GenericTensor.Core
         /// result will be of shape [13 x 3 x 5]
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> Concat(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => Composition<T, TWrapper>.Concat(a, b);
+        public static GenTensor<T> Concat(GenTensor<T> a, GenTensor<T> b)
+            => Composition<T>.Concat(a, b);
 
 
         /// <summary>
@@ -90,10 +91,9 @@ namespace GenericTensor.Core
         /// <param name="axis">
         /// The index of the axis (dimension) to aggregate over.
         /// </param>
-        public static void Aggregate<TAggregatorFunc, U, UWrapper>(GenTensor<T, TWrapper> tensor, GenTensor<U, UWrapper> accumulated, TAggregatorFunc accumulator, int axis)
-            where TAggregatorFunc : struct, HonkPerf.NET.Core.IValueDelegate<U, T, U>
-            where UWrapper : struct, IOperations<U>
-            => Composition<T, TWrapper>.Aggregate(tensor, accumulated, accumulator, axis);
+        public static void Aggregate<TAggregatorFunc, U>(GenTensor<T> tensor, GenTensor<U> accumulated, TAggregatorFunc accumulator, int axis)
+            where TAggregatorFunc : struct, HonkPerf.NET.Core.IValueDelegate<U, T, U> where U : INumber<U>
+            => Composition<T>.Aggregate(tensor, accumulated, accumulator, axis);
 
         #endregion
 
@@ -105,8 +105,8 @@ namespace GenericTensor.Core
         /// <para>0 is achieved with <see cref="IOperations{T}.CreateZero"/></para>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateIdentityTensor(int[] dimensions, int finalMatrixDiag)
-            => Constructors<T, TWrapper>.CreateIdentityTensor(dimensions, finalMatrixDiag);
+        public static GenTensor<T> CreateIdentityTensor(int[] dimensions, int finalMatrixDiag)
+            => Constructors<T>.CreateIdentityTensor(dimensions, finalMatrixDiag);
 
         /// <summary>
         /// Creates an indentity matrix whose width and height are equal to diag
@@ -114,24 +114,24 @@ namespace GenericTensor.Core
         /// <para>0 is achieved with <see cref="IOperations{T}.CreateZero"/></para>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateIdentityMatrix(int diag)
-            => Constructors<T, TWrapper>.CreateIdentityMatrix(diag);
+        public static GenTensor<T> CreateIdentityMatrix(int diag)
+            => Constructors<T>.CreateIdentityMatrix(diag);
 
         /// <summary>
         /// Creates a vector from an array of primitives
         /// Its length will be equal to elements.Length
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateVector(params T[] elements)
-            => Constructors<T, TWrapper>.CreateVector(elements);
+        public static GenTensor<T> CreateVector(params T[] elements)
+            => Constructors<T>.CreateVector(elements);
 
         /// <summary>
         /// Creates a vector from an array of primitives
         /// Its length will be equal to elements.Length
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateVector(int length)
-            => Constructors<T, TWrapper>.CreateVector(length);
+        public static GenTensor<T> CreateVector(int length)
+            => Constructors<T>.CreateVector(length);
 
         /// <summary>
         /// Creates a matrix from a two-dimensional array of primitives
@@ -147,61 +147,61 @@ namespace GenericTensor.Core
         /// yourData.GetLength(1) is Shape[1]
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateMatrix(T[,] data)
-            => Constructors<T, TWrapper>.CreateMatrix(data);
+        public static GenTensor<T> CreateMatrix(T[,] data)
+            => Constructors<T>.CreateMatrix(data);
 
         /// <summary>
         /// Creates an uninitialized square matrix
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateSquareMatrix(int diagLength)
-            => Constructors<T, TWrapper>.CreateSquareMatrix(diagLength);
+        public static GenTensor<T> CreateSquareMatrix(int diagLength)
+            => Constructors<T>.CreateSquareMatrix(diagLength);
 
         /// <summary>
         /// Creates a matrix of width and height size
         /// and iterator for each pair of coordinate
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateMatrix(int width, int height, Func<int, int, T> stepper)
-            => Constructors<T, TWrapper>.CreateMatrix(width, height, stepper);
+        public static GenTensor<T> CreateMatrix(int width, int height, Func<int, int, T> stepper)
+            => Constructors<T>.CreateMatrix(width, height, stepper);
 
         /// <summary>
         /// Creates a matrix of width and height size
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateMatrix(int width, int height)
-            => Constructors<T, TWrapper>.CreateMatrix(width, height);
+        public static GenTensor<T> CreateMatrix(int width, int height)
+            => Constructors<T>.CreateMatrix(width, height);
 
         /// <summary>
         /// Creates a tensor of given size with iterator over its indices
         /// (its only argument is an array of integers which are indices of the tensor)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateTensor(TensorShape shape, Func<int[], T> operation, Threading threading = Threading.Single) => Constructors<T, TWrapper>.CreateTensor(shape, operation, threading);
+        public static GenTensor<T> CreateTensor(TensorShape shape, Func<int[], T> operation, Threading threading = Threading.Single) => Constructors<T>.CreateTensor(shape, operation, threading);
 
         /// <summary>
         /// Creates a tensor from an array
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateTensor(T[] data) => Constructors<T, TWrapper>.CreateTensor(data);
+        public static GenTensor<T> CreateTensor(T[] data) => Constructors<T>.CreateTensor(data);
 
         /// <summary>
         /// Creates a tensor from a two-dimensional array
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateTensor(T[,] data) => Constructors<T, TWrapper>.CreateTensor(data);
+        public static GenTensor<T> CreateTensor(T[,] data) => Constructors<T>.CreateTensor(data);
 
         /// <summary>
         /// Creates a tensor from a three-dimensional array
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateTensor(T[,,] data) => Constructors<T, TWrapper>.CreateTensor(data);
+        public static GenTensor<T> CreateTensor(T[,,] data) => Constructors<T>.CreateTensor(data);
 
         /// <summary>
         /// Creates a tensor from an n-dimensional array
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> CreateTensor(Array data) => Constructors<T, TWrapper>.CreateTensor(data);
+        public static GenTensor<T> CreateTensor(Array data) => Constructors<T>.CreateTensor(data);
 
         #endregion
 
@@ -211,8 +211,8 @@ namespace GenericTensor.Core
         /// Decomposes a matrix into a triangular one.
         /// Is of the Row Echelon Form (leading elements might be differ from ones).
         /// </summary>
-        public GenTensor<T, TWrapper> RowEchelonFormSimple()
-            => EchelonForm<T, TWrapper>.RowEchelonFormSimple(this);
+        public GenTensor<T> RowEchelonFormSimple()
+            => EchelonForm<T>.RowEchelonFormSimple(this);
         
         /// <summary>
         /// Decomposes a matrix into a triangular one.
@@ -229,8 +229,8 @@ namespace GenericTensor.Core
         ///
         /// It can be useful performing decompositions
         /// </summary>
-        public (GenTensor<T, TWrapper>, int[]) RowEchelonFormPermuteSimple()
-            => EchelonForm<T, TWrapper>.RowEchelonFormPermuteSimple(this);
+        public (GenTensor<T>, int[]) RowEchelonFormPermuteSimple()
+            => EchelonForm<T>.RowEchelonFormPermuteSimple(this);
         
         /// <summary>
         /// Decomposes a matrix into a triangular one.
@@ -247,16 +247,16 @@ namespace GenericTensor.Core
         ///
         /// It can be useful performing decompositions
         /// </summary>
-        public (GenTensor<T, TWrapper>, int[]) RowEchelonFormPermuteSafeDivision()
-            => EchelonForm<T, TWrapper>.RowEchelonFormPermuteSafeDivision(this);
+        public (GenTensor<T>, int[]) RowEchelonFormPermuteSafeDivision()
+            => EchelonForm<T>.RowEchelonFormPermuteSafeDivision(this);
 
         /// <summary>
         /// Decomposes a matrix into a triangular one.
         /// Is of the Row Echelon Form (leading elements might be differ from ones).
         /// Uses safe division, i. e. perform division only when computing the final result.
         /// </summary>
-        public GenTensor<T, TWrapper> RowEchelonFormSafeDivision()
-            => EchelonForm<T, TWrapper>.RowEchelonFormSafeDivision(this);
+        public GenTensor<T> RowEchelonFormSafeDivision()
+            => EchelonForm<T>.RowEchelonFormSafeDivision(this);
 
 
         /// <summary>
@@ -264,8 +264,8 @@ namespace GenericTensor.Core
         /// Is of the Row Echelon Form (leading elements are ones).
         /// </summary>
         /// <returns></returns>
-        public GenTensor<T, TWrapper> RowEchelonFormLeadingOnesSimple()
-            => EchelonForm<T, TWrapper>.RowEchelonFormLeadingOnesSimple(this);
+        public GenTensor<T> RowEchelonFormLeadingOnesSimple()
+            => EchelonForm<T>.RowEchelonFormLeadingOnesSimple(this);
 
         /// <summary>
         /// Decomposes a matrix into a triangular one.
@@ -273,22 +273,22 @@ namespace GenericTensor.Core
         /// Uses safe division, i. e. perform division only when computing the final result.
         /// </summary>
         /// <returns></returns>
-        public GenTensor<T, TWrapper> RowEchelonFormLeadingOnesSafeDivision()
-            => EchelonForm<T, TWrapper>.RowEchelonFormLeadingOnesSafeDivision(this);
+        public GenTensor<T> RowEchelonFormLeadingOnesSafeDivision()
+            => EchelonForm<T>.RowEchelonFormLeadingOnesSafeDivision(this);
 
 
         /// <summary>
         /// Finds the reduced echelon form of a matrix.
         /// </summary>
-        public GenTensor<T, TWrapper> ReducedRowEchelonFormSimple()
-            => EchelonForm<T, TWrapper>.ReducedRowEchelonFormSimple(this);
+        public GenTensor<T> ReducedRowEchelonFormSimple()
+            => EchelonForm<T>.ReducedRowEchelonFormSimple(this);
 
         /// <summary>
         /// Finds the reduced echelon form of a matrix.
         /// Uses safe division, i. e. perform division only when computing the final result.
         /// </summary>
-        public GenTensor<T, TWrapper> ReducedRowEchelonFormSafeDivision()
-            => EchelonForm<T, TWrapper>.ReducedRowEchelonFormSafeDivision(this);
+        public GenTensor<T> ReducedRowEchelonFormSafeDivision()
+            => EchelonForm<T>.ReducedRowEchelonFormSafeDivision(this);
         
         /// <summary>
         /// Finds the reduced echelon form of a matrix.
@@ -296,8 +296,8 @@ namespace GenericTensor.Core
         ///
         /// Additionally returns row permutation
         /// </summary>
-        public (GenTensor<T, TWrapper>, int[]) ReducedRowEchelonFormPermuteSafeDivision()
-            => EchelonForm<T, TWrapper>.ReducedRowEchelonFormPermuteSafeDivision(this);
+        public (GenTensor<T>, int[]) ReducedRowEchelonFormPermuteSafeDivision()
+            => EchelonForm<T>.ReducedRowEchelonFormPermuteSafeDivision(this);
 
         #endregion
 
@@ -312,7 +312,7 @@ namespace GenericTensor.Core
         /// O(N!)
         /// </summary>
         public T DeterminantLaplace()
-            => Determinant<T, TWrapper>.DeterminantLaplace(this);
+            => Determinant<T>.DeterminantLaplace(this);
 
         /// <summary>
         /// Finds Determinant with possible overflow
@@ -321,7 +321,7 @@ namespace GenericTensor.Core
         /// O(N^3)
         /// </summary>
         public T DeterminantGaussianSafeDivision()
-            => Determinant<T, TWrapper>.DeterminantGaussianSafeDivision(this);
+            => Determinant<T>.DeterminantGaussianSafeDivision(this);
 
         /// <summary>
         /// Performs simple Gaussian elimination method on a tensor
@@ -329,28 +329,28 @@ namespace GenericTensor.Core
         /// O(N^3)
         /// </summary>
         public T DeterminantGaussianSimple()
-            => Determinant<T, TWrapper>.DeterminantGaussianSimple(this);
+            => Determinant<T>.DeterminantGaussianSimple(this);
 
         /// <summary>
         /// Computers Laplace's Determinant for all
         /// matrices in the tensor
         /// </summary>
-        public GenTensor<T, TWrapper> TensorDeterminantLaplace()
-            => Determinant<T, TWrapper>.TensorDeterminantLaplace(this);
+        public GenTensor<T> TensorDeterminantLaplace()
+            => Determinant<T>.TensorDeterminantLaplace(this);
 
         /// <summary>
         /// Computers Determinant via Guassian elimination and safe division
         /// for all matrices in the tensor
         /// </summary>
-        public GenTensor<T, TWrapper> TensorDeterminantGaussianSafeDivision()
-            => Determinant<T, TWrapper>.TensorDeterminantGaussianSafeDivision(this);
+        public GenTensor<T> TensorDeterminantGaussianSafeDivision()
+            => Determinant<T>.TensorDeterminantGaussianSafeDivision(this);
 
         /// <summary>
         /// Computers Determinant via Guassian elimination
         /// for all matrices in the tensor
         /// </summary>
-        public GenTensor<T, TWrapper> TensorDeterminantGaussianSimple()
-            => Determinant<T, TWrapper>.TensorDeterminantGaussianSimple(this);
+        public GenTensor<T> TensorDeterminantGaussianSimple()
+            => Determinant<T>.TensorDeterminantGaussianSimple(this);
 
         #endregion
 
@@ -361,8 +361,8 @@ namespace GenericTensor.Core
         ///
         /// O(N^5)
         /// </summary>
-        public GenTensor<T, TWrapper> Adjoint()
-            => Inversion<T, TWrapper>.Adjoint(this);
+        public GenTensor<T> Adjoint()
+            => Inversion<T>.Adjoint(this);
 
         /// <summary>
         /// Inverts a matrix A to B so that A * B = I
@@ -371,13 +371,13 @@ namespace GenericTensor.Core
         /// O(N^5)
         /// </summary>
         public void InvertMatrix()
-            => Inversion<T, TWrapper>.InvertMatrix(this);
+            => Inversion<T>.InvertMatrix(this);
 
         /// <summary>
         /// Inverts all matrices in a tensor
         /// </summary>
         public void TensorMatrixInvert()
-            => Inversion<T, TWrapper>.TensorMatrixInvert(this);
+            => Inversion<T>.TensorMatrixInvert(this);
 
         #endregion
 
@@ -388,28 +388,28 @@ namespace GenericTensor.Core
         /// Modifies the matrix.
         /// </summary>
         public void RowMultiply(int rowId, T coef)
-            => ElementaryRowOperations<T, TWrapper>.RowMultiply(this, rowId, coef);
+            => ElementaryRowOperations<T>.RowMultiply(this, rowId, coef);
 
         /// <summary>
         /// To the first row adds the second row multiplied by the coef.
         /// Modifies the matrix.
         /// </summary>
         public void RowAdd(int dstRowId, int srcRowId, T coef)
-            => ElementaryRowOperations<T, TWrapper>.RowAdd(this, dstRowId, srcRowId, coef);
+            => ElementaryRowOperations<T>.RowAdd(this, dstRowId, srcRowId, coef);
 
         /// <summary>
         /// From the first row subtracts the second row multiplied by the coef.
         /// Modifies the matrix.
         /// </summary>
         public void RowSubtract(int dstRowId, int srcRowId, T coef)
-            => ElementaryRowOperations<T, TWrapper>.RowSubtract(this, dstRowId, srcRowId, coef);
+            => ElementaryRowOperations<T>.RowSubtract(this, dstRowId, srcRowId, coef);
 
         /// <summary>
         /// Swaps the given two rows.
         /// Modifies the matrix.
         /// </summary>
         public void RowSwap(int row1Id, int row2Id)
-            => ElementaryRowOperations<T, TWrapper>.RowSwap(this, row1Id, row2Id);
+            => ElementaryRowOperations<T>.RowSwap(this, row1Id, row2Id);
 
         /// <summary>
         /// Finds the leading element of the row (the first non-zero element).
@@ -419,7 +419,7 @@ namespace GenericTensor.Core
         /// Tuple of index and value of the first non-zero element otherwise
         /// </returns>
         public (int index, T value)? RowGetLeadingElement(int rowId)
-            => ElementaryRowOperations<T, TWrapper>.LeadingElement(this, rowId);
+            => ElementaryRowOperations<T>.LeadingElement(this, rowId);
 
         #endregion
 
@@ -431,15 +431,15 @@ namespace GenericTensor.Core
         ///
         /// O(N^5)
         /// </summary>
-        public static GenTensor<T, TWrapper> MatrixDivide(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => Inversion<T, TWrapper>.MatrixDivide(a, b);
+        public static GenTensor<T> MatrixDivide(GenTensor<T> a, GenTensor<T> b)
+            => Inversion<T>.MatrixDivide(a, b);
 
         /// <summary>
         /// Divides all matrices from tensor a over tensor b and returns a new
         /// tensor with them divided
         /// </summary>
-        public static GenTensor<T, TWrapper> TensorMatrixDivide(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => Inversion<T, TWrapper>.TensorMatrixDivide(a, b);
+        public static GenTensor<T> TensorMatrixDivide(GenTensor<T> a, GenTensor<T> b)
+            => Inversion<T>.TensorMatrixDivide(a, b);
 
 
         /// <summary>
@@ -450,8 +450,8 @@ namespace GenericTensor.Core
         ///
         /// O(N^3)
         /// </summary>
-        public static GenTensor<T, TWrapper> MatrixMultiply(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single)
-            => MatrixMultiplication<T, TWrapper>.Multiply(a, b, threading);
+        public static GenTensor<T> MatrixMultiply(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single)
+            => MatrixMultiplication<T>.Multiply(a, b, threading);
 
         /// <summary>
         /// Applies matrix dot product operation for
@@ -459,8 +459,8 @@ namespace GenericTensor.Core
         ///
         /// O(N^3)
         /// </summary>
-        public static GenTensor<T, TWrapper> TensorMatrixMultiply(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, Threading threading = Threading.Single)
-            => MatrixMultiplication<T, TWrapper>.TensorMultiply(a, b, threading);
+        public static GenTensor<T> TensorMatrixMultiply(GenTensor<T> a, GenTensor<T> b, Threading threading = Threading.Single)
+            => MatrixMultiplication<T>.TensorMultiply(a, b, threading);
 
         #endregion
 
@@ -470,81 +470,81 @@ namespace GenericTensor.Core
         /// T1 + T2
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseAdd(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b,
+        public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, GenTensor<T> b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseAdd(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseAdd(a, b, threading);
 
         /// <summary>
         /// T1 - T2
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseSubtract(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b,
+        public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, GenTensor<T> b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseSubtract(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseSubtract(a, b, threading);
 
         /// <summary>
         /// T1 * T2
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseMultiply(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b,
+        public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, GenTensor<T> b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseMultiply(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseMultiply(a, b, threading);
 
         /// <summary>
         /// T1 / T2
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseDivide(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b,
+        public static GenTensor<T> PiecewiseDivide(GenTensor<T> a, GenTensor<T> b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseDivide(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseDivide(a, b, threading);
 
         /// <summary>
         /// T1 + const
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseAdd(GenTensor<T, TWrapper> a, T b,
+        public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, T b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseAdd(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseAdd(a, b, threading);
 
         /// <summary>
         /// T1 - const
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseSubtract(GenTensor<T, TWrapper> a, T b,
+        public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, T b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseSubtract(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseSubtract(a, b, threading);
 
         /// <summary>
         /// const - T1
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseSubtract(T a, GenTensor<T, TWrapper> b,
+        public static GenTensor<T> PiecewiseSubtract(T a, GenTensor<T> b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseSubtract(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseSubtract(a, b, threading);
 
         /// <summary>
         /// T1 * const
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseMultiply(GenTensor<T, TWrapper> a, T b,
+        public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, T b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseMultiply(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseMultiply(a, b, threading);
 
         /// <summary>
         /// T1 / const
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseDivide(GenTensor<T, TWrapper> a, T b,
+        public static GenTensor<T> PiecewiseDivide(GenTensor<T> a, T b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseDivide(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseDivide(a, b, threading);
 
         /// <summary>
         /// const / T1
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T, TWrapper> PiecewiseDivide(T a, GenTensor<T, TWrapper> b,
+        public static GenTensor<T> PiecewiseDivide(T a, GenTensor<T> b,
             Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T, TWrapper>.PiecewiseDivide(a, b, threading);
+            => PiecewiseArithmetics<T>.PiecewiseDivide(a, b, threading);
 
         #endregion
 
@@ -564,14 +564,14 @@ namespace GenericTensor.Core
         ///
         /// O(log(power) * N^3)
         /// </summary>
-        public GenTensor<T, TWrapper> MatrixPower(int power, Threading threading = Threading.Single)
-            => Power<T, TWrapper>.MatrixPower(this, power, threading);
+        public GenTensor<T> MatrixPower(int power, Threading threading = Threading.Single)
+            => Power<T>.MatrixPower(this, power, threading);
 
         /// <summary>
         /// Performs MatrixPower operation on all matrices from this tensor
         /// </summary>
-        public GenTensor<T, TWrapper> TensorMatrixPower(int power, Threading threading = Threading.Single)
-            => Power<T, TWrapper>.TensorMatrixPower(this, power, threading);
+        public GenTensor<T> TensorMatrixPower(int power, Threading threading = Threading.Single)
+            => Power<T>.TensorMatrixPower(this, power, threading);
 
         #endregion
 
@@ -583,8 +583,8 @@ namespace GenericTensor.Core
         /// <returns>
         /// LU decomposition
         /// </returns>
-        public (GenTensor<T, TWrapper> l, GenTensor<T, TWrapper> u) LuDecomposition()
-            => LuDecomposition<T, TWrapper>.Decompose(this);
+        public (GenTensor<T> l, GenTensor<T> u) LuDecomposition()
+            => LuDecomposition<T>.Decompose(this);
         
         /// <summary>
         /// Find PLU decomposition: matrices P, L, U such that for original matrix A: PA = LU.
@@ -604,8 +604,8 @@ namespace GenericTensor.Core
         /// <returns>
         /// LUP decomposition of given matrix
         /// </returns>
-        public (GenTensor<T, TWrapper> p, GenTensor<T, TWrapper> l, GenTensor<T, TWrapper> u) PluDecomposition()
-            => PluDecomposition<T, TWrapper>.Decompose(this);
+        public (GenTensor<T> p, GenTensor<T> l, GenTensor<T> u) PluDecomposition()
+            => PluDecomposition<T>.Decompose(this);
 
         #endregion
 
@@ -613,11 +613,11 @@ namespace GenericTensor.Core
 
         /// <inheritdoc/>
         public override string ToString()
-            => DefaultOverridings<T, TWrapper>.InToString(this);
+            => DefaultOverridings<T>.InToString(this);
 
         /// <inheritdoc/>
         public override int GetHashCode()
-            => DefaultOverridings<T, TWrapper>.GetHashCode(this);
+            => DefaultOverridings<T>.GetHashCode(this);
 
         #endregion
 
@@ -627,23 +627,23 @@ namespace GenericTensor.Core
         /// Finds a perpendicular vector to two given
         /// TODO: So far only implemented for 3D vectors
         /// </summary>
-        public static GenTensor<T, TWrapper> VectorCrossProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => VectorProduct<T, TWrapper>.VectorCrossProduct(a, b);
+        public static GenTensor<T> VectorCrossProduct(GenTensor<T> a, GenTensor<T> b)
+            => VectorProduct<T>.VectorCrossProduct(a, b);
 
         /// <summary>
         /// Calls VectorCrossProduct for every vector in the tensor
         /// </summary>
-        public static GenTensor<T, TWrapper> TensorVectorCrossProduct(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b)
-            => VectorProduct<T, TWrapper>.TensorVectorCrossProduct(a, b);
+        public static GenTensor<T> TensorVectorCrossProduct(GenTensor<T> a,
+            GenTensor<T> b)
+            => VectorProduct<T>.TensorVectorCrossProduct(a, b);
 
         /// <summary>
         /// Finds the scalar product of two vectors
         ///
         /// O(N)
         /// </summary>
-        public static T VectorDotProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => VectorProduct<T, TWrapper>.VectorDotProduct(a, b);
+        public static T VectorDotProduct(GenTensor<T> a, GenTensor<T> b)
+            => VectorProduct<T>.VectorDotProduct(a, b);
 
         /// <summary>
         /// Applies scalar product to every vector in a tensor so that
@@ -652,8 +652,8 @@ namespace GenericTensor.Core
         ///
         /// O(V)
         /// </summary>
-        public static GenTensor<T, TWrapper> TensorVectorDotProduct(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b)
-            => VectorProduct<T, TWrapper>.TensorVectorDotProduct(a, b);
+        public static GenTensor<T> TensorVectorDotProduct(GenTensor<T> a, GenTensor<T> b)
+            => VectorProduct<T>.TensorVectorDotProduct(a, b);
 
         #endregion
 
@@ -664,8 +664,8 @@ namespace GenericTensor.Core
         ///
         /// O(V)
         /// </summary>
-        public GenTensor<T, TWrapper> Copy(bool copyElements)
-            => CopyAndForward<T, TWrapper>.Copy(this, copyElements);
+        public GenTensor<T> Copy(bool copyElements)
+            => CopyAndForward<T>.Copy(this, copyElements);
 
         /// <summary>
         /// You might need it to make sure you don't copy
@@ -673,8 +673,8 @@ namespace GenericTensor.Core
         ///
         /// O(V)
         /// </summary>
-        public GenTensor<T, TWrapper> Forward()
-            => CopyAndForward<T, TWrapper>.Forward(this);
+        public GenTensor<T> Forward()
+            => CopyAndForward<T>.Forward(this);
 
         #endregion
 
@@ -699,7 +699,7 @@ namespace GenericTensor.Core
         /// Byte array with the serialized object in the serialization protocol
         /// </returns>
         public byte[] Serialize()
-            => Serializer<T, TWrapper>.Serialize(this);
+            => Serializer<T>.Serialize(this);
 
         /// <summary>
         /// Deserializes data into a tensor
@@ -711,8 +711,8 @@ namespace GenericTensor.Core
         /// A tensor with the same data as stored before serialization
         /// (if serialization and deserialization in TWrapper work correctly)
         /// </returns>
-        public static GenTensor<T, TWrapper> Deserialize(byte[] data)
-            => Serializer<T, TWrapper>.Deserialize(data);
+        public static GenTensor<T> Deserialize(byte[] data)
+            => Serializer<T>.Deserialize(data);
 
         #endregion
     }

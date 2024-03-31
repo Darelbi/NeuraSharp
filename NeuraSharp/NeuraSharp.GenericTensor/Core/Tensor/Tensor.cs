@@ -25,11 +25,12 @@
 #endregion
 
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace GenericTensor.Core
 {
-    public partial class GenTensor<T, TWrapper>
+    public partial class GenTensor<T> where T : INumber<T>
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public readonly T[] data;

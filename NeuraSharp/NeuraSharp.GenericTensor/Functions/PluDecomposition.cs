@@ -31,9 +31,9 @@ using GenericTensor.Core;
 
 namespace GenericTensor.Functions
 {
-    internal static class PluDecomposition<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class PluDecomposition<T> where TWrapper : struct, IOperations<T>
     {
-        public static (GenTensor<T, TWrapper>, GenTensor<T, TWrapper>, GenTensor<T, TWrapper>) Decompose(GenTensor<T, TWrapper> original)
+        public static (GenTensor<T>, GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> original)
         {
             var t = original.Copy(copyElements: true);
 
@@ -46,22 +46,22 @@ namespace GenericTensor.Functions
             var m = t.Shape[1];
             var tw = default(TWrapper);
 
-            var identity = GenTensor<T, TWrapper>.CreateIdentityMatrix(m);
+            var identity = GenTensor<T>.CreateIdentityMatrix(m);
 
             t.TransposeMatrix();
-            var adj = GenTensor<T, TWrapper>.Concat(t, identity);
+            var adj = GenTensor<T>.Concat(t, identity);
             adj.TransposeMatrix();
 
             var (echelon, permute) = adj.RowEchelonFormPermuteSafeDivision();
-            var upper = GenTensor<T, TWrapper>.CreateMatrix(n, m, (i, j) => echelon[i, j]);
-            var lowerZero = GenTensor<T, TWrapper>.CreateMatrix(m, m, (i, j) => echelon[i, m + j]);
+            var upper = GenTensor<T>.CreateMatrix(n, m, (i, j) => echelon[i, j]);
+            var lowerZero = GenTensor<T>.CreateMatrix(m, m, (i, j) => echelon[i, m + j]);
 
             lowerZero.InvertMatrix();
 
             var permuteMatrix =
-                GenTensor<T, TWrapper>.CreateMatrix(m, m, (i, j) => j == permute[i] - 1 ? tw.CreateOne() : tw.CreateZero());
+                GenTensor<T>.CreateMatrix(m, m, (i, j) => j == permute[i] - 1 ? tw.CreateOne() : tw.CreateZero());
 
-            var lower = GenTensor<T, TWrapper>.MatrixMultiply(permuteMatrix, lowerZero);
+            var lower = GenTensor<T>.MatrixMultiply(permuteMatrix, lowerZero);
             return (permuteMatrix, lower, upper);
         }
     }

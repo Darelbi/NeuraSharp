@@ -31,9 +31,9 @@ using GenericTensor.Core;
 
 namespace GenericTensor.Functions
 {
-    internal static class LuDecomposition<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class LuDecomposition<T> where TWrapper : struct, IOperations<T>
     {
-        public static (GenTensor<T, TWrapper>, GenTensor<T, TWrapper>) Decompose(GenTensor<T, TWrapper> t)
+        public static (GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> t)
         {
 #if ALLOW_EXCEPTIONS
             if (!t.IsSquareMatrix)
@@ -41,8 +41,8 @@ namespace GenericTensor.Functions
 #endif
 
             var n = t.Shape[0];
-            var lower = GenTensor<T, TWrapper>.CreateMatrix(n, n);
-            var upper = GenTensor<T, TWrapper>.CreateMatrix(n, n);
+            var lower = GenTensor<T>.CreateMatrix(n, n);
+            var upper = GenTensor<T>.CreateMatrix(n, n);
 
             var tw = default(TWrapper);
             var zero = tw.CreateZero();

@@ -27,40 +27,24 @@
 
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Numerics;
 
 namespace GenericTensor.Core.Expressions
 {
-    internal static class ExpressionCompiler<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class ExpressionCompiler<T> where T : INumber<T>
     {
-#pragma warning disable CA2211 // Non-constant fields should not be visible
         public static Func<Expression, Expression, Expression> Addition
-            = (a, b) =>  Expression.Call(
-                Expression.Default(typeof(TWrapper)),
-                typeof(IOperations<T>).GetMethod(nameof(IOperations<T>.Add)),
-                a, b
-            );
+            = (a, b) => Expression.Add(a, b);
 
         public static Func<Expression, Expression, Expression> Subtraction
-            = (a, b) =>  Expression.Call(
-                Expression.Default(typeof(TWrapper)),
-                typeof(IOperations<T>).GetMethod(nameof(IOperations<T>.Subtract)),
-                a, b
-            );
+            = (a, b) => Expression.Subtract(a, b);
 
         public static Func<Expression, Expression, Expression> Multiplication
-            = (a, b) =>  Expression.Call(
-                Expression.Default(typeof(TWrapper)),
-                typeof(IOperations<T>).GetMethod(nameof(IOperations<T>.Multiply)),
-                a, b
-            );
+            = (a, b) =>  Expression.Multiply(a, b);
 
         public static Func<Expression, Expression, Expression> Division
-            = (a, b) =>  Expression.Call(
-                Expression.Default(typeof(TWrapper)),
-                typeof(IOperations<T>).GetMethod(nameof(IOperations<T>.Divide)),
-                a, b
-            );
-#pragma warning restore CA2211 // Non-constant fields should not be visible
+            = (a, b) =>  Expression.Divide(a, b);
+
         private static Expression CreateLoop(ParameterExpression var, Expression until, Expression onIter)
         {
             var label = Expression.Label();
@@ -189,7 +173,7 @@ namespace GenericTensor.Core.Expressions
             {
                 assignes[i] = Expression.Assign(blocks[i],
                     Expression.ArrayIndex(
-                        Expression.Field(arr, typeof(GenTensor<T, TWrapper>).GetField(nameof(GenTensor<T, TWrapper>.blocks)))
+                        Expression.Field(arr, typeof(GenTensor<T>).GetField(nameof(GenTensor<T>.blocks))!)
                         ,
                         Expression.Constant(i)
                     )
@@ -198,11 +182,11 @@ namespace GenericTensor.Core.Expressions
             return (blocks, assignes);
         }
 
-        private static Action<GenTensor<T, TWrapper>, GenTensor<T, TWrapper>, GenTensor<T, TWrapper>> CompileForNDimensions(int N, Func<Expression, Expression, Expression> operation, bool parallel)
+        private static Action<GenTensor<T>, GenTensor<T>, GenTensor<T>> CompileForNDimensions(int N, Func<Expression, Expression, Expression> operation, bool parallel)
         {
-            var a = Expression.Parameter(typeof(GenTensor<T, TWrapper>), "a");
-            var b = Expression.Parameter(typeof(GenTensor<T, TWrapper>), "b");
-            var res = Expression.Parameter(typeof(GenTensor<T, TWrapper>), "res");
+            var a = Expression.Parameter(typeof(GenTensor<T>), "a");
+            var b = Expression.Parameter(typeof(GenTensor<T>), "b");
+            var res = Expression.Parameter(typeof(GenTensor<T>), "res");
 
             var aData = Expression.Parameter(typeof(T[]), "aData");
             var bData = Expression.Parameter(typeof(T[]), "bData");
@@ -230,7 +214,7 @@ namespace GenericTensor.Core.Expressions
             // ...
             actions.AddRange(actResBlocks);
 
-            var fieldInfo = typeof(GenTensor<T, TWrapper>).GetField(nameof(GenTensor<T, TWrapper>.data));
+            var fieldInfo = typeof(GenTensor<T>).GetField(nameof(GenTensor<T>.data));
 
             // aData = a.data
             actions.Add(Expression.Assign(aData, Expression.Field(a, fieldInfo)));
@@ -245,21 +229,21 @@ namespace GenericTensor.Core.Expressions
 
             // aLin = a.LinOffset
             actions.Add(Expression.Assign(local_ALinOffset, 
-                Expression.Field(a, typeof(GenTensor<T, TWrapper>).GetField(nameof(GenTensor<T, TWrapper>.LinOffset)))));
+                Expression.Field(a, typeof(GenTensor<T>).GetField(nameof(GenTensor<T>.LinOffset)))));
 
             var local_BLinOffset = Expression.Parameter(typeof(int), "bLin");
 
             // bLin = b.LinOffset
             actions.Add(Expression.Assign(local_BLinOffset, 
-                Expression.Field(b, typeof(GenTensor<T, TWrapper>).GetField(nameof(GenTensor<T, TWrapper>.LinOffset)))));
+                Expression.Field(b, typeof(GenTensor<T>).GetField(nameof(GenTensor<T>.LinOffset)))));
 
             Expression onIter(ParameterExpression[] vars)
             {
                 // ablocks_0 * x_0 + ablocks_1 * x_1 + ...
-                var aIndex = ExpressionCompiler<T, TWrapper>.BuildIndexToData(vars, local_aBlocks);
+                var aIndex = ExpressionCompiler<T>.BuildIndexToData(vars, local_aBlocks);
 
                 // bblocks_0 * x_0 + bblocks_1 * x_1 + ...
-                var bIndex = ExpressionCompiler<T, TWrapper>.BuildIndexToData(vars, local_bBlocks);
+                var bIndex = ExpressionCompiler<T>.BuildIndexToData(vars, local_bBlocks);
 
                 // + aLinOffset
                 aIndex = Expression.Add(aIndex, local_ALinOffset);
@@ -283,7 +267,7 @@ namespace GenericTensor.Core.Expressions
                 var added = operation(aDataIndex, bDataIndex);
 
                 // resblocks_0 * x_0 + ...
-                var resIndex = ExpressionCompiler<T, TWrapper>.BuildIndexToData(vars, local_resBlocks);
+                var resIndex = ExpressionCompiler<T>.BuildIndexToData(vars, local_resBlocks);
 
                 // res.data
                 var resField = resData;
@@ -306,12 +290,12 @@ namespace GenericTensor.Core.Expressions
             locals.Add(bData);
             locals.Add(resData);
 
-            var shapeInfo = typeof(GenTensor<T, TWrapper>).GetProperty(nameof(GenTensor<T, TWrapper>.Shape));
+            var shapeInfo = typeof(GenTensor<T>).GetProperty(nameof(GenTensor<T>.Shape));
             var shapeFieldInfo = typeof(TensorShape).GetField(nameof(TensorShape.shape));
             var shapeProperty = Expression.Property(res, shapeInfo);
             var shapeField = Expression.Field(shapeProperty, shapeFieldInfo);
 
-            var loops = ExpressionCompiler<T, TWrapper>.CompileNestedLoops(
+            var loops = ExpressionCompiler<T>.CompileNestedLoops(
                 Enumerable.Range(0, N).Select(
                     id =>
                         Expression.ArrayIndex(
@@ -330,7 +314,7 @@ namespace GenericTensor.Core.Expressions
             if (bl.CanReduce)
                 bl = bl.Reduce();
 
-            return Expression.Lambda<Action<GenTensor<T, TWrapper>, GenTensor<T, TWrapper>, GenTensor<T, TWrapper>>>(bl, a, b, res).Compile();
+            return Expression.Lambda<Action<GenTensor<T>, GenTensor<T>, GenTensor<T>>>(bl, a, b, res).Compile();
         }
 
         public enum OperationType
@@ -341,10 +325,10 @@ namespace GenericTensor.Core.Expressions
             Division
         }
 
-        private static readonly Dictionary<(OperationType opId, int N, bool parallel), Action<GenTensor<T, TWrapper>, GenTensor<T, TWrapper>, GenTensor<T, TWrapper>>> storage 
-                 = new Dictionary<(OperationType opId, int N, bool parallel), Action<GenTensor<T, TWrapper>, GenTensor<T, TWrapper>, GenTensor<T, TWrapper>>>();
+        private static readonly Dictionary<(OperationType opId, int N, bool parallel), Action<GenTensor<T>, GenTensor<T>, GenTensor<T>>> storage 
+                 = new Dictionary<(OperationType opId, int N, bool parallel), Action<GenTensor<T>, GenTensor<T>, GenTensor<T>>>();
 
-        private static Action<GenTensor<T, TWrapper>, GenTensor<T, TWrapper>, GenTensor<T, TWrapper>> GetFunc(int N, Func<Expression, Expression, Expression> operation, bool parallel, OperationType ot)
+        private static Action<GenTensor<T>, GenTensor<T>, GenTensor<T>> GetFunc(int N, Func<Expression, Expression, Expression> operation, bool parallel, OperationType ot)
         {
             var key = (ot, N, parallel);
             if (!storage.ContainsKey(key))
@@ -352,7 +336,7 @@ namespace GenericTensor.Core.Expressions
             return storage[key];
         }
 
-        public static GenTensor<T, TWrapper> PiecewiseAdd(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, bool parallel)
+        public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
             
             #if ALLOW_EXCEPTIONS
@@ -360,47 +344,47 @@ namespace GenericTensor.Core.Expressions
                 throw new InvalidShapeException();
             #endif
             if (a.Shape.Length == 0)
-                return GenTensor<T, TWrapper>.CreateTensor(a.Shape, _ => default(TWrapper).Add(a.data[a.LinOffset], b.data[b.LinOffset]));
-            var res = new GenTensor<T, TWrapper>(a.Shape);
+                return GenTensor<T>.CreateTensor(a.Shape, _ => a.data[a.LinOffset]+ b.data[b.LinOffset]);
+            var res = new GenTensor<T>(a.Shape);
             GetFunc(a.Shape.Length, Addition, parallel, OperationType.Addition)(a, b, res);
             return res;
         }
 
-        public static GenTensor<T, TWrapper> PiecewiseSubtract(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, bool parallel)
+        public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
             #if ALLOW_EXCEPTIONS
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException();
             #endif
             if (a.Shape.Length == 0)
-                return GenTensor<T, TWrapper>.CreateTensor(a.Shape, _ => default(TWrapper).Subtract(a.data[a.LinOffset], b.data[b.LinOffset]));
-            var res = new GenTensor<T, TWrapper>(a.Shape);
+                return GenTensor<T>.CreateTensor(a.Shape, _ => a.data[a.LinOffset]- b.data[b.LinOffset]);
+            var res = new GenTensor<T>(a.Shape);
             GetFunc(a.Shape.Length, Subtraction, parallel, OperationType.Subtraction)(a, b, res);
             return res;
         }
 
-        public static GenTensor<T, TWrapper> PiecewiseMultiply(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, bool parallel)
+        public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
             #if ALLOW_EXCEPTIONS
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException();
             #endif
             if (a.Shape.Length == 0)
-                return GenTensor<T, TWrapper>.CreateTensor(a.Shape, _ => default(TWrapper).Multiply(a.data[a.LinOffset], b.data[b.LinOffset]));
-            var res = new GenTensor<T, TWrapper>(a.Shape);
+                return GenTensor<T>.CreateTensor(a.Shape, _ => a.data[a.LinOffset]* b.data[b.LinOffset]);
+            var res = new GenTensor<T>(a.Shape);
             GetFunc(a.Shape.Length, Multiplication, parallel, OperationType.Multiplication)(a, b, res);
             return res;
         }
 
-        public static GenTensor<T, TWrapper> PiecewiseDivision(GenTensor<T, TWrapper> a, GenTensor<T, TWrapper> b, bool parallel)
+        public static GenTensor<T> PiecewiseDivision(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
             #if ALLOW_EXCEPTIONS
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException();
             #endif
             if (a.Shape.Length == 0)
-                return GenTensor<T, TWrapper>.CreateTensor(a.Shape, _ => default(TWrapper).Divide(a.data[a.LinOffset], b.data[b.LinOffset]));
-            var res = new GenTensor<T, TWrapper>(a.Shape);
+                return GenTensor<T>.CreateTensor(a.Shape, _ => a.data[a.LinOffset]/ b.data[b.LinOffset]);
+            var res = new GenTensor<T>(a.Shape);
             GetFunc(a.Shape.Length, Division, parallel, OperationType.Division)(a, b, res);
             return res;
         }

@@ -29,16 +29,16 @@ using GenericTensor.Core;
 
 namespace GenericTensor.Functions
 {
-    internal static partial class VectorProduct<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static partial class VectorProduct<T> where TWrapper : struct, IOperations<T>
     {
-        public static GenTensor<T, TWrapper> TensorVectorDotProduct(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b)
+        public static GenTensor<T> TensorVectorDotProduct(GenTensor<T> a,
+            GenTensor<T> b)
         {
             #if ALLOW_EXCEPTIONS
             if (a.Shape.SubShape(0, 1) != b.Shape.SubShape(0, 1))
                 throw new InvalidShapeException("Other dimensions of tensors should be equal");
             #endif
-            var resTensor = new GenTensor<T, TWrapper>(a.Shape.SubShape(0, 1));
+            var resTensor = new GenTensor<T>(a.Shape.SubShape(0, 1));
             foreach (var index in resTensor.IterateOverElements())
             {
                 var scal = VectorDotProduct(a.GetSubtensor(index), b.GetSubtensor(index));
@@ -47,8 +47,8 @@ namespace GenericTensor.Functions
             return resTensor;
         }
 
-        public static T VectorDotProduct(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b)
+        public static T VectorDotProduct(GenTensor<T> a,
+            GenTensor<T> b)
         {
             #if ALLOW_EXCEPTIONS
             if (!a.IsVector || !b.IsVector)

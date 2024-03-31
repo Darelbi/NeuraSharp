@@ -35,7 +35,7 @@ namespace GenericTensor.Functions
         T Operation(T a, T b);
     }
 
-    internal static class WrapperStorage<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class WrapperStorage<T> where TWrapper : struct, IOperations<T>
     {
         internal struct AddWrapper : IZipOperator<T>
         {
@@ -58,60 +58,60 @@ namespace GenericTensor.Functions
         }
     }
 
-    internal static class PiecewiseArithmetics<T, TWrapper> where TWrapper : struct, IOperations<T>
+    internal static class PiecewiseArithmetics<T> where TWrapper : struct, IOperations<T>
     {
         
-        private static bool DetermineThreading(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b, Threading threading)
+        private static bool DetermineThreading(GenTensor<T> a,
+            GenTensor<T> b, Threading threading)
         {
             var parallel = threading == Threading.Multi || (threading == Threading.Auto && a.Volume > 3000);
             return parallel && !a.IsVector;
         }
 
-        public static GenTensor<T, TWrapper> PiecewiseAdd(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b, Threading threading)
-            => ExpressionCompiler<T, TWrapper>.PiecewiseAdd(a, b, DetermineThreading(a, b, threading));
+        public static GenTensor<T> PiecewiseAdd(GenTensor<T> a,
+            GenTensor<T> b, Threading threading)
+            => ExpressionCompiler<T>.PiecewiseAdd(a, b, DetermineThreading(a, b, threading));
 
-        public static GenTensor<T, TWrapper> PiecewiseSubtract(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b, Threading threading)
-            => ExpressionCompiler<T, TWrapper>.PiecewiseSubtract(a, b, DetermineThreading(a, b, threading));
+        public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a,
+            GenTensor<T> b, Threading threading)
+            => ExpressionCompiler<T>.PiecewiseSubtract(a, b, DetermineThreading(a, b, threading));
 
-        public static GenTensor<T, TWrapper> PiecewiseMultiply(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b, Threading threading)
-            => ExpressionCompiler<T, TWrapper>.PiecewiseMultiply(a, b, DetermineThreading(a, b, threading));
+        public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a,
+            GenTensor<T> b, Threading threading)
+            => ExpressionCompiler<T>.PiecewiseMultiply(a, b, DetermineThreading(a, b, threading));
 
-        public static GenTensor<T, TWrapper> PiecewiseDivide(GenTensor<T, TWrapper> a,
-            GenTensor<T, TWrapper> b, Threading threading)
-            => ExpressionCompiler<T, TWrapper>.PiecewiseDivision(a, b, DetermineThreading(a, b, threading));
+        public static GenTensor<T> PiecewiseDivide(GenTensor<T> a,
+            GenTensor<T> b, Threading threading)
+            => ExpressionCompiler<T>.PiecewiseDivision(a, b, DetermineThreading(a, b, threading));
 
-        public static GenTensor<T, TWrapper> PiecewiseAdd(GenTensor<T, TWrapper> a,
+        public static GenTensor<T> PiecewiseAdd(GenTensor<T> a,
             T b, Threading threading)
-            => Constructors<T, TWrapper>.CreateTensor(a.Shape, ind => 
+            => Constructors<T>.CreateTensor(a.Shape, ind => 
                 default(TWrapper).Add(a[ind], b), threading);
 
-        public static GenTensor<T, TWrapper> PiecewiseSubtract(GenTensor<T, TWrapper> a,
+        public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a,
             T b, Threading threading)
-            => Constructors<T, TWrapper>.CreateTensor(a.Shape, ind => 
+            => Constructors<T>.CreateTensor(a.Shape, ind => 
                 default(TWrapper).Subtract(a[ind], b), threading);
 
-        public static GenTensor<T, TWrapper> PiecewiseSubtract(
-            T a, GenTensor<T, TWrapper> b, Threading threading)
-            => Constructors<T, TWrapper>.CreateTensor(b.Shape, ind => 
+        public static GenTensor<T> PiecewiseSubtract(
+            T a, GenTensor<T> b, Threading threading)
+            => Constructors<T>.CreateTensor(b.Shape, ind => 
                 default(TWrapper).Subtract(a, b[ind]), threading);
 
-        public static GenTensor<T, TWrapper> PiecewiseMultiply(GenTensor<T, TWrapper> a,
+        public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a,
             T b, Threading threading)
-            => Constructors<T, TWrapper>.CreateTensor(a.Shape, ind => 
+            => Constructors<T>.CreateTensor(a.Shape, ind => 
                 default(TWrapper).Multiply(a[ind], b), threading);
 
-        public static GenTensor<T, TWrapper> PiecewiseDivide(GenTensor<T, TWrapper> a,
+        public static GenTensor<T> PiecewiseDivide(GenTensor<T> a,
             T b, Threading threading)
-            => Constructors<T, TWrapper>.CreateTensor(a.Shape, ind => 
+            => Constructors<T>.CreateTensor(a.Shape, ind => 
                 default(TWrapper).Divide(a[ind], b), threading);
 
-        public static GenTensor<T, TWrapper> PiecewiseDivide(
-            T a, GenTensor<T, TWrapper> b, Threading threading)
-            => Constructors<T, TWrapper>.CreateTensor(b.Shape, ind => 
+        public static GenTensor<T> PiecewiseDivide(
+            T a, GenTensor<T> b, Threading threading)
+            => Constructors<T>.CreateTensor(b.Shape, ind => 
                 default(TWrapper).Divide(a, b[ind]), threading);
     }
 }
