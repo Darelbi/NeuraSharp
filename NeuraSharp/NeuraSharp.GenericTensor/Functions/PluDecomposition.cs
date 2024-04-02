@@ -28,14 +28,15 @@
 
 
 using GenericTensor.Core;
+using System.Numerics;
 
 namespace GenericTensor.Functions
 {
-    internal static class PluDecomposition<T> where TWrapper : struct, IOperations<T>
+    internal static class PluDecomposition<T> where T :INumber<T>
     {
         public static (GenTensor<T>, GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> original)
         {
-            var t = original.Copy(copyElements: true);
+            var t = original.Copy();
 
             #if ALLOW_EXCEPTIONS
             if (!t.IsSquareMatrix)
@@ -44,7 +45,6 @@ namespace GenericTensor.Functions
 
             var n = t.Shape[0];
             var m = t.Shape[1];
-            var tw = default(TWrapper);
 
             var identity = GenTensor<T>.CreateIdentityMatrix(m);
 
@@ -59,7 +59,7 @@ namespace GenericTensor.Functions
             lowerZero.InvertMatrix();
 
             var permuteMatrix =
-                GenTensor<T>.CreateMatrix(m, m, (i, j) => j == permute[i] - 1 ? tw.CreateOne() : tw.CreateZero());
+                GenTensor<T>.CreateMatrix(m, m, (i, j) => j == permute[i] - 1 ? T.One : T.Zero);
 
             var lower = GenTensor<T>.MatrixMultiply(permuteMatrix, lowerZero);
             return (permuteMatrix, lower, upper);

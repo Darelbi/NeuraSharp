@@ -28,10 +28,11 @@
 
 
 using GenericTensor.Core;
+using System.Numerics;
 
 namespace GenericTensor.Functions
 {
-    internal static class LuDecomposition<T> where TWrapper : struct, IOperations<T>
+    internal static class LuDecomposition<T> where T : INumber<T>
     {
         public static (GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> t)
         {
@@ -44,9 +45,8 @@ namespace GenericTensor.Functions
             var lower = GenTensor<T>.CreateMatrix(n, n);
             var upper = GenTensor<T>.CreateMatrix(n, n);
 
-            var tw = default(TWrapper);
-            var zero = tw.CreateZero();
-            var one = tw.CreateOne();
+            var zero = T.Zero;
+            var one = T.One;
 
             for (var i = 0; i < n; i++)
             {
@@ -55,9 +55,9 @@ namespace GenericTensor.Functions
                 {
                     var sum = zero;
                     for (var j = 0; j < i; j++)
-                        sum = tw.Add(sum, tw.Multiply(lower[i, j], upper[j, k]));
+                        sum = sum + lower[i, j] * upper[j, k];
 
-                    upper[i, k] = tw.Subtract(t[i, k], sum);
+                    upper[i, k] = t[i, k] - sum;
                 }
 
                 // Lower triangular
@@ -69,17 +69,17 @@ namespace GenericTensor.Functions
                     {
                         var sum = zero;
                         for (var j = 0; j < i; j++)
-                            sum = tw.Add(sum, tw.Multiply(lower[k, j], upper[j, i]));
+                            sum = sum + (lower[k, j] * upper[j, i]);
 
-                        #if ALLOW_EXCEPTIONS
+#if ALLOW_EXCEPTIONS
                         if (Equals(upper[i, i], zero))
                         {
                             throw new ImpossibleDecomposition("There is no LU decomposition for given matrix");
                         }
-                        #endif
-                        
+#endif
+
                         lower[k, i]
-                            = tw.Divide(tw.Subtract(t[k, i], sum), upper[i, i]);
+                            = (t[k, i] - sum) / upper[i, i];
                     }
                 }
             }

@@ -26,44 +26,37 @@
 
 
 using GenericTensor.Core;
+using System.Numerics;
 
 namespace GenericTensor.Functions
 {
-    internal static partial class VectorProduct<T> where TWrapper : struct, IOperations<T>
+    internal static partial class VectorProduct<T> where T : INumber<T>
     {
-        public static GenTensor<T> VectorCrossProduct(GenTensor<T> a, GenTensor<T> b)
+        public static GenTensor<U> VectorCrossProduct<U>(GenTensor<U> a, GenTensor<U> b) where U: INumber<U>
         {
-            #if ALLOW_EXCEPTIONS
+#if ALLOW_EXCEPTIONS
             if (!a.IsVector || !b.IsVector)
                 throw new InvalidShapeException($"Both {nameof(a)} and {nameof(b)} should be vectors");
             if (a.Shape[0] != b.Shape[0])
                 throw new InvalidShapeException($"Length of {nameof(a)} and {nameof(b)} should be equal");
             if (a.Shape[0] != 3)
                 throw new NotImplementedException("Other than vectors of the length of 3 aren't supported for VectorCrossProduct yet");
-            #endif
-            return GenTensor<T>.CreateVector(
-                default(TWrapper).Subtract(
-                    default(TWrapper).Multiply(a[1], b[2]),
-                    default(TWrapper).Multiply(a[2], b[1])),
-
-                default(TWrapper).Subtract(
-                    default(TWrapper).Multiply(a[2], b[0]),
-                    default(TWrapper).Multiply(a[0], b[2])),
-
-                default(TWrapper).Subtract(
-                    default(TWrapper).Multiply(a[0], b[1]),
-                    default(TWrapper).Multiply(a[1], b[0]))
+#endif
+            return GenTensor<U>.CreateVector(
+                (a[1] * b[2]) - (a[2] * b[1]),
+                (a[2] * b[0]) - (a[0] * b[2]),
+                (a[0] * b[1]) - (a[1] * b[0])
             );
         }
 
-        public static GenTensor<T> TensorVectorCrossProduct(GenTensor<T> a,
-            GenTensor<T> b)
+        public static GenTensor<U> TensorVectorCrossProduct<U>(GenTensor<U> a,
+            GenTensor<U> b) where U : INumber<U>
         {
-            #if ALLOW_EXCEPTIONS
+#if ALLOW_EXCEPTIONS
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException($"Pre-shapes of {nameof(a)} and {nameof(b)} should be equal");
-            #endif
-            var res = new GenTensor<T>(a.Shape);
+#endif
+            var res = new GenTensor<U>(a.Shape);
             foreach (var index in a.IterateOverVectors())
                 res.SetSubtensor(
                     VectorCrossProduct(a.GetSubtensor(index), b.GetSubtensor(index)),

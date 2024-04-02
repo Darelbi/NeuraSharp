@@ -26,10 +26,11 @@
 
 
 using GenericTensor.Core;
+using System.Numerics;
 
 namespace GenericTensor.Functions
 {
-    internal static class ElementaryRowOperations<T> where TWrapper : struct, IOperations<T>
+    internal static class ElementaryRowOperations<T> where T :INumber<T>
     {
         public static void RowMultiply(GenTensor<T> t, int rowId, T coef)
         {
@@ -38,7 +39,7 @@ namespace GenericTensor.Functions
                 throw new InvalidShapeException("this should be matrix");
             #endif
             for (int i = 0; i < t.Shape[1]; i++)
-                t.SetValueNoCheck(default(TWrapper).Multiply(coef, t.GetValueNoCheck(rowId, i)), rowId, i);
+                t.SetValueNoCheck( coef* t.GetValueNoCheck(rowId, i), rowId, i);
         }
 
         public static void RowAdd(GenTensor<T> t, int dstRowId, int srcRowId, T coef)
@@ -49,10 +50,9 @@ namespace GenericTensor.Functions
             #endif
             for (int i = 0; i < t.Shape[1]; i++)
                 t.SetValueNoCheck(
-                    default(TWrapper).Add(
-                        t.GetValueNoCheck(dstRowId, i),
-                        default(TWrapper).Multiply(coef, t.GetValueNoCheck(srcRowId, i))
-                        ), 
+                        t.GetValueNoCheck(dstRowId, i)+
+                        coef* t.GetValueNoCheck(srcRowId, i)
+                        , 
                     dstRowId, i);
         }
 
@@ -71,14 +71,14 @@ namespace GenericTensor.Functions
         }
         
         public static void RowSubtract(GenTensor<T> t, int dstRowId, int srcRowId, T coef)
-            => RowAdd(t, dstRowId, srcRowId, default(TWrapper).Negate(coef));
+            => RowAdd(t, dstRowId, srcRowId, -coef);
 
         public static (int id, T value)? LeadingElement(GenTensor<T> t, int row)
         {
             for (int i = 0; i < t.Shape[1]; i++)
             {
                 var value = t.GetValueNoCheck(row, i);
-                if (!default(TWrapper).IsZero(value))
+                if (!T.IsZero(value))
                     return (i, value);
             }
             return null;

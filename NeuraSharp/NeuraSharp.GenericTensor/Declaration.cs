@@ -30,6 +30,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using GenericTensor.Functions;
+using NeuraSharp.GenericTensor.Core;
 
 namespace GenericTensor.Core
 {
@@ -464,89 +465,6 @@ namespace GenericTensor.Core
 
         #endregion
 
-        #region Piecewise arithmetics
-
-        /// <summary>
-        /// T1 + T2
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, GenTensor<T> b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseAdd(a, b, threading);
-
-        /// <summary>
-        /// T1 - T2
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, GenTensor<T> b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseSubtract(a, b, threading);
-
-        /// <summary>
-        /// T1 * T2
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, GenTensor<T> b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseMultiply(a, b, threading);
-
-        /// <summary>
-        /// T1 / T2
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseDivide(GenTensor<T> a, GenTensor<T> b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseDivide(a, b, threading);
-
-        /// <summary>
-        /// T1 + const
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, T b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseAdd(a, b, threading);
-
-        /// <summary>
-        /// T1 - const
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, T b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseSubtract(a, b, threading);
-
-        /// <summary>
-        /// const - T1
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseSubtract(T a, GenTensor<T> b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseSubtract(a, b, threading);
-
-        /// <summary>
-        /// T1 * const
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, T b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseMultiply(a, b, threading);
-
-        /// <summary>
-        /// T1 / const
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseDivide(GenTensor<T> a, T b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseDivide(a, b, threading);
-
-        /// <summary>
-        /// const / T1
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static GenTensor<T> PiecewiseDivide(T a, GenTensor<T> b,
-            Threading threading = Threading.Single)
-            => PiecewiseArithmetics<T>.PiecewiseDivide(a, b, threading);
-
-        #endregion
 
         #region Power
 
@@ -664,8 +582,8 @@ namespace GenericTensor.Core
         ///
         /// O(V)
         /// </summary>
-        public GenTensor<T> Copy(bool copyElements)
-            => CopyAndForward<T>.Copy(this, copyElements);
+        public GenTensor<T> Copy()
+            => CopyAndForward<T>.Copy(this);
 
         /// <summary>
         /// You might need it to make sure you don't copy

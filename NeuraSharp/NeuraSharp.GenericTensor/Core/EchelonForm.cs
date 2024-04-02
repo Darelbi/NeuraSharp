@@ -38,6 +38,9 @@ namespace NeuraSharp.GenericTensor.Core
         private T num;
         private T den;
 
+        public T Den() => den;
+        public T Num() => num;
+
         public EchelonForm(T val)
         {
             num = val;
@@ -493,7 +496,7 @@ namespace NeuraSharp.GenericTensor.Core
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
-            var res = t.Copy(copyElements: false);
+            var res = t.Copy();
             InnerGaussianEliminationSimpleDiscardSwapCount(res, 0);
             return res;
         }
@@ -504,7 +507,7 @@ namespace NeuraSharp.GenericTensor.Core
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
-            var res = t.Copy(copyElements: false);
+            var res = t.Copy();
             var permute = new int[t.Shape[0]];
             for (var i = 0; i < permute.Length; i++) permute[i] = i + 1;
 
@@ -528,7 +531,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         private static GenTensor<T> InnerRowEchelonFormLeadingOnes(GenTensor<T> t)
         {
-            var rowForm = t.Copy(copyElements: false);
+            var rowForm = t.Copy();
             InnerGaussianEliminationSimpleDiscardSwapCount(rowForm, 0);
             for (int r = 0; r < t.Shape[0]; r++)
                 if (rowForm.RowGetLeadingElement(r) is { } leading)
@@ -557,7 +560,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         private static GenTensor<T> InnerReducedRowEchelonForm(GenTensor<T> t, int[]? permutations, out int swapCount)
         {
-            var upper = t.Copy(copyElements: false);
+            var upper = t.Copy();
             swapCount = 0;
             InnerGaussianEliminationSimple(upper, 0, permutations, ref swapCount);
             for (int r = t.Shape[0] - 1; r >= 0; r--)

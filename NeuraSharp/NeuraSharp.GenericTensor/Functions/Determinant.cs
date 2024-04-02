@@ -26,6 +26,7 @@
 
 
 using GenericTensor.Core;
+using NeuraSharp.GenericTensor.Core;
 using System.Numerics;
 
 namespace GenericTensor.Functions
@@ -85,15 +86,15 @@ namespace GenericTensor.Functions
             var n = diagLength;
             var elemMatrix = EchelonForm<T>.InnerGaussianEliminationSafeDivision(t, n, n, null, out var swapCount);
 
-            var det = default(EchelonForm<T>.WrapperSafeDivisionWrapper<T>).CreateOne();
+            var det = EchelonForm<T>.One;
             for (int i = 0; i < n; i++)
             {
-                det = default(EchelonForm<T>.WrapperSafeDivisionWrapper<T>).Multiply(det, elemMatrix.GetValueNoCheck(i, i));
+                det = det* elemMatrix.GetValueNoCheck(i, i);
             }
 
-            if (default(TWrapper).IsZero(det.den))
-                return default(TWrapper).CreateZero();
-            return swapCount % 2 is 0 ? det.Count() : default(TWrapper).Negate(det.Count());
+            if (T.IsZero(det.Den()))
+                return T.Zero;
+            return swapCount % 2 is 0 ? det.Count() : -det.Count();
         }
 
         public static T DeterminantGaussianSimple(GenTensor<T> t)
@@ -113,27 +114,22 @@ namespace GenericTensor.Functions
             for (int k = 1; k < n; k++)
                 for (int j = k; j < n; j++)
                 {
-                    var m = default(TWrapper).Divide(
-                        elemMatrix.GetValueNoCheck(j, k - 1),
-                        elemMatrix.GetValueNoCheck(k - 1, k - 1)
-                    );
+                    var m = elemMatrix.GetValueNoCheck(j, k - 1)/ elemMatrix.GetValueNoCheck(k - 1, k - 1);
+
                     for (int i = 0; i < n; i++)
                     {
                         var curr = elemMatrix.GetValueNoCheck(j, i);
-                        elemMatrix.SetValueNoCheck(default(TWrapper).Subtract(
-                            curr,
-                            default(TWrapper).Multiply(
-                                m,
-                                elemMatrix.GetValueNoCheck(k - 1, i)
-                            )
-                        ), j, i);
+                        elemMatrix.SetValueNoCheck(
+                            curr - m * elemMatrix.GetValueNoCheck(k - 1, i)
+                                
+                                , j, i);
                     }
                 }
 
-            var det = default(TWrapper).CreateOne();
+            var det = T.One;
             for (int i = 0; i < n; i++)
             {
-                det = default(TWrapper).Multiply(det, elemMatrix.GetValueNoCheck(i, i));
+                det *= elemMatrix.GetValueNoCheck(i, i);
             }
 
             return det;

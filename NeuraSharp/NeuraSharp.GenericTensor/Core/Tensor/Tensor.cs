@@ -98,7 +98,7 @@ namespace GenericTensor.Core
         /// Clones with copying the elements
         /// </summary>
         public object Clone()
-            => Copy(copyElements: true);
+            => Copy();
 
         /// <summary>
         /// Creates a tensor from the given shape

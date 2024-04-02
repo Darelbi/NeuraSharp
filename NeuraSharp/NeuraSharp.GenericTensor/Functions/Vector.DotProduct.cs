@@ -26,10 +26,11 @@
 
 
 using GenericTensor.Core;
+using System.Numerics;
 
 namespace GenericTensor.Functions
 {
-    internal static partial class VectorProduct<T> where TWrapper : struct, IOperations<T>
+    internal static partial class VectorProduct<T> where T :INumber<T>
     {
         public static GenTensor<T> TensorVectorDotProduct(GenTensor<T> a,
             GenTensor<T> b)
@@ -56,11 +57,11 @@ namespace GenericTensor.Functions
             if (a.Shape[0] != b.Shape[0])
                 throw new InvalidShapeException($"{nameof(a)}'s length should be the same as {nameof(b)}'s");
             #endif
-            var res = default(TWrapper).CreateZero();
+            var res = T.Zero;
             for (int i = 0; i < a.Shape[0]; i++)
             {
-                res = default(TWrapper).Add(res,
-                    default(TWrapper).Multiply(a.GetValueNoCheck(i), b.GetValueNoCheck(i)));
+                res +=
+                 (a.GetValueNoCheck(i)* b.GetValueNoCheck(i));
             }
             return res;
         }
