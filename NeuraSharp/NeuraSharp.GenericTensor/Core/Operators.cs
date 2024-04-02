@@ -29,7 +29,7 @@ using System.Numerics;
 
 namespace GenericTensor.Core
 {
-    public partial class GenTensor<T> : System.IEquatable<GenTensor<T>> where T : INumber<T>
+    public partial class GenTensor<T> : IEquatable<GenTensor<T>> where T : INumber<T>
     {
         /// <summary>
         /// A tensor is a matrix if has two dimensions, e. g. [3 x 4]

@@ -46,7 +46,7 @@ namespace GenericTensor.Core
         }
 
         /// <summary>
-        /// Similar to <see cref="System.Collections.Generic.List{T}.ForEach(Action{T})" />.
+        /// Similar to <see cref="List{T}.ForEach(Action{T})" />.
         /// </summary>
         /// <param name="iterator">
         /// Value function, which takes two parameters:
