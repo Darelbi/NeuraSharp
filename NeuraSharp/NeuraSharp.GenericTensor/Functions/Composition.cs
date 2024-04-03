@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
+     Original Project: https://github.com/Darelbi/NeuraSharp/ */
 #endregion
 
 
@@ -116,7 +116,7 @@ namespace GenericTensor.Functions
             for (int i = 0; i < t.Shape[0]; i++)
                 foreach (var (id, value) in t.GetSubtensor(i).Iterate())
                     acc[id] = collapse.Invoke(acc[id], value);
-            */
+                Original Project: https://github.com/Darelbi/NeuraSharp/ */
             for (int i = 0; i < t.Shape[0]; i++)
                 t.GetSubtensor(i).ForEach(new AggregateFunctor<U, T, TAggregatorFunc>(collapse, acc));
             for (int i = 0; i < axis; i++)

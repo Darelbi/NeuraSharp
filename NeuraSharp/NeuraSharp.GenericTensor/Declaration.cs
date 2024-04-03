@@ -22,7 +22,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
+     Original Project: https://github.com/Darelbi/NeuraSharp/ */
 
 #endregion
 
@@ -607,7 +607,7 @@ namespace GenericTensor.Core
          *     First int n: size
          *     Next n bytes: data
          *
-         */
+             Original Project: https://github.com/Darelbi/NeuraSharp/ */
 
         /// <summary>
         /// Serializes this to a byte array so it can be easily

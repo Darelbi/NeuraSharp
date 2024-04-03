@@ -2,7 +2,7 @@
     Author: Dario Oliveri ( https://github.com/Darelbi )
     Copyright (c) 2024 Dario Oliveri
     License: MIT (see LICENSE file in repository root for more detail)
-*/
+    Original Project: https://github.com/Darelbi/NeuraSharp/ */
 using NeuraSharp.Interfaces;
 using NeuraSharp.Interfaces.Enums;
 using NeuraSharp.Interfaces.Layers;
@@ -85,7 +85,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
         }
     }
          
-         */
+             Original Project: https://github.com/Darelbi/NeuraSharp/ */
 
         /// <summary>
         /// https://cs231n.github.io/neural-networks-3/
@@ -117,7 +117,7 @@ namespace NeuraSharp.BuiltIn.Optimizers
 
         //    w += BaseType::alpha * mW / sqrt(sW + eps);
 
-        //    return lossLinkGrad;*/
+        //    return lossLinkGrad;    Original Project: https://github.com/Darelbi/NeuraSharp/ */
         //}
 
 
