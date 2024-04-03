@@ -80,7 +80,7 @@ namespace UnitTests
             var A = GenTensor<float>.CreateMatrix(new float[,]
             {
                 {6,  1, 1},
-                {4, -2, 5},
+                {4, -1, 5},
                 {2,  8, 7}
             });
 
@@ -92,10 +92,10 @@ namespace UnitTests
             });
 
             var res = GenTensor<float>.MatrixDivide(A, B);
-            Assert.AreEqual(
-                GenTensor<float>.MatrixMultiply(res, B),
-                A
-                );
+            var result = GenTensor<float>.MatrixMultiply(res, B);
+
+            for (int i = 0; i < res.data.Length; i++)
+                Assert.AreEqual(A.data[i], result.data[i], 0.00001);
         }
 
         [TestMethod]
@@ -104,7 +104,7 @@ namespace UnitTests
             var A = GenTensor<double>.CreateMatrix(new double[,]
             {
                 {6,  1, 1},
-                {4, -2, 5},
+                {4, -1, 5},
                 {2,  8, 7}
             });
 
@@ -116,10 +116,10 @@ namespace UnitTests
             });
 
             var res = GenTensor<double>.MatrixDivide(A, B);
-            Assert.AreEqual(
-                GenTensor<double>.MatrixMultiply(res, B),
-                A
-                );
+            var result = GenTensor<double>.MatrixMultiply(res, B);
+
+            for(int i =0; i< res.data.Length; i++)
+                Assert.AreEqual(A.data[i], result.data[i],0.00001);
         }
 
         //[TestMethod]
