@@ -1,4 +1,9 @@
-﻿using NeuraSharp.BuiltIn.BackwardAlgorithm;
+﻿/*
+    Author: Dario Oliveri ( https://github.com/Darelbi )
+    Copyright (c) 2024 Dario Oliveri
+    License: MIT (see LICENSE file in repository root for more detail)
+*/
+using NeuraSharp.BuiltIn.BackwardAlgorithm;
 using NeuraSharp.Interfaces;
 using NeuraSharp.Interfaces.Factories;
 using System.Numerics;

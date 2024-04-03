@@ -1,4 +1,9 @@
-﻿using NeuraSharp.BuiltIn;
+﻿/*
+    Author: Dario Oliveri ( https://github.com/Darelbi )
+    Copyright (c) 2024 Dario Oliveri
+    License: MIT (see LICENSE file in repository root for more detail)
+*/
+using NeuraSharp.BuiltIn;
 using NeuraSharp.Interfaces;
 using System.Numerics;
 using System.Reflection;
