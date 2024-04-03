@@ -28,6 +28,7 @@
 using GenericTensor.Core;
 using GenericTensor.Functions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NeuraSharp.UnitTest.GenericTensor.TestUtils;
 
 namespace UnitTests
 {
@@ -87,7 +88,7 @@ namespace UnitTests
             for (int i = 0; i < 4; i++)
                 I = GenTensor<float>.MatrixMultiply(I, M);
 
-            Assert.AreEqual(I, powered);
+            TensorEquals.AssertTensorEquals(I, powered);
         }
 
         [TestMethod]
