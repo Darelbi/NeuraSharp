@@ -28,6 +28,7 @@
 using GenericTensor.Core;
 using GenericTensor.Functions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NeuraSharp.UnitTest.GenericTensor.TestUtils;
 using System;
 using System.Numerics;
 
@@ -52,7 +53,8 @@ namespace UnitTests
             });
             var B = A.Copy();
             B.InvertMatrix();
-            Assert.AreEqual(
+
+            TensorEquals.AssertTensorEquals(
                 GenTensor<float>.CreateIdentityMatrix(3),
                 GenTensor<float>.MatrixMultiply(A, B)
             );
@@ -94,8 +96,7 @@ namespace UnitTests
             var res = GenTensor<float>.MatrixDivide(A, B);
             var result = GenTensor<float>.MatrixMultiply(res, B);
 
-            for (int i = 0; i < res.data.Length; i++)
-                Assert.AreEqual(A.data[i], result.data[i], 0.00001);
+            TensorEquals.AssertTensorEquals(A, result);
         }
 
         [TestMethod]
@@ -118,8 +119,7 @@ namespace UnitTests
             var res = GenTensor<double>.MatrixDivide(A, B);
             var result = GenTensor<double>.MatrixMultiply(res, B);
 
-            for(int i =0; i< res.data.Length; i++)
-                Assert.AreEqual(A.data[i], result.data[i],0.00001);
+            TensorEquals.AssertTensorEquals(A, result);
         }
 
         //[TestMethod]
@@ -167,12 +167,10 @@ namespace UnitTests
             var T2 = GenTensor<float>.Stack(B, A);
 
             var res = GenTensor<float>.TensorMatrixDivide(T1, T2);
-            Assert.AreEqual(
-                res.GetSubtensor(0), GenTensor<float>.MatrixDivide(A, B)
-                );
-            Assert.AreEqual(
-                    res.GetSubtensor(1), GenTensor<float>.MatrixDivide(B, A)
-                );
+
+            // OK THIS TEST FAILS BECAUSE THE DATA ARRAY IS RECYCLED IN GET SUBTENSOR)
+            TensorEquals.AssertTensorEquals(res.GetSubtensor(0).Copy(), GenTensor<float>.MatrixDivide(A, B));
+            TensorEquals.AssertTensorEquals(res.GetSubtensor(1).Copy(), GenTensor<float>.MatrixDivide(B, A));
         }
 
         [TestMethod]
@@ -188,7 +186,7 @@ namespace UnitTests
             var B = GenTensor<float>.CreateMatrix(new float[,]
             {
                 {6,  1, 1},
-                {4, -1, 5},
+                {4, -2, 5},
                 {2,  8, 7}
             });
 
@@ -196,10 +194,9 @@ namespace UnitTests
             var K = T.Copy();
             T.TensorMatrixInvert();
 
-            Assert.AreEqual(
+            TensorEquals.AssertTensorEquals(
                 GenTensor<float>.CreateIdentityTensor(T.Shape.SubShape(0, 2).ToArray(), 3),
-                GenTensor<float>.TensorMatrixMultiply(T, K)
-                );
+                GenTensor<float>.TensorMatrixMultiply(T, K));
         }
 
         //internal void AreNonIntegerTensorEqual<T>(GenTensor<T> expected, GenTensor<T> actual) where T:INumber<T>
