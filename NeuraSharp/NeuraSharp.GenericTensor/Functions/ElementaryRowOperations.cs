@@ -34,7 +34,7 @@ namespace GenericTensor.Functions
     {
         public static void RowMultiply(GenTensor<T> t, int rowId, T coef)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
             #endif
@@ -44,7 +44,7 @@ namespace GenericTensor.Functions
 
         public static void RowAdd(GenTensor<T> t, int dstRowId, int srcRowId, T coef)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
             #endif
@@ -58,7 +58,7 @@ namespace GenericTensor.Functions
 
         public static void RowSwap(GenTensor<T> t, int row1Id, int row2Id)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
             #endif

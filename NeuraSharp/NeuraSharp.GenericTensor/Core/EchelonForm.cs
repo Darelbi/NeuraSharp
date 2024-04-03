@@ -419,7 +419,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static GenTensor<T> RowEchelonFormSafeDivision(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -492,7 +492,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static GenTensor<T> RowEchelonFormSimple(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -503,7 +503,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static (GenTensor<T>, int[]) RowEchelonFormPermuteSimple(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -518,7 +518,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static (GenTensor<T>, int[]) RowEchelonFormPermuteSafeDivision(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -541,7 +541,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static GenTensor<T> RowEchelonFormLeadingOnesSimple(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -550,7 +550,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static GenTensor<T> RowEchelonFormLeadingOnesSafeDivision(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -579,7 +579,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static GenTensor<T> ReducedRowEchelonFormSimple(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -588,7 +588,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static GenTensor<T> ReducedRowEchelonFormSafeDivision(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif
@@ -598,7 +598,7 @@ namespace NeuraSharp.GenericTensor.Core
 
         public static (GenTensor<T> result, int[] permutations) ReducedRowEchelonFormPermuteSafeDivision(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
 #endif

@@ -34,7 +34,7 @@ namespace GenericTensor.Functions
     {
         public static GenTensor<T> MatrixPower(GenTensor<T> m, int power, Threading threading)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (!m.IsSquareMatrix)
                 throw new InvalidShapeException("Square matrix required");
             #endif
@@ -61,7 +61,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> TensorMatrixPower(GenTensor<T> m, int power, Threading threading)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             InvalidShapeException.NeedTensorSquareMatrix(m);
             #endif
 

@@ -34,7 +34,7 @@ namespace GenericTensor.Functions
     {
         public static GenTensor<U> VectorCrossProduct<U>(GenTensor<U> a, GenTensor<U> b) where U: INumber<U>
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!a.IsVector || !b.IsVector)
                 throw new InvalidShapeException($"Both {nameof(a)} and {nameof(b)} should be vectors");
             if (a.Shape[0] != b.Shape[0])
@@ -52,7 +52,7 @@ namespace GenericTensor.Functions
         public static GenTensor<U> TensorVectorCrossProduct<U>(GenTensor<U> a,
             GenTensor<U> b) where U : INumber<U>
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException($"Pre-shapes of {nameof(a)} and {nameof(b)} should be equal");
 #endif

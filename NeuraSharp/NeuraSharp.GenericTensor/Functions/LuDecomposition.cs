@@ -36,7 +36,7 @@ namespace GenericTensor.Functions
     {
         public static (GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsSquareMatrix)
                 throw new InvalidShapeException("this should be a square matrix");
 #endif
@@ -71,7 +71,7 @@ namespace GenericTensor.Functions
                         for (var j = 0; j < i; j++)
                             sum = sum + (lower[k, j] * upper[j, i]);
 
-#if ALLOW_EXCEPTIONS
+#if true
                         if (Equals(upper[i, i], zero))
                         {
                             throw new ImpossibleDecomposition("There is no LU decomposition for given matrix");

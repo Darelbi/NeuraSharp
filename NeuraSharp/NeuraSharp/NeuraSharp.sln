@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.Test003MNIST_Opt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.Test004MNIST_Optimizer2", "..\NeuraSharp.Test004MNIST_Optimizer2\NeuraSharp.Test004MNIST_Optimizer2.csproj", "{F99F188D-56CE-4247-B138-4FBBC2677C98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.GenericTensor", "..\NeuraSharp.GenericTensor\NeuraSharp.GenericTensor.csproj", "{4088ED5E-3DF9-462A-A321-7C635B7FEC5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuraSharp.GenericTensor", "..\NeuraSharp.GenericTensor\NeuraSharp.GenericTensor.csproj", "{4088ED5E-3DF9-462A-A321-7C635B7FEC5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuraSharp.UnitTest.GenericTensor", "..\NeuraSharp.UnitTest.GenericTensor\NeuraSharp.UnitTest.GenericTensor.csproj", "{AA30EE41-9A27-4613-A0D8-BBEDBE5BDC4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{4088ED5E-3DF9-462A-A321-7C635B7FEC5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4088ED5E-3DF9-462A-A321-7C635B7FEC5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4088ED5E-3DF9-462A-A321-7C635B7FEC5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA30EE41-9A27-4613-A0D8-BBEDBE5BDC4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA30EE41-9A27-4613-A0D8-BBEDBE5BDC4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA30EE41-9A27-4613-A0D8-BBEDBE5BDC4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA30EE41-9A27-4613-A0D8-BBEDBE5BDC4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

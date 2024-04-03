@@ -55,7 +55,7 @@ namespace GenericTensor.Functions
 
         public static T DeterminantLaplace(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("Determinant function should be only called from a matrix");
             if (t.Shape[0] != t.Shape[1])
@@ -73,7 +73,7 @@ namespace GenericTensor.Functions
 
         internal static T DeterminantGaussianSafeDivision(GenTensor<T> t, int diagLength)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
             if (t.Shape[0] != t.Shape[1])
@@ -99,7 +99,7 @@ namespace GenericTensor.Functions
 
         public static T DeterminantGaussianSimple(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsMatrix)
                 throw new InvalidShapeException("this should be matrix");
             if (t.Shape[0] != t.Shape[1])
@@ -141,7 +141,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> TensorDeterminantLaplace(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             InvalidShapeException.NeedTensorSquareMatrix(t);
 #endif
 
@@ -152,7 +152,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> TensorDeterminantGaussianSafeDivision(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             InvalidShapeException.NeedTensorSquareMatrix(t);
 #endif
 
@@ -163,7 +163,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> TensorDeterminantGaussianSimple(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             InvalidShapeException.NeedTensorSquareMatrix(t);
 #endif
 

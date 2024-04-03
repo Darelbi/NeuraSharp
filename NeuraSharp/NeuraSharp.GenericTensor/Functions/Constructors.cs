@@ -81,12 +81,12 @@ namespace GenericTensor.Functions
         private static (int height, int width) ExtractAndCheck(T[,] data)
         {
             var width = data.GetLength(0);
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (width < 0)
                 throw new InvalidShapeException();
             #endif
             var height = data.GetLength(1);
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (height < 0)
                 throw new InvalidShapeException();
             #endif

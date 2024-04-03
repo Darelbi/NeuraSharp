@@ -1,5 +1,4 @@
 ﻿#region copyright
-
 /*
  * MIT License
  * 
@@ -23,46 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 #endregion
 
 
 using GenericTensor.Core;
-using System.Numerics;
+using GenericTensor.Functions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GenericTensor.Functions
+namespace UnitTests
 {
-    internal static class PluDecomposition<T> where T :INumber<T>
+    using TS = GenTensor<int>;
+    [TestClass]
+    public class Identity
     {
-        public static (GenTensor<T>, GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> original)
+        [TestMethod]
+        public void IdenMatrix1()
         {
-            var t = original.Copy();
+            Assert.AreEqual(TS.CreateIdentityMatrix(1), TS.CreateMatrix(new int[,]{{1}}));
+        }
 
-            #if true
-            if (!t.IsSquareMatrix)
-                throw new InvalidShapeException("this should be a square matrix");
-            #endif
+        [TestMethod]
+        public void IdenMatrix2()
+        {
+            Assert.AreEqual(TS.CreateIdentityMatrix(3), TS.CreateMatrix(new int[,]
+            {
+                {1, 0, 0},
+                {0, 1, 0},
+                {0, 0, 1}
+            }));
+        }
 
-            var n = t.Shape[0];
-            var m = t.Shape[1];
-
-            var identity = GenTensor<T>.CreateIdentityMatrix(m);
-
-            t.TransposeMatrix();
-            var adj = GenTensor<T>.Concat(t, identity);
-            adj.TransposeMatrix();
-
-            var (echelon, permute) = adj.RowEchelonFormPermuteSafeDivision();
-            var upper = GenTensor<T>.CreateMatrix(n, m, (i, j) => echelon[i, j]);
-            var lowerZero = GenTensor<T>.CreateMatrix(m, m, (i, j) => echelon[i, m + j]);
-
-            lowerZero.InvertMatrix();
-
-            var permuteMatrix =
-                GenTensor<T>.CreateMatrix(m, m, (i, j) => j == permute[i] - 1 ? T.One : T.Zero);
-
-            var lower = GenTensor<T>.MatrixMultiply(permuteMatrix, lowerZero);
-            return (permuteMatrix, lower, upper);
+        [TestMethod]
+        public void IdenTensor()
+        {
+            var t = TS.CreateIdentityTensor(new []{4, 5}, 8);
+            var k = t.Copy();
+            k.TransposeMatrix();
+            Assert.AreEqual(t, k);
         }
     }
 }

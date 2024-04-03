@@ -55,7 +55,7 @@ for built-in types.
 Let's create a float matrix `3 x 3` and multiply by itself.
 
 ```cs
-var myMatrix = GenTensor<float, FloatWrapper>.CreateMatrix(
+var myMatrix = GenTensor<float>.CreateMatrix(
     new float[,]
     {
         {1, 2, 3},
@@ -64,7 +64,7 @@ var myMatrix = GenTensor<float, FloatWrapper>.CreateMatrix(
     }
 );
 
-var multiplied = GenTensor<float, FloatWrapper>.MatrixMultiply(myMatrix, myMatrix);
+var multiplied = GenTensor<float>.MatrixMultiply(myMatrix, myMatrix);
 
 Console.WriteLine(multiplied);
 ```
@@ -72,7 +72,7 @@ Console.WriteLine(multiplied);
 Now we are going to unite a few such matrices into tensor:
 
 ```cs
-var t = GenTensor<float, FloatWrapper>.Stack(myMatrix, myMatrix);
+var t = GenTensor<float>.Stack(myMatrix, myMatrix);
 ```
 
 And swap the first and the last axis and output it

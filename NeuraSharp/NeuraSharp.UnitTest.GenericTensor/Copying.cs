@@ -1,5 +1,4 @@
 ﻿#region copyright
-
 /*
  * MIT License
  * 
@@ -23,46 +22,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 #endregion
 
 
 using GenericTensor.Core;
-using System.Numerics;
+using GenericTensor.Functions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GenericTensor.Functions
+namespace UnitTests
 {
-    internal static class PluDecomposition<T> where T :INumber<T>
+    [TestClass]
+    public class Copy
     {
-        public static (GenTensor<T>, GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> original)
+        [TestMethod]
+        public void NoChangeInShapeAfterTranspose1()
         {
-            var t = original.Copy();
+            var m = GenTensor<int>.CreateMatrix(new[,] { { 1, 2 } });
+            Assert.AreEqual(m.Shape[0], 1);
+            Assert.AreEqual(m.Shape[1], 2);
+            var n = m.Copy();
+            n.TransposeMatrix();
+            Assert.AreEqual(m.Shape[0], 1);
+            Assert.AreEqual(m.Shape[1], 2);
+        }
 
-            #if true
-            if (!t.IsSquareMatrix)
-                throw new InvalidShapeException("this should be a square matrix");
-            #endif
+        [TestMethod]
+        public void NoChangeInShapeAfterTranspose2()
+        {
+            var m = GenTensor<int>.CreateTensor(new[,,] { { { 1, 2 } } });
+            Assert.AreEqual(m.Shape[0], 1);
+            Assert.AreEqual(m.Shape[1], 1);
+            Assert.AreEqual(m.Shape[2], 2);
+            var n = m.Copy();
+            n.Transpose(0, 2);
+            Assert.AreEqual(m.Shape[0], 1);
+            Assert.AreEqual(m.Shape[1], 1);
+            Assert.AreEqual(m.Shape[2], 2);
 
-            var n = t.Shape[0];
-            var m = t.Shape[1];
-
-            var identity = GenTensor<T>.CreateIdentityMatrix(m);
-
-            t.TransposeMatrix();
-            var adj = GenTensor<T>.Concat(t, identity);
-            adj.TransposeMatrix();
-
-            var (echelon, permute) = adj.RowEchelonFormPermuteSafeDivision();
-            var upper = GenTensor<T>.CreateMatrix(n, m, (i, j) => echelon[i, j]);
-            var lowerZero = GenTensor<T>.CreateMatrix(m, m, (i, j) => echelon[i, m + j]);
-
-            lowerZero.InvertMatrix();
-
-            var permuteMatrix =
-                GenTensor<T>.CreateMatrix(m, m, (i, j) => j == permute[i] - 1 ? T.One : T.Zero);
-
-            var lower = GenTensor<T>.MatrixMultiply(permuteMatrix, lowerZero);
-            return (permuteMatrix, lower, upper);
+            Assert.AreEqual(n.Shape[0], 2);
+            Assert.AreEqual(n.Shape[1], 1);
+            Assert.AreEqual(n.Shape[2], 1);
         }
     }
 }

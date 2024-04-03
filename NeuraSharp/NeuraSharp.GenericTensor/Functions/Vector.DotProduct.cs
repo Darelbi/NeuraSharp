@@ -35,7 +35,7 @@ namespace GenericTensor.Functions
         public static GenTensor<T> TensorVectorDotProduct(GenTensor<T> a,
             GenTensor<T> b)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (a.Shape.SubShape(0, 1) != b.Shape.SubShape(0, 1))
                 throw new InvalidShapeException("Other dimensions of tensors should be equal");
             #endif
@@ -51,7 +51,7 @@ namespace GenericTensor.Functions
         public static T VectorDotProduct(GenTensor<T> a,
             GenTensor<T> b)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (!a.IsVector || !b.IsVector)
                 throw new InvalidShapeException($"{nameof(a)} and {nameof(b)} should be vectors");
             if (a.Shape[0] != b.Shape[0])

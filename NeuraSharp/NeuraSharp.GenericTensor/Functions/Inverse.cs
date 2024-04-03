@@ -64,7 +64,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> Adjoint(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsSquareMatrix)
                 throw new InvalidShapeException("Matrix should be square");
 #endif
@@ -102,7 +102,7 @@ namespace GenericTensor.Functions
 
         public static void InvertMatrix(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!t.IsSquareMatrix)
                 throw new InvalidShapeException("this should be a square matrix");
 #endif
@@ -120,8 +120,8 @@ namespace GenericTensor.Functions
             }
 
             var det = Determinant<T>.DeterminantGaussianSafeDivision(t);
-#if ALLOW_EXCEPTIONS
-            if (default(TWrapper).IsZero(det))
+#if true
+            if (T.IsZero(det))
                 throw new InvalidDeterminantException("Cannot invert a singular matrix");
 #endif
 
@@ -137,7 +137,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> MatrixDivide(GenTensor<T> a, GenTensor<T> b)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!a.IsSquareMatrix || !b.IsSquareMatrix)
                 throw new InvalidShapeException("Both should be square matrices");
             if (a.Shape != b.Shape)
@@ -150,7 +150,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> TensorMatrixDivide(GenTensor<T> a, GenTensor<T> b)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             InvalidShapeException.NeedTensorSquareMatrix(a);
             InvalidShapeException.NeedTensorSquareMatrix(b);
             if (a.Shape != b.Shape)
@@ -170,7 +170,7 @@ namespace GenericTensor.Functions
 
         public static void TensorMatrixInvert(GenTensor<T> t)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             InvalidShapeException.NeedTensorSquareMatrix(t);
 #endif
 

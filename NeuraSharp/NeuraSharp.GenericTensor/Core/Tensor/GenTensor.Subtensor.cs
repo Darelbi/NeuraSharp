@@ -47,7 +47,7 @@ namespace GenericTensor.Core
         // TODO: Make it O(1)
         public GenTensor<T> Slice(int leftIncluding, int rightExcluding)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             ReactIfBadBound(leftIncluding, 0);
             ReactIfBadBound(rightExcluding - 1, 0);
             if (leftIncluding >= rightExcluding)
@@ -80,7 +80,7 @@ namespace GenericTensor.Core
         /// </summary>
         public GenTensor<T> GetSubtensor(int index)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             ReactIfBadBound(index, 0);
             #endif
             var newLinIndexDelta = GetFlattenedIndexSilent(index);
@@ -105,7 +105,7 @@ namespace GenericTensor.Core
         /// </summary>
         public void SetSubtensor(GenTensor<T> sub, params int[] indices)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (indices.Length >= Shape.Count)
                 throw new InvalidShapeException($"Number of {nameof(indices)} should be less than number of {nameof(Shape)}");
             for (int i = 0; i < indices.Length; i++)
@@ -115,7 +115,7 @@ namespace GenericTensor.Core
                 throw new InvalidShapeException($"Number of {nameof(sub.Shape.Length)} + {nameof(indices.Length)} should be equal to {Shape.Count}");
             #endif
             var thisSub = GetSubtensor(indices);
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (thisSub.Shape != sub.Shape)
                 throw new InvalidShapeException($"{nameof(sub.Shape)} must be equal to {nameof(Shape)}");
             #endif

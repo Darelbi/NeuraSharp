@@ -1,5 +1,4 @@
 ﻿#region copyright
-
 /*
  * MIT License
  * 
@@ -23,46 +22,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 #endregion
 
 
 using GenericTensor.Core;
-using System.Numerics;
+using GenericTensor.Functions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace GenericTensor.Functions
+namespace UnitTests
 {
-    internal static class PluDecomposition<T> where T :INumber<T>
+    [TestClass]
+    public class Slicing
     {
-        public static (GenTensor<T>, GenTensor<T>, GenTensor<T>) Decompose(GenTensor<T> original)
+        public Slicing()
         {
-            var t = original.Copy();
+            
+        }
 
-            #if true
-            if (!t.IsSquareMatrix)
-                throw new InvalidShapeException("this should be a square matrix");
-            #endif
-
-            var n = t.Shape[0];
-            var m = t.Shape[1];
-
-            var identity = GenTensor<T>.CreateIdentityMatrix(m);
-
-            t.TransposeMatrix();
-            var adj = GenTensor<T>.Concat(t, identity);
-            adj.TransposeMatrix();
-
-            var (echelon, permute) = adj.RowEchelonFormPermuteSafeDivision();
-            var upper = GenTensor<T>.CreateMatrix(n, m, (i, j) => echelon[i, j]);
-            var lowerZero = GenTensor<T>.CreateMatrix(m, m, (i, j) => echelon[i, m + j]);
-
-            lowerZero.InvertMatrix();
-
-            var permuteMatrix =
-                GenTensor<T>.CreateMatrix(m, m, (i, j) => j == permute[i] - 1 ? T.One : T.Zero);
-
-            var lower = GenTensor<T>.MatrixMultiply(permuteMatrix, lowerZero);
-            return (permuteMatrix, lower, upper);
+        [TestMethod]
+        public void Test1()
+        {
+            var A = GenTensor<float>.CreateMatrix(
+                new float[,]
+                {
+                    {1,  2,  3,  4},
+                    {5,  6,  7,  8},
+                    {9,  10, 11, 12},
+                    {13, 14, 15, 16},
+                }
+                );
+            var sl1 = A.Slice(1, 3);
+            A.TransposeMatrix();
+            var sl2 = A.Slice(1, 3);
+            Assert.AreEqual(
+                GenTensor<float>.CreateMatrix(
+                    new float[,]
+                    {
+                        {5,  6,  7,  8},
+                        {9,  10, 11, 12},
+                    }
+                    ), sl1
+                );
+            Assert.AreEqual(
+                GenTensor<float>.CreateMatrix(
+                    new float[,]
+                    {
+                        {2,  6,  10,  14},
+                        {3,  7,  11,  15},
+                    }
+                ), sl2
+            );
         }
     }
 }

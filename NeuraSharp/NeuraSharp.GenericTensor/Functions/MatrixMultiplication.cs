@@ -35,7 +35,7 @@ namespace GenericTensor.Functions
         internal static GenTensor<T> Multiply(GenTensor<T> a,
             GenTensor<T> b, Threading threading = Threading.Single)
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (!a.IsMatrix || !b.IsMatrix)
                 throw new InvalidShapeException($"Both {nameof(a)} and {nameof(b)} should be matrices");
             if (a.Shape[1] != b.Shape[0])
@@ -99,7 +99,7 @@ namespace GenericTensor.Functions
             GenTensor<T> b, Threading threading = Threading.Single) // TODO: move exceptions in check method so the builder 
                                                                     // can just check once during creation.
         {
-#if ALLOW_EXCEPTIONS
+#if true
             if (a.Shape.Count < 2 || b.Shape.Count < 2)
                 throw new InvalidShapeException($"Arguments should be at least matrices while their shapes are {a.Shape} and {b.Shape}");
             if (a.Shape.SubShape(0, 2) != b.Shape.SubShape(0, 2))

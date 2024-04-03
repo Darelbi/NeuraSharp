@@ -35,12 +35,12 @@ namespace GenericTensor.Functions
     {
         public static GenTensor<T> Stack(params GenTensor<T>[] elements)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (elements.Length < 1)
                 throw new InvalidShapeException("Shoud be at least one element to stack");
             #endif
             var desiredShape = elements[0].Shape;
-            #if ALLOW_EXCEPTIONS
+            #if true
             for (int i = 1; i < elements.Length; i++)
                 if (elements[i].Shape != desiredShape)
                     throw new InvalidShapeException($"Tensors in {nameof(elements)} should be of the same shape");
@@ -57,7 +57,7 @@ namespace GenericTensor.Functions
 
         public static GenTensor<T> Concat(GenTensor<T> a, GenTensor<T> b)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (a.Shape.SubShape(1, 0) != b.Shape.SubShape(1, 0))
                 throw new InvalidShapeException("Excluding the first dimension, all others should match");
             #endif

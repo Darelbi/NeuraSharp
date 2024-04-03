@@ -339,7 +339,7 @@ namespace GenericTensor.Core.Expressions
         public static GenTensor<T> PiecewiseAdd(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
             
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException();
             #endif
@@ -352,7 +352,7 @@ namespace GenericTensor.Core.Expressions
 
         public static GenTensor<T> PiecewiseSubtract(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException();
             #endif
@@ -365,7 +365,7 @@ namespace GenericTensor.Core.Expressions
 
         public static GenTensor<T> PiecewiseMultiply(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException();
             #endif
@@ -378,7 +378,7 @@ namespace GenericTensor.Core.Expressions
 
         public static GenTensor<T> PiecewiseDivision(GenTensor<T> a, GenTensor<T> b, bool parallel)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (a.Shape != b.Shape)
                 throw new InvalidShapeException();
             #endif

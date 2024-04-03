@@ -53,7 +53,7 @@ namespace GenericTensor.Core
         /// </summary>
         public void TransposeMatrix()
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (Shape.Count < 2)
                 throw new InvalidShapeException("this should be at least matrix");
             #endif
@@ -76,13 +76,13 @@ namespace GenericTensor.Core
 
         private int GetFlattenedIndexWithCheck(int[] indices)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             ReactIfBadIndexCount(indices.Length);
             #endif
             var res = 0;
             for (int i = 0; i < indices.Length; i++)
             {
-                #if ALLOW_EXCEPTIONS
+                #if true
                 ReactIfBadBound(indices[i], i);
                 #endif
                 res += blocks[i] * indices[i];
@@ -92,13 +92,13 @@ namespace GenericTensor.Core
 
         private int GetFlattenedIndexWithCheck(int x, int y, int z, int[] indices)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             ReactIfBadIndexCount(indices.Length + 3);
             #endif
             var res = GetFlattenedIndexWithCheck(x, y, z, checkNumberOfDims: false);
             for (int i = 0; i < indices.Length; i++)
             {
-                #if ALLOW_EXCEPTIONS
+                #if true
                 ReactIfBadBound(indices[i], i + 3);
                 #endif
                 res += blocks[i + 3] * indices[i];
@@ -108,7 +108,7 @@ namespace GenericTensor.Core
 
         private int GetFlattenedIndexWithCheck(int x)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             ReactIfBadIndexCount(1);
             ReactIfBadBound(x, 0);
             #endif
@@ -117,7 +117,7 @@ namespace GenericTensor.Core
 
         private int GetFlattenedIndexWithCheck(int x, int y)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             ReactIfBadIndexCount(2);
             ReactIfBadBound(x, 0);
             ReactIfBadBound(y, 1);
@@ -127,7 +127,7 @@ namespace GenericTensor.Core
 
         private int GetFlattenedIndexWithCheck(int x, int y, int z, bool checkNumberOfDims = true)
         {
-            #if ALLOW_EXCEPTIONS
+            #if true
             if (checkNumberOfDims)
                 ReactIfBadIndexCount(3);
             ReactIfBadBound(x, 0);
