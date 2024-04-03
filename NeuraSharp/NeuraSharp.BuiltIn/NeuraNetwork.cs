@@ -172,8 +172,7 @@ namespace NeuraSharp.BuiltIn
             for (int i = 0; i < layers.Length - 1; i++)
                 forwardAlgorithm.ForwardPrepare(layers[i], layers[i + 1]);
 
-            if (errorCallback != null)
-                errorCallback(backwardAlgorithm.GetLossFunction().Compute(sample.outputs, layers[^1].Outputs));
+            errorCallback?.Invoke(backwardAlgorithm.GetLossFunction().Compute(sample.outputs, layers[^1].Outputs));
         }
 
         /// <summary>

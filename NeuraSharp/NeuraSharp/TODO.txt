@@ -17,4 +17,4 @@
 WHAT SHOULD BE PRIORITIZED?
 
 - Embed batch size?
-- 
+- Removing useless dependencies from GenericTensor. If something is not opensource => remove it
